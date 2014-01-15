@@ -1,0 +1,37 @@
+{ "aaData":
+   [
+	        {% comment %}First do the integrated data{% endcomment %}
+  	        {% for gi in gis %}
+  	        	{
+  	        		"gi": {{ gi.gi }},
+  	        		"start": {{ gi.start }},
+  	        		"end": {{ gi.end }},
+  	        		"accnum": "{{ cid }}",
+  	        		"method": "Predicted by at least one method",
+  	        		"group": 0
+  	        	},
+  	        {% endfor %}
+	        {% comment %}Loop again for the groups by method{% endcomment %}
+  	        {% for gi in gis %}
+  	        	{
+					"gi": {{ gi.gi }},
+					"start": {{ gi.start }},
+  	        		"end": {{ gi.end }},
+  	        		"accnum": "{{ cid }}",
+  	        		{% if gi.prediction_method == "Islandpick" %}
+  	        		"method": "IslandPick",
+  	        		"group": 1
+  	        		{% elif gi.prediction_method == "Sigi" %}
+  	        		"method": "SIGI-HMM",
+  	        		"group": 2
+  	        		{% elif gi.prediction_method == "Dimob" %}
+  	        		"method": "IslandPath-DIMOB",
+  	        		"group": 3
+					{% endif %}
+  	        	}{% if not forloop.last %},{% endif %}
+  	        {% endfor %}
+            ],
+    "iTotalRecords": {{ gis|length }},
+    "iTotalDisplayRecords": {{ gis|length }},
+    "sEcho": 1
+}

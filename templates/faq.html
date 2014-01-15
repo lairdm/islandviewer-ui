@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block sidebar %}
+<p class="smalltext">If you need further assistance, please feel free to email us at <a href="mailto:islandpick-mail@sfu.ca">islandpick-mail@sfu.ca</a> with your enquiries. Thank you.</p>
+{% endblock sidebar %}
+
+{% block content %}
+<p class="pageName">Frequently Asked Questions</p>
+
+<ul class="bodyText faq-q">
+  <li><a href="#a1">Which genomes are available through IslandViewer and how can I run IslandViewer on other genomes?</a>
+  <li><a href="#a2">Why does my input file fail to upload or run?</a>
+  <li><a href="#a3">Why is an expected genomic island missed from IslandViewer predictions?</a>
+  <li><a href="#a4">How do I change IslandPick analysis settings to compare against different genomes?</a>
+  <li><a href="#a5">What is the accuracy of IslandViewer GI predictions?</a>
+  <li><a href="#a6">What data is shown in the scatter plot track and how can I check if it with genomic island predictions? </a>
+  <li><a href="#a7">How can I compare GI predictions across two species?</a>
+  <li><a href="#a8">How do I cite IslandViewer?</a>
+  <li><a href="#a9">Where can I find more information about GI prediction using computational methods?</a> 
+</ul>
+		
+<p class="bodyText">If you are still having problems or concerns, please <a href="{% url 'contactus' %}">contact us</a> for further assistance.</p>
+<hr>
+
+<div id='a1' class="subHeader">Which genomes are available through IslandViewer and how can I run IslandViewer on other genomes?</div>
+&nbsp;<br />
+<p class="bodyText">All complete bacterial and archaeal genomes available for download on NCBI are pre-computed through IslandViewer. The genomes are updated from NCBI approximately every month. If you would like to run your own custom genome, use the &quot;Genome Upload&quot; page to upload your own GenBank or EMBL file. See <a href="http://www.ncbi.nlm.nih.gov/genbank/">here</a> for documentation about GenBank and access to sample records, or see <a href="http://www.ebi.ac.uk/help/formats.html#EMBL">here</a> for a description of the EMBL file format. <b>See also our hints on the <a href="{% url 'uploadform' %}">Genome Upload</a> page</b>. Currently, unfinished genomes at the contig stage are not able to be processed by IslandViewer but will be supported in an upcoming version.</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a2' class="subHeader">Why does my input file fail to upload or run?</div>
+&nbsp;<br />
+<p class="bodyText">The most common problem is incorrect format of input files. Please ensure your input file follows GenBank or EMBL formats with all necessary fields, including all nucleotide and coding sequences (CDSs). See examples for more details: <u><a href="http://www.pseudomonas.com/downloads/pseudomonas/genbank/NC_002516.gbk">GenBank</a></u>, <u><a href="http://www.pseudomonas.com/downloads/pseudomonas/embl/NC_002516.embl">EMBL</a></u>. In some cases, SIGI-HMM will fail to run due to issues beyond our control (SIGI-HMM software was written by others), but we have modified the software so you should now be able to still view results for IslandPath-DIMOB and IslandPick in such cases. Unusual sequence errors caused by stitching together contigs can also be a problem. Note that IslandViewer is currently designed to handle complete genomes. A version suitable for contigs is being planned for a future version. If you don't appear to have any such problems and you notice your jobs are taking longer than a few hours to complete, please don't hesitate to contact us and we would be happy to help identify the problem.</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a3' class="subHeader">Why is an expected genomic island missed from IslandViewer predictions?</div>
+&nbsp;<br />
+<p class="bodyText">Genomic islands that have been more anciently incorporated into a genome can ameliorate into the given genome, thus making prediction by SIGI-HMM and IslandPath-DIMOB difficult as these methods rely on the presence of sequence composition bias differences. However, IslandPick can be customized to detect these islands. By default, IslandPick detects islands with a certain phyletic distance so will not detect older islands common to some species/strains. But you can easily change your comparison genomes to identify islands associated with different time scales to run a custom IslandPick analysis (see next question).</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a4' class="subHeader">How do I change IslandPick analysis settings to compare against different genomes?</div>
+&nbsp;<br />
+<p class="bodyText">From the GI prediction results page, under &quot;Additional Tools&quot; on the left sidebar, click on IslandPick. If the genome was not processed using IslandPick, click on the link for &quot;Manual selection of IslandPick&quot; to run a custom analysis. Otherwise if IslandPick was previously run but you would like to select different genomes to compare against, click on &quot;Change&quot; on the right hand side above the listed genomes used in the original IslandPick analysis. This will take you to the page where you can select the genomes you would like to include in the analysis and you can also customize the different selection parameters. A rough measure of phyletic distance, calculated using CVTree, is available beside each species. Once you click &quot;Run IslandPick&quot;, you will be directed to the page where results will be available once the analysis is complete. You may enter your email address here to be notified when the results are accessible, or bookmark the page and check back later. An IslandPick analysis can take a few hours to run depending on the number of jobs in the queue.</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a5' class="subHeader">What is the accuracy of IslandViewer GI predictions?</div>
+&nbsp;<br />
+<p class="bodyText">IslandViewer incorporates three of the most accurate GI prediction methods to complement each other for the best computational prediction of GIs. Note that our definition of a GI for some methods, such as IslandPath-DIMOB, only includes regions of size >8kb.  The approach used in accuracy calculation was performed at a certain range of phyletic distances that islands can be most accurately identified at. In some cases, you may want higher recall, for which we suggest using Alien_Hunter, but the number of false predictions will also increase greatly. IslandPick is the most precise/specific, if comparison genomes are available, though as mentioned the settings can be modified in IslandPick to change what/if islands are predicted by comparing genomes at a different phyletic distance. For a more detailed description of accuracy calculations, see this paper: <a href="http://www.biomedcentral.com/1471-2105/9/329">Langille et al, 2008 BMC Bioinformatics 9:329</a>. To learn more about detecting GIs using computational methods, you may also wish to view <a href="http://www.nature.com/nrmicro/journal/v8/n5/abs/nrmicro2350.html">Langille et al, 2010 Nature Reviews Microbiology 8:5</a>.</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a6' class="subHeader">What data is shown in the scatter plot track and how can I check if it with genomic island predictions?</div>
+&nbsp;<br />
+<p class="bodyText">The scatter plot currently shows the location of genes annotated as virulence factors from the Virulence Factor Database (VFDB), or antibiotic resistance genes as classified by the Antibiotic Resistance Gene Database (ARDB) or pathogen-associated genes calculated from a study by Ho Sui et al. (see <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0008094" target="_blank">Ho Sui et al. 2009</a>). For more information about these resources, see the <a href="{% url 'about' %}">About</a> section. If any genes from a predicted genomic island overlap with these classifications, a link will appear under the "product" annotation field, either when you hover over the island or click on the gene annotations link. These links will pull up the corresponding information for that gene in VFDB or ARDB. This feature will be useful in categorizing genomic islands as pathogenicity islands or antibiotic resistance islands. Please correctly cite these resources if you are using any of these data (see <a href="{% url 'acknowledgements' %}">Acknowledgments</a>).</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a7' class="subHeader">How can I compare GI predictions across two species?</div>
+&nbsp;<br />
+<p class="bodyText">As a new feature, a new visualization page has been implemented to allow display of two genomes side-by-side. You can access this by clicking on "Visualize two genomes" under the figure legend and choosing a genome to compare against. This feature will be further improved in the future using sequence-similarity comparisons, but due to differences in criteria by users for matching up similar genomic regions, the simple visual comparison was strongly initially preferred.</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a8' class="subHeader">How do I cite IslandViewer?</div>
+&nbsp;<br />
+<p class="bodyText">We would appreciate anyone using IslandViewer to cite:</p>
+		<blockquote class="bodyText">Langille, M.G.I. and F.S.L. Brinkman (2009). &quot;IslandViewer: an integrated interface for computational identification and visualization of genomic islands&quot;, Bioinformatics, Jan. 16. <a href="http://www.ncbi.nlm.nih.gov/pubmed/19151094">PMID: 19151094</a></blockquote>
+<p class="bodyText">In addition, depending on the resources used, we would encourage the acknowledgement of one or more of the following resources (add links as in the acknowledgments):</p>
+
+<ul class="bodyText">
+  <li class="bodyText">SIGI-HMM (<a href="http://www.biomedcentral.com/1471-2105/7/142">Waack et al., 2006</a>)</li>
+  <li>IslandPath-DIMOB (<a href="http://bioinformatics.oxfordjournals.org/content/19/3/418.short">Langille et al., 2008</a>)</li>
+  <li>IslandPick (<a href="http://www.biomedcentral.com/1471-2105/9/329">Langille et al., 2008</a>)</li>
+  <li>Virulence Factor Database (<a href="http://nar.oxfordjournals.org/content/40/D1/D641.full" target="_blank">Chen et al., 2012</a>)</li>
+  <li>Antibiotic Resistance Gene Database (<a href="http://nar.oxfordjournals.org/content/37/suppl_1/D443.long" target="_blank">Liu et al., 2009</a>)</li>
+</ul>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a9' class="subHeader">Where can I find more information about GI prediction using computational methods?</div>
+&nbsp;<br />
+<p class="bodyText">If you are interested in learning more about the computational prediction of GIs, please see the review article by <a href="http://www.nature.com/nrmicro/journal/v8/n5/full/nrmicro2350.html" target="_blank">Langille et al., 2010</a> in Nature Reviews Microbiology.</p>
+
+<div align="right"><a href="#">Top</a></div>
+&nbsp;<br />
+
+{% endblock content %}

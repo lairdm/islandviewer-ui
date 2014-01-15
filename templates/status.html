@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+{% url 'runstatusjson' as runstatusjson %}{% url 'results' as results %}
+
+{% block headextras %}
+    <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<table id="{{ summarytablename|default:"summarytable" }}" class="summarytable table table-striped table-condensed table-hover idb-table" style="font-size: 90%">
+<thead>
+<tr>
+<th>aid</th>
+<th>ext_id</th>
+<th>Status</th>
+<th>Distance</th>
+<th>Sigi</th>
+<th>Dimob</th>
+<th>Islandpick</th>
+<th>Virulence</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<script type="text/javascript">
+var displayLength = 30;
+
+var arrayColumns = [
+                    {"mData": "aid", "bVisible": true, "sSortDataType": "dom-text"},
+                    {"mData": "ext_id", "bVisible": true},
+                    {"mData": "status", "bVisible": true},                    
+                    {"mData": "Distance", "bVisible": true},
+                    {"mData": "Sigi", "bVisible": true},
+                    {"mData": "Dimob", "bVisible": true},
+                    {"mData": "Islandpick", "bVisible": true},
+                    {"mData": "Virulence", "bVisible": true},
+                    {"mData": "Summary", "bVisible": true},
+                ];
+var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
+	"iDisplayLength": displayLength,
+    "sScrollX": "100%",
+    "sScrollXInner": "100%",
+    "bProcessing": true,
+    "bAutoWidth": false,
+    "bPaginate": true,
+    "bInfo": true,
+    "bFilter": true,
+    "sAjaxSource": "{% url 'runstatusjson' %}",
+    "bServerSide": false,
+    "aoColumns": arrayColumns,
+    "aaSorting": [[ 0, 'asc' ]],
+    "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+    	  $(nRow).addClass('method' + aData.group);
+    },
+    "aoColumnDefs": [
+ 					{
+ 	    				"aTargets": [1],
+ 	    				"mData": null,
+ 	    				"mRender": function(data, type, full) {
+ 	        				return '<a href="' + '{%url 'results' '9999' %}'.replace(9999, full.aid) + '">' + full.ext_id + '</a>';
+ 	    					},
+ 						},
+					{
+    					"aTargets": [2],
+    					"mData": null,
+    					"mRender": function(data, type, full) {
+        					return '<span class="' + full.status + '">' + full.status + '</span>';
+    					},
+					},
+					{
+	    				"aTargets": [3],
+	    				"mData": null,
+	    				"mRender": function(data, type, full) {
+	        				return '<span class="' + full.Distance + '">' + full.Distance + '</span>';
+	    					},
+						},
+					{
+	    				"aTargets": [4],
+	    				"mData": null,
+	    				"mRender": function(data, type, full) {
+	        				return '<span class="' + full.Sigi + '">' + full.Sigi + '</span>';
+	    					},
+					},
+					{
+		    			"aTargets": [5],
+		    			"mData": null,
+		    			"mRender": function(data, type, full) {
+		        			return '<span class="' + full.Dimob + '">' + full.Dimob + '</span>';
+		    				},
+					},
+					{
+		    			"aTargets": [6],
+		    			"mData": null,
+		    			"mRender": function(data, type, full) {
+		        			return '<span class="' + full.Islandpick + '">' + full.Islandpick + '</span>';
+		    				},
+					},
+					{
+		    			"aTargets": [7],
+		    			"mData": null,
+		    			"mRender": function(data, type, full) {
+		        			return '<span class="' + full.Virulence + '">' + full.Virulence + '</span>';
+		    				},
+					},
+					{
+		    			"aTargets": [8],
+		    			"mData": null,
+		    			"mRender": function(data, type, full) {
+		        			return '<span class="' + full.Summary + '">' + full.Summary + '</span>';
+		    				},
+					},
+					]
+});
+</script>
+
+{% endblock content %}

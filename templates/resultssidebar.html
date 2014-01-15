@@ -1,0 +1,18 @@
+<span class="smalltext">
+<p>Predicted genomic islands are coloured within the circular image based on the tools below.</p>
+<p>Hovering over islands within the image will show gene annotations while clicking on them will highlight the corresponding GI in the table.</p>
+<p><strong>Individual prediction methods can be selected below.</strong></p>
+<div class="outline">
+  <span class="red"><input type="checkbox" name="showIntegrated" onchange="updateStrand(this, 'integrated'); return false;" checked>Integrated</span><br />
+  <span class="green"><input type="checkbox" name="showIslandpick" {% if not methods.Islandpick %}disabled=true{% endif %} onchange="updateStrand(this, 'islandpick'); return false;" checked>IslandPick</span><br />
+  <span class="orange"><input type="checkbox" name="showSigi" {% if not methods.Sigi %}disabled=true{% endif %} onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span><br />
+  <span class="blue"><input type="checkbox" name="showDimob" {% if not methods.Dimob %}disabled=true{% endif %} onchange="updateStrand(this, 'dimob'); return false;" checked>IslandPath-DIMOB</span><br />
+&nbsp;<br />
+{% for vir, v in vir_types.items %} 
+{% if forloop.first %}Display virulence factors</br />{% endif %}
+  <span class="{{ plotName|default:"circular" }}Virulence_{{ vir }}"><input type="checkbox" name="show{{ vir }}" onchange="updateVirulence(this, '{{ vir }}'); return false;" checked>{{ vir }}</span><br />
+{% empty %}
+No virulence factors found.
+{% endfor %}
+</div>
+</span>

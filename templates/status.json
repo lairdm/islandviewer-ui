@@ -1,0 +1,20 @@
+{% load runstatus %}
+{ "aaData":
+   [
+     {% for a in analysis %}
+     {
+       "aid": {{ a.aid }},
+       "atype": {{ a.atype }},
+       "ext_id": "{{ a.ext_id }}",
+       "default_analysis": "{{ a.default_analysis }}",
+       {% for t in a.tasks.all %}
+       "{{ t.prediction_method }}": "{{ t.status|get_status }}",
+       {% endfor %}
+       "status": "{{ a.status|get_status }}"
+       
+     }{% if not forloop.last %},{% endif %}{% endfor %}   
+   ],
+   "iTotalRecords": {{ analysis|length }},
+   "iTotalDisplayRecords": 30,
+   "sEcho": 1
+}

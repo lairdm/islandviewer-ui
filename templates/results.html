@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block headextras %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+{% endblock %}
+
+{% block sidebar %}
+{% if not noanalysis %}
+  {% if status == "Complete" %}
+    {% include "resultssidebar.html" %}
+  {% else %}
+  &nbsp;<br />
+  <span class="smalltext">
+  The analysis is not yet complete, please check back to this page
+  in a while, or you will be notified by email when the analysis if you elected
+  to enter an email address.<br />
+  &nbsp;<br />
+  The graph to the right will show you the status of the Islandviewer pipeline.<br />
+  &nbsp;<br />
+  </span>
+  <span class="headertext">Legend:</span><br />
+  <span class="smalltext">&nbsp;<br />
+    &nbsp;&nbsp;<span class="legend Pending">&nbsp;</span>&nbsp;&nbsp;Pending<br />
+    &nbsp;&nbsp;<span class="legend Running">&nbsp;</span>&nbsp;&nbsp;Running<br />
+    &nbsp;&nbsp;<span class="legend Complete">&nbsp;</span>&nbsp;&nbsp;Complete<br />
+    &nbsp;&nbsp;<span class="legend Error">&nbsp;</span>&nbsp;&nbsp;Error<br />
+  </span>
+  {% endif %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if noanalysis %}
+    {% include "noanalysis.html" %}
+{% else %}
+  {% if status == "Complete" %}
+
+    <script src="{% static 'js/circularplot.js' %}"></script>
+    <script src="{% static 'js/linearplot.js' %}"></script>
+    <script src="{% static 'js/canvg.js' %}"></script>
+    <script src="{% static 'js/FileSaver/FileSaver.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+    <span class="pageName">{{ genomename }}</span>
+    <div id="circularchart"></div>
+	<div id="circularchartlinearwrapper" class="hidden"><img id="circularchartlinearclose" width="20" height="20" src="{% static 'img/close.svg' %}"><div id="circularchartlinear"></div></div>
+    <div id="geneslist" class="hidden"><img id="genelistclose" width="20" height="20" src="{% static 'img/close.svg' %}">
+    <span id="geneslistnothing" class="hidden">Sorry, no genes were found in this island.</span>
+    <span id="geneslistvalues" class="hidden"><table id="geneslisttable" class="gitable table table-condensed idb-table" style="font-size: 90%">
+    <thead>
+      <tr>
+        <td>Coordinates</td><td>Name</td><td>Gene</td><td>Locus</td><td>Product</td>
+      </tr>
+    </thead>
+    </table></span>
+    </div>
+    {{ status }}
+    <button id="save_as_png" value="">
+			Save as High-Res PNG</button>
+    <script src="/islandviewer/plot/{{ aid }}"></script>
+    {% include "gitable.html" %}
+
+  {% else %}
+   <script src="{% static 'js/dagre-d3.min.js' %}"></script>
+  
+   <svg id="pipelinegraph" width=500 height=600>
+   <g transform="translate(20, 20)"/>
+   </svg>
+
+   <script src="{% url 'graphanalysisjs' aid %}"></script>
+  
+  {% endif %}
+{% endif %}
+{% endblock content %}

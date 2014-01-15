@@ -1,0 +1,22 @@
+{
+  "gi": {{ gi }},
+  "aid": {{ aid }},
+  "start": {{ startbp }},
+  "end": {{ endbp }},
+  "method": "{{ method }}",
+  "genes": [
+  			{% for gene in genes %}
+  			{
+  				"geneid": {{ gene.id }},
+  				"start": {{ gene.start }},
+  				"end": {{ gene.end }},
+  				"strand": {{ gene.strand }},
+  				"name": "{{ gene.name }}",
+  				"gene": "{{ gene.gene|default:'' }}",
+  				"product": "{{ gene.product|default:'' }}",
+  				"locus": "{{ gene.locus|default:'' }}"
+  			}{% if not forloop.last %},{% endif %}
+  			{% endfor %}
+  		]
+  }
+  

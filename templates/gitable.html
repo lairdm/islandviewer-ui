@@ -1,0 +1,99 @@
+{% url 'fetchislands' as fetchislands %}{% url 'fetchislandsfasta' as fetchislandsfasta %}
+<table id="{{ gitablename|default:"maingitable" }}" class="gitable table table-condensed idb-table" style="font-size: 90%">
+<thead>
+<tr>
+<th>Group</th>
+<th>Start</th>
+<th>End</th>
+<th>Size</th>
+<th>GI Prediction Method</th>
+<th>Annotations</th>
+<th>Download</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<script type="text/javascript">
+var displayLength = 80;
+var arrayColumns = [
+                {"mData": "group", "bVisible": false},
+                {"mData": "start", "bVisible": true, "sType": "formatted-num",},
+                {"mData": "end", "bVisible": true, "sType": "formatted-num"},
+                {"mData": null, "bVisible": true, "sSortDataType": "dom-text", "sType": "formatted-num"},
+                {"mData": "method", "bVisible": true, "bSortable": false},
+                {"mData": null, "bVisible": true, "bSortable": false},
+                {"mData": null, "bVisible": true, "bSortable": false}
+            ]
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "formatted-num-pre": function ( a ) {
+        a = (a === "-" || a === "") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+        return parseFloat( a );
+    },
+ 
+    "formatted-num-asc": function ( a, b ) {
+        return a - b;
+    },
+ 
+    "formatted-num-desc": function ( a, b ) {
+        return b - a;
+    }
+} );
+var  oTable = $('#{{ gitablename|default:"maingitable" }}').dataTable({
+					"iDisplayLength": displayLength,
+                    "sScrollX": "100%",
+                    "sScrollXInner": "100%",
+                    "bProcessing": true,
+                    "bAutoWidth": false,
+                    "bPaginate": false,
+                    "bInfo": false,
+                    "bFilter": false,
+                    "sAjaxSource": "{% url 'tablejson' aid=aid %}",
+                    "bServerSide": false,
+                    "aoColumns": arrayColumns,
+                    "aoColumnDefs": [
+                                     {
+                                         "aTargets": [1],
+                                         "mData": null,
+                                         "mRender": function(data, type, full) {
+                                             return (full.start).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                         },
+                                     },
+                                     {
+                                         "aTargets": [2],
+                                         "mData": null,
+                                         "mRender": function(data, type, full) {
+                                             return (full.end).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                         },
+                                     },
+                        {
+                            "aTargets": [3],
+                            "mData": null,
+                            "mRender": function(data, type, full) {
+                                return (full.end-full.start).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            },
+                        },
+                        {
+                            "aTargets": [5],
+                            "mData": null,
+                            "mRender": function(data, type, full) {
+                                return '<a href="{{ fetchislands }}?gi=' + full.gi + '">Genes</a>';
+                            },
+                        },
+                        {
+                            "aTargets": [6],
+                            "mData": null,
+                            "mRender": function(data, type, full) {
+                                return '<a href="{{ fetchislandsfasta }}?gi=' + full.gi + '&seq=island">Sequence</a>, <a href="{{ fetchislandsfasta }}?gi=' + full.gi + '&seq=nuc">Genes</a>, <a href="{{ fetchislandsfasta }}?gi=' + full.gi + '">Proteins</a>';
+                            },
+                        },
+                    ],
+                    "aaSortingFixed": [[ 0, 'asc' ]],
+        	        "aaSorting": [[ 0, 'asc' ],[ 1, 'asc' ]],
+        	        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+        	        	  $(nRow).addClass('method' + aData.group);
+        	        },
+
+                });
+</script>
+      
