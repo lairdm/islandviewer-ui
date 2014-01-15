@@ -18,7 +18,7 @@ DATABASES = {
         'NAME': 'microbedb',
         'USER': 'ivuser',
         'PASSWORD': 'ivuser34%',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': secrets.DATABASE_HOST,
+        'PORT': secrets.DATABASE_PORT,
     }
 }
