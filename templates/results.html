@@ -62,6 +62,8 @@
     {% include "gitable.html" %}
 
   {% else %}
+   <span class="pageName">{{ genomename }}</span>
+  
    <script src="{% static 'js/dagre-d3.min.js' %}"></script>
   
    <svg id="pipelinegraph" width=500 height=600>
