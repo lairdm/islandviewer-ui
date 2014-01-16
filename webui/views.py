@@ -247,7 +247,9 @@ def genesjson(request, gi_id):
     context['aid'] = analysis.aid
     context['method'] = girec.prediction_method
     
-    context['genes'] = Genes.objects.filter(pk__in = IslandGenes.objects.filter(gi=gi_id).values_list('gene', flat=True)).order_by('start').all()
+#    context['genes'] = Genes.objects.filter(pk__in = IslandGenes.objects.filter(gi=gi_id).values_list('gene', flat=True)).order_by('start').all()
+    params = [gi_id]
+    context['genes'] = Genes.objects.raw("select Genes.* FROM Genes, IslandGenes WHERE IslandGenes.gi = %s AND Genes.id = IslandGenes.gene_id ORDER BY Genes.start", params)
 
     return render(request, "genes.json", context, content_type='application/json')
     
