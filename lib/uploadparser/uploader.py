@@ -60,7 +60,7 @@ class GenomeParser():
             output = subprocess.check_output(upload_script.split(), universal_newlines=True)
         except subprocess.CalledProcessError as e:
             print "Error submitting: " + str(e.returncode), e.output
-            raise Exception("Error submitting analysis", "{0} {1}".format(e.output, upload_script))
+            raise Exception("Error submitting analysis", "{0}\n{1}".format(e.output, upload_script))
         else:
             print "Successfully submitted " + output
 #            return 20
