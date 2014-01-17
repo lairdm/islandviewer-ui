@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.conf import settings
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
@@ -157,6 +158,9 @@ def uploadform(request):
                 else:
                     print "Unknown error {0}".format(e)
                     context['error'] = "Unknown error"
+                    if settings.DEBUG:
+                        for arg in e.args:
+                            context['error'] += "<pre>" + "{0}".format(arg) + "</pre>\n"
             else:
                 print "Successful upload, redirect here to analysis"
                 # Will be in aid?
