@@ -26,7 +26,7 @@ function submitGenome() {
 
 <form action="{% url 'uploadform' %}" method="POST" enctype="multipart/form-data" name="genome_upload" id="genome_upload">
 {% csrf_token %}
-{% if error %}{{ error }}{% endif %}
+{% if error %}{{ error|safe }}{% endif %}
 <p>{{ form.genome_file }}{{ form.format_type }}</p>
               
 	                  
