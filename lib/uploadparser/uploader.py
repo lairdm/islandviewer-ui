@@ -1,7 +1,7 @@
 import os.path
 import subprocess
 import pprint
-from webui.models import UploadCounter
+from webui.models import UploadGenome
 from django.conf import settings
 from Bio import SeqIO
 
@@ -15,7 +15,7 @@ class GenomeParser():
         backend for processing
         '''
         
-        upload = UploadCounter(ip_addr = uploader_ip)
+        upload = UploadGenome(ip_addr = uploader_ip)
         upload.save()
         upload_file = os.path.join(settings.GENOME_UPLOAD_PATH, str(upload.id))
 
@@ -51,6 +51,13 @@ class GenomeParser():
         if name:
             g_name = name
         
+        upload.filename = upload_file
+        upload.genome_name = g_name
+        upload.email = email_addr
+        upload.save()
+        
+        return upload.id
+    
         upload_script = settings.GENOME_SUBMISSION_SCRIPT.format(filename=upload_file, genome_name=g_name)
         print "Wanting to run " + upload_script
         

@@ -121,13 +121,19 @@ class DistanceAttempts(models.Model):
     class Meta:
         db_table = "DistanceAttempts"
         
-class UploadCounter(models.Model):
+class UploadGenome(models.Model):
     id = models.AutoField(primary_key=True)
+    filename = models.CharField(max_length=120)
     ip_addr = models.IPAddressField()
+    status = models.IntegerField(choices=STATUS_CHOICES,
+                                 default=STATUS['PENDING'])
+    genome_name = models.CharField(max_length=40)
+    email = models.EmailField()
+    aid = models.IntegerField(default=0)
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "UploadCounter"
+        db_table = "UploadGenome"
 
 '''
 MicrobeDB models

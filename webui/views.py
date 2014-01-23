@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from islandplot import plot
@@ -145,7 +145,7 @@ def uploadform(request):
                 ip = request.META.get('REMOTE_ADDR')
             uploadparser = uploader.GenomeParser()
             try:
-                aid = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip)
+                upload_id = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip)
             except (ValueError, Exception) as e:
                 if e[0] == 'More than one record found in handle':
                     print "Error, more than one record"
@@ -164,7 +164,7 @@ def uploadform(request):
             else:
                 print "Successful upload, redirect here to analysis"
                 # Will be in aid?
-                return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
+                return HttpResponseRedirect(reverse('webui.views.uploadredirect', kwargs={'upload_id': upload_id}))
                     
     return render_to_response(
         'upload.html',
@@ -172,6 +172,16 @@ def uploadform(request):
         context_instance=RequestContext(request, context)
     )
 
+def uploadredirect(request, upload_id):
+    context = {}
+
+    upload = get_object_or_404(UploadGenome, pk=upload_id)
+    
+    if upload.aid == 0:
+        return render(request, 'uploadredirect.html')
+    else:
+        return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': upload.aid}))
+    
 def runstatus(request):
     context = {}
 

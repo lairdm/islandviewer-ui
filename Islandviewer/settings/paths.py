@@ -15,6 +15,6 @@ elif env.TEST_ENV:
     GENOME_SUBMISSION_SCRIPT = "/data/Modules/iv-backend/islandviewer/bin/submit_uploaded_genome.pl -c /data/Modules/iv-backend/islandviewer/etc/islandviewer.config -f {filename} -n \"{genome_name}\" -l /data/Modules/iv-backend/islandviewer/etc/logger.upload.conf 2>/dev/null"
     PIPELINE_PATH = "/data/Resources/MetaScheduler/pipeline"
 else:
-    GENOME_UPLOAD_PATH = "/home/lairdm/islandviewer/custom_genomes/"
+    GENOME_UPLOAD_PATH = "/home/lairdm/islandviewer/custom_genomes/tmp/"
     GENOME_SUBMISSION_SCRIPT = "/home/lairdm/islandviewer/bin/submit_uploaded_genome.pl -c /home/lairdm/islandviewer/etc/islandviewer.config -f {filename} -n \"{genome_name}\""
     PIPELINE_PATH = "/home/lairdm/workspace/metascheduler/pipelines"
