@@ -4,6 +4,7 @@ import pprint
 from webui.models import UploadGenome
 from django.conf import settings
 from Bio import SeqIO
+from uploadparser import submitter
 
 class GenomeParser():
         
@@ -64,6 +65,7 @@ class GenomeParser():
         try:
 #            output = 20
 #            output = subprocess.check_output(upload_script.split(), stderr=subprocess.STDOUT, universal_newlines=True)
+            submitter.send_job()
             output = subprocess.check_output(upload_script.split(), universal_newlines=True)
         except subprocess.CalledProcessError as e:
             print "Error submitting: " + str(e.returncode), e.output

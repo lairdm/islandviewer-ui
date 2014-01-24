@@ -10,14 +10,15 @@ import json
 import base64
 from django.conf import settings
 
-default_host = 'localhost'
-default_port = 8211
+default_host = settings.ISLANDVIEWER_HOST
+default_port = settings.ISLANDVIEWER_PORT
 
 def send_job(genome_data, genome_format, genome_name, email, host=default_host, port=default_port):
     try:
         s = connect_to_server(host, port)
     except Exception as e:
-        print "Error: " + str(e)
+        if settings.DEBUG:
+            print "Error: " +  str(e)
 
     encoded_genome = base64.urlsafe_b64encode(genome_data)
 
@@ -30,14 +31,17 @@ def send_job(genome_data, genome_format, genome_name, email, host=default_host, 
 
     ret = send_message(s, json_str)
 
-    print ret
+    decoded_json = json.loads(ret)
+
+    print decoded_json
 
 def connect_to_server(host, port):
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     except socket.error:
-        print 'Failed to create socket'
+        if settings.DEBUG:
+            print 'Failed to create socket'
         raise Exception("Socket failure", "Error creating a socket")
      
     print 'Socket Created'
@@ -46,7 +50,8 @@ def connect_to_server(host, port):
         remote_ip = socket.gethostbyname( host )
     except socket.gaierror:
     #could not resolve
-        print 'Hostname could not be resolved. Exiting'
+        if settings.DEBUG:
+            print 'Hostname could not be resolved. Exiting'
         raise Exception("Socket failure", "Error, could not resolve host " + host)
  
     #Connect to remote server
@@ -59,7 +64,8 @@ def send_message(s, message):
     try:
         s.sendall(message)
     except socket.error:
-        print "Send failed"
+        if settings.DEBUG:
+            print "Send failed"
         raise Exception("Socket failure", "Error sending message to server")
 
     #Now receive data
