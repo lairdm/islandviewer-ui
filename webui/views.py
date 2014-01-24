@@ -145,26 +145,26 @@ def uploadform(request):
                 ip = request.META.get('REMOTE_ADDR')
             uploadparser = uploader.GenomeParser()
             try:
-                upload_id = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip)
+                ret = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip)
             except (ValueError, Exception) as e:
-                if e[0] == 'More than one record found in handle':
-                    print "Error, more than one record"
-                    context['error'] = "Error, more than one record"
-                elif e[0] == 'No records found in handle':
-                    print "Error, wrong file type"
-                    context['error'] = "Error, wrong file type"
-                elif e[0] == 'No sequence':
-                    context['error'] = "Error, no sequence"
-                else:
+                context['error'] = "Unknown error"
+                if settings.DEBUG:
                     print "Unknown error {0}".format(e)
-                    context['error'] = "Unknown error"
-                    if settings.DEBUG:
-                        for arg in e.args:
-                            context['error'] += "<pre>" + "{0}".format(arg) + "</pre>\n"
+                    for arg in e.args:
+                        context['error'] += "<pre>" + "{0}".format(arg) + "</pre>\n"
             else:
-                print "Successful upload, redirect here to analysis"
+                if settings.DEBUG:
+                    print "Successful upload, redirect here to analysis"
                 # Will be in aid?
-                return HttpResponseRedirect(reverse('webui.views.uploadredirect', kwargs={'upload_id': upload_id}))
+                if ret['code'] == 200:
+                    m = re.search("\[\d+\]", ret['msg'])
+                    if m:
+                        aid = m.group(1)
+                        return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
+                    else:
+                        context['error'] = "Error parsing results from the server"
+                else:
+                    context['error'] = ret['user_error_msg']
                     
     return render_to_response(
         'upload.html',

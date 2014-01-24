@@ -13,18 +13,19 @@ from django.conf import settings
 default_host = settings.ISLANDVIEWER_HOST
 default_port = settings.ISLANDVIEWER_PORT
 
-def send_job(genome_data, genome_format, genome_name, email, host=default_host, port=default_port):
+def send_job(genome_data, genome_format, genome_name, email, ip_addr, host=default_host, port=default_port):
     try:
         s = connect_to_server(host, port)
     except Exception as e:
         if settings.DEBUG:
-            print "Error: " +  str(e)
+            print "Socket error: " +  str(e)
+        raise Exception("Failure to submit file")
 
     encoded_genome = base64.urlsafe_b64encode(genome_data)
 
     json_obj = {'action': 'submit', 'genome_name': genome_name,
             'email': email, 'genome_data': encoded_genome,
-            'genome_format': genome_format }
+            'genome_format': genome_format, 'ip_addr': ip_addr }
 
     json_str = json.dumps(json_obj)
     json_str += "\nEOF\n"
@@ -34,6 +35,8 @@ def send_job(genome_data, genome_format, genome_name, email, host=default_host, 
     decoded_json = json.loads(ret)
 
     print decoded_json
+    
+    return decoded_json
 
 def connect_to_server(host, port):
 
