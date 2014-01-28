@@ -167,8 +167,14 @@ def uploadform(request):
                             context['error'] += "<pre>" + ret['msg'] + "</pre>\n"
                             print "Error str: {0}".format(ret['msg'])
                 else:
-                    context['error'] = ret['user_error_msg']
+                    if 'user_error_msg' in ret:
+                        context['error'] = ret['user_error_msg']
+                    else:
+                        # Something really bad happened...
+                        context['error'] = "Error submitting genome, we're not even sure what went wrong"
+
                     if settings.DEBUG:
+                        context['error'] += "<pre>Return code: " + str(ret['code']) + "</pre>\n"
                         context['error'] += "<pre>" + ret['msg'] + "</pre>\n"
                         print "Error str: {0}".format(ret['msg'])
                     
