@@ -18,7 +18,7 @@ def send_job(genome_data, genome_format, genome_name, email, ip_addr, host=defau
         s = connect_to_server(host, port)
     except Exception as e:
         if settings.DEBUG:
-            print "Socket error: " +  str(e)
+            print "Socket error: " +  str(e) + " to " + host + ":" + port
         raise Exception("Failure to submit file")
 
     encoded_genome = base64.urlsafe_b64encode(genome_data)
@@ -46,8 +46,9 @@ def connect_to_server(host, port):
         if settings.DEBUG:
             print 'Failed to create socket'
         raise Exception("Socket failure", "Error creating a socket")
-     
-    print 'Socket Created'
+    
+    if settings.DEBUG: 
+        print 'Socket Created'
  
     try:
         remote_ip = socket.gethostbyname( host )
