@@ -10,6 +10,7 @@ from giparser import fetcher
 from uploadparser import uploader
 from metasched import pipeline, graph
 from .forms import UploadGenomeForm
+import re
 import pprint
 
 def index(request):
