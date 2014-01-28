@@ -38,7 +38,7 @@ class GenomeParser():
                 for arg in e.args:
                     print "{0}\n".format(arg)
                     debug_error += arg
-                    raise Exception("Unknown error" + debug_error)
+                    raise Exception("Unknown error: " + debug_error)
 
             raise Exception("Unknown error")
 
