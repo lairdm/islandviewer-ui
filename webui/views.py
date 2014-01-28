@@ -163,8 +163,14 @@ def uploadform(request):
                         return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
                     else:
                         context['error'] = "Error parsing results from the server"
+                        if settings.DEBUG:
+                            context['error'] += "<pre>" + ret['msg'] + "</pre>\n"
+                            print "Error str: {0}".format(ret['msg'])
                 else:
                     context['error'] = ret['user_error_msg']
+                    if settings.DEBUG:
+                        context['error'] += "<pre>" + ret['msg'] + "</pre>\n"
+                        print "Error str: {0}".format(ret['msg'])
                     
     return render_to_response(
         'upload.html',
