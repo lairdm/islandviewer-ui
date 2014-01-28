@@ -4,6 +4,7 @@
 
 {% block headextras %}
     <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'js/datatables.inputPagination.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -45,6 +46,7 @@ var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
     "bProcessing": true,
     "bAutoWidth": false,
     "bPaginate": true,
+    "sPaginationType": "input",
     "bInfo": true,
     "bFilter": true,
     "sAjaxSource": "{% url 'runstatusjson' %}",
