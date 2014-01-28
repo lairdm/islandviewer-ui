@@ -34,8 +34,12 @@ class GenomeParser():
             ret = submitter.send_job(genome_data, genome_format, g_name, email_addr, uploader_ip)
         except Exception as e:
             if settings.DEBUG:
+                debug_error = ''
                 for arg in e.args:
                     print "{0}\n".format(arg)
+                    debug_error += arg
+                    raise Exception("Unknown error" + debug_error)
+
             raise Exception("Unknown error")
 
         pprint.pprint(ret)
