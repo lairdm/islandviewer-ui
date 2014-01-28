@@ -158,9 +158,9 @@ def uploadform(request):
                     print "Successful upload, redirect here to analysis"
                 # Will be in aid?
                 if ret['code'] == 200:
-                    m = re.search("\[\d+\]", ret['msg'])
+                    m = re.search("\[(\d+)\]", ret['msg'])
                     if m:
-                        aid = m.group(1)
+                        aid = m.group(0)
                         return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
                     else:
                         context['error'] = "Error parsing results from the server"
