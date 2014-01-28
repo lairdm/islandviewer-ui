@@ -160,7 +160,9 @@ def uploadform(request):
                 if ret['code'] == 200:
                     m = re.search("\[(\d+)\]", ret['msg'])
                     if m:
-                        aid = m.group(0)
+                        aid = m.group(1)
+                        if settings.DEBUG:
+                            print "Found aid: {0}".format(aid)
                         return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
                     else:
                         context['error'] = "Error parsing results from the server"
