@@ -18,7 +18,7 @@ def send_job(genome_data, genome_format, genome_name, email, ip_addr, host=defau
         s = connect_to_server(host, port)
     except Exception as e:
         if settings.DEBUG:
-            print "Socket error: " +  str(e) + " to " + host + ":" + port
+            print "Socket error: " +  str(e) + " to " + host + ":" + str(port)
         raise Exception("Failure to submit file")
 
     encoded_genome = base64.urlsafe_b64encode(genome_data)
