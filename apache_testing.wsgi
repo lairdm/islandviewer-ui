@@ -3,7 +3,7 @@ import os, sys, site
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 BASE_PATH = os.path.dirname(PROJECT_PATH)
 
-os.environ['DJANGO_ENVIRONMENT'] = 'production'
+os.environ['DJANGO_ENVIRONMENT'] = 'staging'
 
 # Add the site-packages of the chosen virtualenv to work with
 #site.addsitedir('/data/Modules/islandviewer4/env/local/lib/python2.7/site-packages')

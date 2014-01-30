@@ -5,7 +5,7 @@ import secrets
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'islandviewer',
+        'NAME': secrets.IV_DATABASE,
 #        'NAME': '/home/lairdm/workspace/Islandviewer/sqlite.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': secrets.DATABASE_USER,
