@@ -245,6 +245,29 @@ input[type=file] {
 	display:block;
 }
 
+/* Section for download expand/collapse */
+
+.toggle {
+    padding-left: 25px;
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-image: url("../img/details_open.png");
+}
+
+.toggle.expanded {
+    padding-left: 25px;
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-image: url("../img/details_close.png");
+}
+
+.chosen-container { width: 150px !important; }
+
+.downloadtable {
+    vertical-align: top;
+    padding: 7px;
+}
+
 /* Section for the run summary table */
 
 .summarytable .Complete {

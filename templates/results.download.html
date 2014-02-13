@@ -1,0 +1,46 @@
+
+<div class="toggle ">Download</div>
+<div class="expanded_content hidden">
+&nbsp;<br />
+<span>&nbsp;Please select the formatting of the download:</span><br />
+<table>
+<tr>
+  <td class="downloadtable">Select download type:<br />
+	  <select id="islandtype" class="chosen-select"><option value="coordinates">Coordinates</option><option value="sequence">Sequence</option></select>
+  </td>
+  <td class="downloadtable">
+  	  Select results type(s):<br />
+  	  <select id="resultstype" class="chosen-select" multiple>
+  	    <option value="integrated">Integrated results</option>
+  	    <option value="sigi">All SIGI-HMM</option>
+  	    <option value="dimob">All Dimob</option>
+  	    <option value="islandpick">All Islandpick</option>
+      </select>
+  </td>
+  <td class="downloadtable">
+  	  Select download format:<br />
+  	  <select id="downloadformat" class="chosen-select">
+  	    <option value="tab">Tab delimited</option>
+  	    <option value="csv">CSV</option>
+  	    <option value="excel">Excel</option>
+  	    <option value="genbank">Genbank</option>
+      </select>
+  </td>
+  <td class="downloadtable">&nbsp;<br />
+	  <button id="save_as_png" value="">
+			Download</button>
+  </tr>
+</tr>
+</table>
+</div>
+
+<script type="text/javascript">
+	$(".toggle").on("click", function(e){
+	  $(this).toggleClass("expanded");
+	  $(this).next().toggleClass("hidden");
+	});
+	
+	$(window).ready(function() {
+		$(".chosen-select").chosen({disable_search_threshold: 10});
+	});
+</script>
