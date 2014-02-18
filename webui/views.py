@@ -10,6 +10,7 @@ from giparser import fetcher
 from uploadparser import uploader
 from metasched import pipeline, graph
 from .forms import UploadGenomeForm
+from .utils.formatter import *
 import re
 import pprint
 
@@ -282,6 +283,37 @@ def genesjson(request, gi_id):
 
     return render(request, "genes.json", context, content_type='application/json')
     
+def downloadCoordinates(request):
+    context = {}
+    
+    if request.GET.get('aid'):
+        aid = request.GET.get('aid')
+        if not aid.isdigit():
+            return HttpResponse(status=400)
+    else:
+        return HttpResponse(status=400)
+        
+    if request.GET.get('format'):
+        format = request.GET.get('format')
+        if format not in downloadformats:
+            return HttpResponse(status=400)
+    else:
+        return HttpResponse(status=400)
+
+    if request.GET.getlist('methods'):
+        pprint.pprint(request.GET.getlist('methods'))
+        methods = request.GET.getlist('methods')
+        pprint.pprint(methods)
+    else:
+        methods = ['integrated']
+
+    params = [aid]   
+    islandset = Genes.objects.raw("SELECT G.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method, G.ext_id, G.start AS gene_start, G.end AS gene_end, G.strand, G.name, G.gene, G.product, G.locus FROM Genes AS G, IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi AND G.id = IG.gene_id ORDER BY G.start, GI.prediction_method", params)
+    pprint.pprint(islandset)
+    
+    response = downloadformats[format](islandset,methods,"downloadfile.txt")
+    
+    return response
 
 def fetchislandsfasta(request):
     context = {}

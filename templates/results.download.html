@@ -6,11 +6,11 @@
 <table>
 <tr>
   <td class="downloadtable">Select download type:<br />
-	  <select id="islandtype" class="chosen-select"><option value="coordinates">Coordinates</option><option value="sequence">Sequence</option></select>
+	  <select id="downloadtype" name="downloadtype" onchange="onChangeDownloadType()" class="chosen-select"><option value="coordinates">Coordinates</option><option value="sequence">Sequence</option></select>
   </td>
   <td class="downloadtable">
   	  Select results type(s):<br />
-  	  <select id="resultstype" class="chosen-select" multiple>
+  	  <select id="resultstype" name="methods" class="chosen-select" onchange="updateDownloadLink()" multiple>
   	    <option value="integrated">Integrated results</option>
   	    <option value="sigi">All SIGI-HMM</option>
   	    <option value="dimob">All Dimob</option>
@@ -19,7 +19,7 @@
   </td>
   <td class="downloadtable">
   	  Select download format:<br />
-  	  <select id="downloadformat" class="chosen-select">
+  	  <select id="downloadformat" name="format" class="chosen-select" onchange="updateDownloadLink()">
   	    <option value="tab">Tab delimited</option>
   	    <option value="csv">CSV</option>
   	    <option value="excel">Excel</option>
@@ -27,8 +27,7 @@
       </select>
   </td>
   <td class="downloadtable">&nbsp;<br />
-	  <button id="save_as_png" value="">
-			Download</button>
+	  <a href="#" id="downloadResultsButton">Download</a>
   </tr>
 </tr>
 </table>
@@ -42,5 +41,37 @@
 	
 	$(window).ready(function() {
 		$(".chosen-select").chosen({disable_search_threshold: 10});
+		updateDownloadLink();
 	});
+	
+	var coordinateformats = {tab:'Tab delimited', csv:'CSV', excel:'Excel'};
+	var sequenceformats = {genbank:'Genbank', fasta:'Fasta'};
+	
+	function onChangeDownloadType() {
+		var downloadtype = $('#downloadtype').find(":selected").text();
+		$('#downloadformat').empty();
+		if(downloadtype == 'Coordinates') {
+			for (format in coordinateformats) {
+				$('#downloadformat').append("<option value=\"" + format + "\">" + coordinateformats[format] + "</option>"); 
+			}
+		} else {
+			for (format in sequenceformats) {
+				$('#downloadformat').append("<option value=\"" + format + "\">" + sequenceformats[format] + "</option>"); 
+			}		
+		}
+		$('#downloadformat').trigger("chosen:updated");
+		updateDownloadLink();
+	}
+	
+	function updateDownloadLink() {
+		var downloadtype = $('#downloadtype').find(":selected").text();
+		if(downloadtype == 'Coordinates') {
+			var params = $("#downloadtype, #resultstype, #downloadformat").serialize();
+			console.log("{% url "downloadcoordinates" %}?"+params);
+			$("#downloadResultsButton").attr("href", "{% url "downloadcoordinates" %}?aid={{ aid }}&"+params);
+		} else {
+		
+		}
+	}
+	
 </script>

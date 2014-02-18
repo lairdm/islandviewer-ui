@@ -1,0 +1,69 @@
+from django.conf import settings
+from django.http import HttpResponse
+import csv
+import xlwt
+import pprint
+
+# Not used
+def formatResults(resultset, format, methods):
+    if format in formats:
+        formats[format](resultset, methods, filename)
+    else:
+        raise Exception("Unknown format")
+    
+def formatCSV(resultset, methods, filename, delimiter=False):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    
+    pprint.pprint(resultset)
+    
+    if delimiter:
+        writer = csv.writer(response, delimiter=delimiter)
+    else:
+        writer = csv.writer(response)
+    
+    line = ["Island start", "Island end", "Length", "Method", "Gene name", "Gene ID", "Locus", "Gene start", "Gene end", "Strand", "Product"]
+    writer.writerow(line)
+    
+    # Loop through again for integrated
+    if 'integrated' in methods:
+        for island in resultset:
+            line = [island.island_start, island.island_end]
+            line.append(int(island.island_end) - int(island.island_start))
+            line += ["Predicted by at least one method", island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product]
+            writer.writerow(line)
+
+    results_list = list(resultset)
+    results_list.sort(key=lambda item:item.prediction_method)
+    for island in results_list:
+        if island.prediction_method.lower() in methods:
+            line = [island.island_start, island.island_end]
+            line.append(int(island.island_end) - int(island.island_start))
+            line += [island.prediction_method, island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product]
+            writer.writerow(line)
+            
+    return response
+
+def formatGenbank():
+    pass
+
+def formatFasta():
+    pass
+
+def formatTab(resultset, methods, filename):
+    return formatCSV(resultset, methods, filename, '\t')
+
+def formatExcel(resultset, methods, filename):
+    response = HttpResponse(mimetype='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet("Islandviewer Results")
+    
+    
+
+downloadformats = {'genbank': formatGenbank,
+                   'fasta': formatFasta,
+                   'tab': formatTab,
+                   'csv': formatCSV,
+                   'excel': formatExcel
+}
