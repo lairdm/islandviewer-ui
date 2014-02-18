@@ -58,12 +58,92 @@ def formatExcel(resultset, methods, filename):
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet("Islandviewer Results")
+
+    row_num = 0
     
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
     
+    for col_num in xrange(len(excel_columns)):
+        ws.write(row_num, col_num, excel_columns[col_num][0], font_style)
+        # set column width
+        ws.col(col_num).width = excel_columns[col_num][1]
+        
+    font_style = xlwt.XFStyle()
+    font_style.alignment.wrap = 1
+    
+    # Loop through again for integrated
+    if 'integrated' in methods:
+        for island in resultset:
+            row_num += 1
+            island_size = int(island.island_end) - int(island.island_start)
+            row = [
+                   island.island_start,
+                   island.island_end,
+                   island_size,
+                   "Predicted by at least one method",
+                   island.name,
+                   island.gene,
+                   island.locus,
+                   island.gene_start,
+                   island.gene_end,
+                   island.strand,
+                   island.product
+                   ]
+            for col_num in xrange(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
+
+    results_list = list(resultset)
+    results_list.sort(key=lambda item:item.prediction_method)
+    for island in results_list:
+        if island.prediction_method.lower() in methods:        
+            row_num += 1
+            island_size = int(island.island_end) - int(island.island_start)
+            row = [
+                   island.island_start,
+                   island.island_end,
+                   island_size,
+                   island.prediction_method,
+                   island.name,
+                   island.gene,
+                   island.locus,
+                   island.gene_start,
+                   island.gene_end,
+                   island.strand,
+                   island.product
+                   ]
+            for col_num in xrange(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
+            
+    wb.save(response)
+    return response
+
+    
+excel_columns = [
+    (u'Island start', 3000),
+    (u'Island end', 3000),
+    (u'Length', 2000),
+    (u'Method', 8000),
+    (u'Gene name', 6000),
+    (u'Gene ID', 3000),
+    (u'Locus', 4000),
+    (u'Gene start', 3000),
+    (u'Gene end', 3000),
+    (u'Strand', 2000),
+    (u'Product', 10000)
+                 
+]    
 
 downloadformats = {'genbank': formatGenbank,
                    'fasta': formatFasta,
                    'tab': formatTab,
                    'csv': formatCSV,
                    'excel': formatExcel
+}
+
+downloadextensions = {'genbank': 'gbk',
+                      'fasta': 'faa',
+                      'tab': 'tsv',
+                      'csv': 'csv',
+                      'excel': 'xls'
 }
