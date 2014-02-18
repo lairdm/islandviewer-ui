@@ -284,7 +284,6 @@ def genesjson(request, gi_id):
     return render(request, "genes.json", context, content_type='application/json')
     
 def downloadCoordinates(request):
-    context = {}
     
     if request.GET.get('aid'):
         aid = request.GET.get('aid')
@@ -316,6 +315,33 @@ def downloadCoordinates(request):
     
     return response
 
+def downloadSequences(request):
+    
+    if request.GET.get('aid'):
+        aid = request.GET.get('aid')
+        if not aid.isdigit():
+            return HttpResponse(status=400)
+    else:
+        return HttpResponse(status=400)
+        
+    if request.GET.get('format'):
+        format = request.GET.get('format')
+        if format not in downloadformats:
+            return HttpResponse(status=400)
+        extension = downloadextensions[format]
+    else:
+        return HttpResponse(status=400)
+
+    if request.GET.getlist('methods'):
+        pprint.pprint(request.GET.getlist('methods'))
+        methods = request.GET.getlist('methods')
+        pprint.pprint(methods)
+    else:
+        methods = ['integrated']
+
+    params = [aid]   
+    
+    
 def fetchislandsfasta(request):
     context = {}
     gi = 0

@@ -23,7 +23,6 @@
   	    <option value="tab">Tab delimited</option>
   	    <option value="csv">CSV</option>
   	    <option value="excel">Excel</option>
-  	    <option value="genbank">Genbank</option>
       </select>
   </td>
   <td class="downloadtable">&nbsp;<br />
@@ -65,12 +64,12 @@
 	
 	function updateDownloadLink() {
 		var downloadtype = $('#downloadtype').find(":selected").text();
+		var params = $("#downloadtype, #resultstype, #downloadformat").serialize();
 		if(downloadtype == 'Coordinates') {
-			var params = $("#downloadtype, #resultstype, #downloadformat").serialize();
 			console.log("{% url "downloadcoordinates" %}?"+params);
 			$("#downloadResultsButton").attr("href", "{% url "downloadcoordinates" %}?aid={{ aid }}&"+params);
 		} else {
-		
+			$("#downloadResultsButton").attr("href", "{% url "downloadsequences" %}?aid={{ aid }}&"+params);						
 		}
 	}
 	
