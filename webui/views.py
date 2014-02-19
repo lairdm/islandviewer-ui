@@ -317,7 +317,7 @@ def downloadCoordinates(request):
         methods = ['integrated']
 
     params = [aid]   
-    islandset = Genes.objects.raw("SELECT G.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method, G.ext_id, G.start AS gene_start, G.end AS gene_end, G.strand, G.name, G.gene, G.product, G.locus FROM Genes AS G, IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi AND G.id = IG.gene_id ORDER BY G.start, GI.prediction_method", params)
+    islandset = Genes.objects.raw("SELECT G.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method, G.ext_id, G.start AS gene_start, G.end AS gene_end, G.strand, G.name, G.gene, G.product, G.locus FROM Genes AS G, IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi AND G.id = IG.gene_id ORDER BY GI.start, GI.prediction_method", params)
     pprint.pprint(islandset)
     
     response = downloadformats[format](islandset,methods, filename + "." + extension)
@@ -362,7 +362,7 @@ def downloadSequences(request):
         islandset = GenomicIsland.objects.filter(aid_id=aid).order_by('start').all()
         #islandset = Genes.objects.raw("SELECT IG.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method FROM IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi ORDER BY GI.start, GI.prediction_method", params)
     else:
-        islandset = Genes.objects.raw("SELECT G.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method, G.ext_id, G.start AS gene_start, G.end AS gene_end, G.strand, G.name, G.gene, G.product, G.locus FROM Genes AS G, IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi AND G.id = IG.gene_id ORDER BY G.start, GI.prediction_method", params)
+        islandset = Genes.objects.raw("SELECT G.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method, G.ext_id, G.start AS gene_start, G.end AS gene_end, G.strand, G.name, G.gene, G.product, G.locus FROM Genes AS G, IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi AND G.id = IG.gene_id ORDER BY GI.start, GI.prediction_method", params)
         
     response = downloadformats[format](islandset, p, methods, filename + "." + extension)
 
