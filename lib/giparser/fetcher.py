@@ -2,6 +2,7 @@ from Bio import SeqIO
 from webui.models import Analysis, CustomGenome, GenomicIsland, Replicon, Genomeproject
 import os.path
 import textwrap
+import pprint
 
 class Vividict(dict):
     def __missing__(self, key):
@@ -37,6 +38,8 @@ class GenbankParser():
         
         gbhandle = SeqIO.parse(self.fname, "genbank")
         records = next(gbhandle)
+        # Stash it for later
+        self.records = records
         recs_in_islands = Vividict()
         
         for feature in records.features:
@@ -47,7 +50,8 @@ class GenbankParser():
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['dna'] = records.seq[feature.location.start:feature.location.end]
                         recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
-                        
+                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
+                                                    
                         if not hasattr(feature, 'qualifiers'):
                             continue 
                         qualifiers = feature.qualifiers
@@ -61,6 +65,7 @@ class GenbankParser():
                         loc = str(feature.location.start) + ".." + str(feature.location.end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
+                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
 
                         if not hasattr(feature, 'qualifiers'):
                             continue 
@@ -111,7 +116,13 @@ class GenbankParser():
     def fetchDNA(self):
         return self.dna
 
-    def generateFasta(self, gi = 0, seqtype = 'protein'):
+    def insertFeature(self, feature, offset=0):
+        self.records.features.insert(offset, feature)
+        
+    def writeGenbank(self, handle):
+        SeqIO.write(self.records, handle, "genbank")
+
+    def generateFasta(self, gi = 0, seqtype = 'protein', show_methods = False, methods=['integrated']):
         islands = {}
         
         if gi:
@@ -129,6 +140,13 @@ class GenbankParser():
                 header += 'ref|' + str(values['protein_id']) + '|'
             if(values['locus']):
                 header += 'locus|' + str(values['locus']) + '|'
+            if show_methods:
+#                pprint.pprint(values['method'])
+                methods_found = self.generateMethods(values['start'], values['end'], methods)
+                if methods_found:
+                    header += 'prediction_method|' + ",".join(methods_found)
+                else:
+                    continue
             header += " {0} ({1})".format(values['product'], coord)
             if seqtype == 'protein' and values['protein']:
                 fasta += "{0}\n{1}\n".format(header, "\n".join(textwrap.wrap(values['protein'])))
@@ -156,7 +174,32 @@ class GenbankParser():
                 return island.gi
             
         return False        
+    
+    def generateMethods(self, start, end, methods = ['integrated']):
         
+        if 'integrated' in methods:
+            methods_found = ",".join(self.findMethods(int(start), int(end), ['sigi', 'islandpick', "dimob"]))
+            return ['Predicted_by_at_least_one_method(' + methods_found + ")"]
+        else:
+            return self.findMethods(int(start), int(end), methods)
+    
+    '''
+    Ok, this is a lot of looping, but this shouldn't be called very often...
+    To shorten the loop we're going to make an assumption that islands
+    are returned in order, so we can stop looping when we pass
+    the window
+    '''
+    def findMethods(self, start, end, methods):
+        methods_found = []
+        
+        for island in self.gis:
+            if island.start <= start and end <= island.end and island.prediction_method.lower() in methods:
+#            if island.start <= start and end <= island.end:
+                methods_found.append(island.prediction_method)
+            if island.start > end:
+                return methods_found
+                
+        return methods_found
         
     def fetchCustomFile(self,ext_id):
         try:
@@ -193,9 +236,10 @@ class GenbankParser():
                 if startbp >= f.location.start >= endbp and  startbp >= f.location.end >= endbp:
                     loc = f.location.start + "_" + f.location.end
                     recs_in_island[loc]['strand'] = f.location.strand
-                print f.location.start
+#                print f.location.start
             elif f.type == 'CDS':
-                print f.location.strand
+                pass
+#                print f.location.strand
 #                if f.location
 #                print(f.id)
 #                print(len(f))

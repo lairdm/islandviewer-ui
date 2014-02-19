@@ -2,6 +2,7 @@ from django.conf import settings
 from django.http import HttpResponse
 import csv
 import xlwt
+from Bio.SeqFeature import SeqFeature, FeatureLocation
 import pprint
 
 # Not used
@@ -44,11 +45,37 @@ def formatCSV(resultset, methods, filename, delimiter=False):
             
     return response
 
-def formatGenbank():
-    pass
+def formatGenbank(resultset, seqobj, methods, filename):
+    response = HttpResponse(mimetype='plain/text')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    feature_offset = 0;
+    
+    # Loop through again for integrated
+    if 'integrated' in methods:
+        for island in resultset:
+            seqobj.insertFeature(SeqFeature(FeatureLocation(island.start,island.end),
+                                            type = "Misc", qualifiers={'note': 'Genomic Island: Predicted by at least one method'}), feature_offset)
+            feature_offset += 1
 
-def formatFasta():
-    pass
+    results_list = list(resultset)
+    results_list.sort(key=lambda item:item.prediction_method)
+    for island in results_list:
+        if island.prediction_method.lower() in methods:
+            seqobj.insertFeature(SeqFeature(FeatureLocation(island.start,island.end),
+                                            type = "Misc", qualifiers={'note': 'Genomic Island: Predicted by ' + island.prediction_method}), feature_offset)
+            feature_offset += 1
+
+    seqobj.writeGenbank(response)
+    
+    return response
+
+def formatFasta(resultset, seqobj, methods, filename):
+    response = HttpResponse(mimetype='plain/text')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+   
+    response.write(seqobj.generateFasta(seqtype = 'nuc', show_methods = True, methods = methods))
+   
+    return response
 
 def formatTab(resultset, methods, filename):
     return formatCSV(resultset, methods, filename, '\t')
