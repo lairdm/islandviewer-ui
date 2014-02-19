@@ -4,3 +4,4 @@ argparse==1.2.1
 biopython==1.63
 distribute==0.7.3
 wsgiref==0.1.2
+xlwt==0.7.5
