@@ -6,9 +6,14 @@
 <table>
 <tr>
   <td class="downloadtable">Select download type:<br />
-	  <select id="downloadtype" name="downloadtype" onchange="onChangeDownloadType()" class="chosen-select"><option value="coordinates">Coordinates</option><option value="sequence">Sequence</option></select>
+	  <select id="downloadtype" name="downloadtype" onchange="onChangeDownloadType()" class="chosen-select">
+	    <option value="coordinates">Coordinates</option>
+	    <option value="sequence">Sequence</option>
+	    <option value="image">High-Res PNG</option>
+	  </select>
   </td>
   <td class="downloadtable">
+  	<span id="resultstypecontainer">
   	  Select results type(s):<br />
   	  <select id="resultstype" name="methods" class="chosen-select" onchange="updateDownloadLink()" multiple>
   	    <option value="integrated">Integrated results</option>
@@ -16,14 +21,17 @@
   	    <option value="dimob">All Dimob</option>
   	    <option value="islandpick">All Islandpick</option>
       </select>
+	</span>
   </td>
   <td class="downloadtable">
+	<span id="downloadformatcontainer">
   	  Select download format:<br />
   	  <select id="downloadformat" name="format" class="chosen-select" onchange="updateDownloadLink()">
   	    <option value="tab">Tab delimited</option>
   	    <option value="csv">CSV</option>
   	    <option value="excel">Excel</option>
       </select>
+	</span>
   </td>
   <td class="downloadtable">&nbsp;<br />
 	  <a href="#" id="downloadResultsButton">Download</a>
@@ -68,8 +76,16 @@
 		if(downloadtype == 'Coordinates') {
 			console.log("{% url "downloadcoordinates" %}?"+params);
 			$("#downloadResultsButton").attr("href", "{% url "downloadcoordinates" %}?aid={{ aid }}&"+params);
-		} else {
+			$('#resultstypecontainer').toggleClass('hidden', false);
+			$('#downloadformatcontainer').toggleClass('hidden', false);
+		} else if(downloadtype == 'Sequence') {
 			$("#downloadResultsButton").attr("href", "{% url "downloadsequences" %}?aid={{ aid }}&"+params);						
+			$('#resultstypecontainer').toggleClass('hidden', false);
+			$('#downloadformatcontainer').toggleClass('hidden', false);
+		} else {
+			$('#resultstypecontainer').toggleClass('hidden', true);
+			$('#downloadformatcontainer').toggleClass('hidden', true);
+			$("#downloadResultsButton").attr("href", "javascript:submit_download_form(\"png\");"); 
 		}
 	}
 	
