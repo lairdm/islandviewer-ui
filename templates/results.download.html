@@ -1,3 +1,4 @@
+{% load charfilter %}
 
 <div class="toggle ">Download</div>
 <div class="expanded_content hidden">
@@ -9,7 +10,7 @@
 	  <select id="downloadtype" name="downloadtype" onchange="onChangeDownloadType()" class="chosen-select">
 	    <option value="coordinates">Coordinates</option>
 	    <option value="sequence">Sequence</option>
-	    <option value="image">High-Res PNG</option>
+	    <option value="image">Image</option>
 	  </select>
   </td>
   <td class="downloadtable">
@@ -53,6 +54,7 @@
 	
 	var coordinateformats = {tab:'Tab delimited', csv:'CSV', excel:'Excel'};
 	var sequenceformats = {genbank:'Genbank', fasta:'Fasta'};
+	var imageformats = {png:'High-Res PNG', svg:'SVG'};
 	
 	function onChangeDownloadType() {
 		var downloadtype = $('#downloadtype').find(":selected").text();
@@ -61,10 +63,14 @@
 			for (format in coordinateformats) {
 				$('#downloadformat').append("<option value=\"" + format + "\">" + coordinateformats[format] + "</option>"); 
 			}
-		} else {
+		} else if (downloadtype == 'Sequence'){
 			for (format in sequenceformats) {
 				$('#downloadformat').append("<option value=\"" + format + "\">" + sequenceformats[format] + "</option>"); 
 			}		
+		} else {
+			for (format in imageformats) {
+				$('#downloadformat').append("<option value=\"" + format + "\">" + imageformats[format] + "</option>"); 
+			}
 		}
 		$('#downloadformat').trigger("chosen:updated");
 		updateDownloadLink();
@@ -74,18 +80,17 @@
 		var downloadtype = $('#downloadtype').find(":selected").text();
 		var params = $("#downloadtype, #resultstype, #downloadformat").serialize();
 		if(downloadtype == 'Coordinates') {
-			console.log("{% url "downloadcoordinates" %}?"+params);
+//			console.log("{% url "downloadcoordinates" %}?"+params);
 			$("#downloadResultsButton").attr("href", "{% url "downloadcoordinates" %}?aid={{ aid }}&"+params);
 			$('#resultstypecontainer').toggleClass('hidden', false);
-			$('#downloadformatcontainer').toggleClass('hidden', false);
 		} else if(downloadtype == 'Sequence') {
 			$("#downloadResultsButton").attr("href", "{% url "downloadsequences" %}?aid={{ aid }}&"+params);						
 			$('#resultstypecontainer').toggleClass('hidden', false);
-			$('#downloadformatcontainer').toggleClass('hidden', false);
 		} else {
 			$('#resultstypecontainer').toggleClass('hidden', true);
-			$('#downloadformatcontainer').toggleClass('hidden', true);
-			$("#downloadResultsButton").attr("href", "javascript:submit_download_form(\"png\");"); 
+			var imageformat = $('#downloadformat').find(":selected").val();
+			$("#downloadResultsButton").attr("href", "javascript:submit_download_form(\"" + imageformat + "\", \"{{ genomename|cleanfilename }}\");"); 
+//			submit_download_form("svg", $("#downloadResultsButton"));
 		}
 	}
 	

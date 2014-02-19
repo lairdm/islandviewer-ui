@@ -289,6 +289,15 @@ def downloadCoordinates(request):
         aid = request.GET.get('aid')
         if not aid.isdigit():
             return HttpResponse(status=400)
+        analysis = Analysis.objects.get(pk=aid)
+
+
+        if(analysis.atype == Analysis.CUSTOM):
+            genome = CustomGenome.objects.get(pk=analysis.ext_id)
+            filename = genome.name
+            filename = ''.join(e for e in filename if e.isalnum())
+        elif(analysis.atype == Analysis.MICROBEDB):
+            filename = analysis.ext_id
     else:
         return HttpResponse(status=400)
         
@@ -311,7 +320,7 @@ def downloadCoordinates(request):
     islandset = Genes.objects.raw("SELECT G.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method, G.ext_id, G.start AS gene_start, G.end AS gene_end, G.strand, G.name, G.gene, G.product, G.locus FROM Genes AS G, IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi AND G.id = IG.gene_id ORDER BY G.start, GI.prediction_method", params)
     pprint.pprint(islandset)
     
-    response = downloadformats[format](islandset,methods,"downloadfile." + extension)
+    response = downloadformats[format](islandset,methods, filename + "." + extension)
     
     return response
 
@@ -324,12 +333,12 @@ def downloadSequences(request):
         analysis = Analysis.objects.get(pk=aid)
         p = fetcher.GenbankParser(aid)
 
-        '''
         if(analysis.atype == Analysis.CUSTOM):
-            gbk_filename = p.fetchCustomFile(analysis.ext_id)
+            genome = CustomGenome.objects.get(pk=analysis.ext_id)
+            filename = genome.name
+            filename = ''.join(e for e in filename if e.isalnum())
         elif(analysis.atype == Analysis.MICROBEDB):
-            gbk_filename = p.fetchMicrobeDBFile(analysis.ext_id)
-        '''
+            filename = analysis.ext_id
     else:
         return HttpResponse(status=400)
         
@@ -355,7 +364,7 @@ def downloadSequences(request):
     else:
         islandset = Genes.objects.raw("SELECT G.id, GI.start AS island_start, GI.end AS island_end, GI.prediction_method, G.ext_id, G.start AS gene_start, G.end AS gene_end, G.strand, G.name, G.gene, G.product, G.locus FROM Genes AS G, IslandGenes AS IG, GenomicIsland AS GI WHERE GI.aid_id = %s AND GI.gi = IG.gi AND G.id = IG.gene_id ORDER BY G.start, GI.prediction_method", params)
         
-    response = downloadformats[format](islandset, p, methods, "downloadfile." + extension)
+    response = downloadformats[format](islandset, p, methods, filename + "." + extension)
 
     return response
 

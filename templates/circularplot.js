@@ -245,7 +245,7 @@ var geneList = $('#geneslisttable').dataTable({
 });
 
 
-function submit_download_form(output_format)
+function submit_download_form(output_format, basefilename)
 {
 	// Get the d3js SVG element
 	var html = d3.select("svg")
@@ -283,6 +283,16 @@ function submit_download_form(output_format)
 
 //        var content = $container.html().trim();
 var content = clonedSVG.innerHTML.trim();
+
+	if(output_format == 'svg') {
+//	    hrefobj.attr("href", "data:image/svg+xml;base64," + btoa(content))
+	    var a = document.createElement('a');
+	    a.href = "data:application/octet-stream;base64;attachment," + btoa(content);
+	    a.download = basefilename + ".svg";
+	    a.click();
+//	    window.open("data:application/octet-stream;base64;attachment;filename=\"img.svg\"," + btoa(content));
+	    return;
+	}
         //var canvas = document.getElementById('svg-canvas');
 	var canvas = document.createElement('canvas');
     // Draw svg on canvas
@@ -312,9 +322,9 @@ var content = clonedSVG.innerHTML.trim();
 //
 	var blob = dataURLtoBlob(theImage);
 //	var blob = new Blob([imgData], {type: "image/png"});
-	console.log(blob);
+//	console.log(blob);
 
-	saveAs(blob, "img.png");
+	saveAs(blob, basefilename + ".png");
 }
 
 function dataURLtoBlob(dataURL) {
