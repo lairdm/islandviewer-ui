@@ -40,7 +40,8 @@ def formatCSV(resultset, methods, filename, delimiter=False):
         if island.prediction_method.lower() in methods:
             line = [island.island_start, island.island_end]
             line.append(int(island.island_end) - int(island.island_start))
-            line += [island.prediction_method, island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product]
+            method = methodfullnames[island.prediction_method.lower()]
+            line += [method, island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product]
             writer.writerow(line)
             
     return response
@@ -62,7 +63,7 @@ def formatGenbank(resultset, seqobj, methods, filename):
     for island in results_list:
         if island.prediction_method.lower() in methods:
             seqobj.insertFeature(SeqFeature(FeatureLocation(island.start,island.end),
-                                            type = "Misc", qualifiers={'note': 'Genomic Island: Predicted by ' + island.prediction_method}), feature_offset)
+                                            type = "Misc", qualifiers={'note': 'Genomic Island: Predicted by ' + methodfullnames[island.prediction_method.lower()]}), feature_offset)
             feature_offset += 1
 
     seqobj.writeGenbank(response)
@@ -130,7 +131,7 @@ def formatExcel(resultset, methods, filename):
                    island.island_start,
                    island.island_end,
                    island_size,
-                   island.prediction_method,
+                   methodfullnames[island.prediction_method.lower()],
                    island.name,
                    island.gene,
                    island.locus,
@@ -174,3 +175,9 @@ downloadextensions = {'genbank': 'gbk',
                       'csv': 'csv',
                       'excel': 'xls'
 }
+
+methodfullnames = {'sigi': 'SIGI-HMM',
+                   'dimob': 'IslandPath-DIMOB',
+                   'islandpick': 'IslandPick'
+                   
+                   }
