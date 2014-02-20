@@ -1,5 +1,6 @@
 from Bio import SeqIO
 from webui.models import Analysis, CustomGenome, GenomicIsland, Replicon, Genomeproject
+from webui.utils.formatter import methodfullnames
 import os.path
 import textwrap
 import pprint
@@ -195,7 +196,7 @@ class GenbankParser():
         for island in self.gis:
             if island.start <= start and end <= island.end and island.prediction_method.lower() in methods:
 #            if island.start <= start and end <= island.end:
-                methods_found.append(island.prediction_method)
+                methods_found.append(methodfullnames[island.prediction_method])
             if island.start > end:
                 return methods_found
                 
