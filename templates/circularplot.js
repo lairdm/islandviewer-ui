@@ -110,6 +110,7 @@ var {{ plotName|default:"circular" }}Track = new circularTrack({{ plotName|defau
 var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: 600, height: 150};
 var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
 {{ plotName|default:"circular" }}Track.attachBrush({{ plotName|default:"circular" }}LinearTrack);
+{{ plotName|default:"circular" }}LinearTrack.addBrushCallback({{ plotName|default:"circular" }}Track);
 
 function updateStrand(cb, strand) {
   track = '';

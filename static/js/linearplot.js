@@ -43,11 +43,16 @@ function genomeTrack(layout,tracks) {
 	.domain([0,this.numTracks])
 	.range([0,(this.layout.height_without_axis-this.layout.bottom_margin)]);
 
+    this.zoom = d3.behavior.zoom()
+	.x(this.x1)
+	.on("zoom", this.rescale.bind(this))
+
     this.chart = d3.select(layout.container)
 	.append("svg")
 	.attr("width", this.layout.width)
 	.attr("height", this.layout.height)
-	.attr("class", "mainTracks");
+	.attr("class", "mainTracks")
+	.call(this.zoom);
 
     this.chart.append("defs").append("clipPath")
 	.attr("id", "trackClip_" + this.layout.name)
@@ -65,6 +70,7 @@ function genomeTrack(layout,tracks) {
     // Start with showing the entire genome
     this.visStart = 0;
     this.visEnd = layout.genomesize;
+    this.genomesize = layout.genomesize;
 
     this.axisContainer = this.chart.append("g")
 	.attr('class', 'trackAxis')
@@ -212,7 +218,12 @@ genomeTrack.prototype.update = function(startbp, endbp) {
     this.visStart = startbp;
     this.visEnd = endbp;
 
-    this.x1.domain([startbp,endbp]);
+    this.zoom.x(this.x1.domain([startbp,endbp]));
+
+    this.redraw();
+}
+
+genomeTrack.prototype.redraw = function() {
 
     for(var i = 0; i < this.tracks.length; i++) {
 
@@ -236,3 +247,42 @@ genomeTrack.prototype.update = function(startbp, endbp) {
     this.axisContainer.select(".x.axis.bottom").call(this.xAxis);
 
 }
+
+genomeTrack.prototype.rescale = function() {
+
+    var reset_s = 0;
+    if ((this.x1.domain()[1] - this.x1.domain()[0]) >= (this.genomesize - 0)) {
+	this.zoom.x(this.x1.domain([0, this.genomesize]));
+	reset_s = 1;
+    }
+
+    if (reset_s == 1) { // Both axes are full resolution. Reset.
+	this.zoom.scale(1);
+	this.zoom.translate([0,0]);
+    }
+    else {
+	if (this.x1.domain()[0] < 0) {
+	    this.x1.domain([0, this.x1.domain()[1] - this.x1.domain()[0] + 0]);
+	}
+	if (this.x1.domain()[1] > this.genomesize) {
+	    var xdom0 = this.x1.domain()[0] - this.x1.domain()[1] + this.genomesize;
+	    this.x1.domain([xdom0, this.genomesize]);
+	}
+    }
+
+    var cur_domain = this.x1.domain();
+    this.visStart = cur_domain[0];
+    this.visEnd = cur_domain[1];
+
+    if('undefined' !== typeof this.callbackObj) {
+	this.callbackObj.update(this.x1.domain()[0], this.x1.domain()[1]);
+    }
+
+    this.redraw();
+
+}
+
+genomeTrack.prototype.addBrushCallback = function(obj) {
+    this.callbackObj = obj;
+}
+
