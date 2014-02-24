@@ -95,6 +95,7 @@ a:hover {
 div.outline {
   border: 1px solid #808080;
   padding: 0px;
+  background: white;
 }
 
 .red {color:red;
