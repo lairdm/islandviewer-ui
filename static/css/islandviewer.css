@@ -185,13 +185,43 @@ input[type=file] {
 
 .circularGenes_pos {
     fill: darksalmon;
-    stroke-width: 6;	
+    stroke-width: 1;	
+}
+.circularGenes_pos:hover {
+	fill:  #d1876d;
+}
+.circularGenes_pos_group:hover rect {
+		fill:  #d1876d;
+}
+
+.circularGenes_pos_zoomed {
+	stroke: #fff;
+    stroke-opacity: 0.8;
+    stroke-width: 1;	
 }
 .circularGenes_neg {
     fill: darkolivegreen;
     fill-opacity: .7;
-    stroke-width: 6;	
+    stroke-width: 1;	
 }
+.circularGenes_neg:hover {
+	fill: #4c602a;
+}
+.circularGenes_neg_group:hover rect {
+	fill: #4c602a;
+}
+.circularGenes_neg_zoomed {
+    fill-opacity: .7;
+    stroke-width: 1;
+    stroke: #fff;
+}
+.circularGenes_text {
+    fill: white;
+    font-weight: bold;
+    font: 12px arial;
+    pointer-events: none;
+}
+
 .polarbrush {
     fill: lightgrey;
     opacity: 0.5;
@@ -202,6 +232,9 @@ input[type=file] {
 
 .brushStart {
     fill: "green";
+}
+.linear_hidden {
+	visibility: hidden;
 }
 
 

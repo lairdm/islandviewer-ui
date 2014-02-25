@@ -87,6 +87,7 @@ def circularplotjs(request, aid):
         context['genomesize'] = genome.rep_size
     elif(analysis.atype == Analysis.MICROBEDB):
         context['genomesize'] = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].rep_size
+        context['ext_id'] = analysis.ext_id
 #        context['genomesize'] = '6000000'
 
     # Fill in the GIs

@@ -5,6 +5,9 @@ var {{ plotName|default:"circular" }}data = [
 	  inner_radius: 210,
 	  outer_radius: 250,
 	  visible: false,
+	  showLabels: true,
+	  {% if ext_id %}ext_id: '{{ext_id}}',
+	  linear_mouseclick: 'clickGene',{% endif %}
 	  items: [
 		{% for gene in genes %}
 		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{{ gene.name }}" },
@@ -20,6 +23,8 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseover_callback: 'mouseoverIsland',
 	  mouseout_callback: 'mouseoutIsland',
 	  mouseclick: 'clickTrack',
+	  {% if ext_id %}ext_id: '{{ext_id}}',
+	  linear_mouseclick: 'clickGene',{% endif %}
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Islandpick" %}{id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" },{% endif %}
@@ -34,6 +39,8 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseover_callback: 'mouseoverIsland',
 	  mouseout_callback: 'mouseoutIsland',
 	  mouseclick: 'clickTrack',
+	  {% if ext_id %}ext_id: '{{ext_id}}',
+	  linear_mouseclick: 'clickGene',{% endif %}
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Sigi" %}
@@ -51,6 +58,8 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseover_callback: 'mouseoverIsland',
 	  mouseout_callback: 'mouseoutIsland',
 	  mouseclick: 'clickTrack',
+	  {% if ext_id %}ext_id: '{{ext_id}}',
+	  linear_mouseclick: 'clickGene',{% endif %}
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Dimob" %}
@@ -194,13 +203,13 @@ function mouseoutIsland(d) {
 function clickTrack(d) {
   clearTimeout(popup_timer);
 
-  var half_range = (d.end - d.start)/2;
-  {{ plotName|default:"circular" }}LinearTrack.update(Math.max(0,(d.start-half_range)), Math.min({{ genomesize }}, (d.end+half_range)));
-
   var wrapperdiv = $('#circularchartlinearwrapper');
   if(wrapperdiv.hasClass("hidden")) {
     wrapperdiv.removeClass("hidden").addClass("visible");
   }
+
+  var half_range = (d.end - d.start)/2;
+  {{ plotName|default:"circular" }}LinearTrack.update(Math.max(0,(d.start-half_range)), Math.min({{ genomesize }}, (d.end+half_range)));
 
   {{ plotName|default:"circular" }}Track.moveBrushbyBP(Math.max(0,(d.start-half_range)), 
                                                        Math.min({{ genomesize }}, (d.end+half_range)));
@@ -208,6 +217,15 @@ function clickTrack(d) {
   {{ plotName|default:"circular" }}Track.showBrush();
   
   showHoverGenes(d);
+}
+
+function clickGene(d) {
+
+	var view_start = Math.max(0, (d.start-500));
+	var view_end = Math.min((d.end+500), {{genomesize|default_if_none:"0"}});
+	url = 'http://www.ncbi.nlm.nih.gov/projects/sviewer/?id={{ ext_id|default_if_none:"nothing" }}&v=' + view_start + '..' + view_end + '&m=' + d.start + ',' + d.end;
+
+	window.open(url);
 }
 
 $('#circularchartlinearclose').click(function() {
