@@ -6,6 +6,7 @@ var {{ plotName|default:"circular" }}data = [
 	  outer_radius: 250,
 	  visible: false,
 	  showLabels: true,
+	  showTooltip: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: 'clickGene',{% endif %}
 	  items: [
@@ -111,7 +112,7 @@ var {{ plotName|default:"circular" }}data = [
 	     {% endfor %}
 	         ]
 	}{% endif %}
-	];
+];
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500 };
 var {{ plotName|default:"circular" }}Track = new circularTrack({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
@@ -122,7 +123,7 @@ var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|d
 {{ plotName|default:"circular" }}LinearTrack.addBrushCallback({{ plotName|default:"circular" }}Track);
 
 function updateStrand(cb, strand) {
-  track = '';
+  var track = '';
 
   switch(strand) {
   case "islandpick":
@@ -219,11 +220,20 @@ function clickTrack(d) {
   showHoverGenes(d);
 }
 
+window.onload = function() {
+  var wrapperdiv = $('#circularchartlinearwrapper');
+  if(wrapperdiv.hasClass("linear_hidden")) {
+    wrapperdiv.removeClass("linear_hidden").addClass("hidden");
+  }
+
+  {{ plotName|default:"circular" }}Track.hideBrush();
+};
+
 function clickGene(d) {
 
 	var view_start = Math.max(0, (d.start-500));
 	var view_end = Math.min((d.end+500), {{genomesize|default_if_none:"0"}});
-	url = 'http://www.ncbi.nlm.nih.gov/projects/sviewer/?id={{ ext_id|default_if_none:"nothing" }}&v=' + view_start + '..' + view_end + '&m=' + d.start + ',' + d.end;
+	var url = 'http://www.ncbi.nlm.nih.gov/projects/sviewer/?id={{ ext_id|default_if_none:"nothing" }}&v=' + view_start + '..' + view_end + '&m=' + d.start + ',' + d.end;
 
 	window.open(url);
 }
