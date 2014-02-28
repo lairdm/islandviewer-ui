@@ -27,8 +27,11 @@ body {
 }
 
 .navbar {
-	min-height:20px;
+	min-height:20px !important;
+	margin-bottom: 1px;
 }
+
+.navbar-nav > li > a {padding-top:5px !important; padding-bottom:5px !important;}
 
 .navbar-iv .nav > li > a {
 	color: #ffffff;
@@ -42,10 +45,32 @@ body {
 
 .mainbody {
 	height: 100%;
+	min-height: 100%;
 }
+
+@media (min-width: 768px) {
+  .mainbody {
+    padding-right: 25px;
+    padding-left: 15px;
+  }
+}
+
+.mainrow {
+	margin-left: 0px;
+}
+
 .sidebar {
+	padding-top: 15px;
 	height: 100%;
 	background-color: #ffffcc;
+}
+
+.content {
+	padding-top: 5px;
+}
+
+#sidebar{
+#  max-width:230px !important;
 }
 
 .headertext {
@@ -63,7 +88,7 @@ body {
 	letter-spacing:0.1em;
 	}
 .smalltext {
-    font:12px times new roman;
+    font:14px times new roman;
     color: #555555;
     line-height:18px;
 }
@@ -94,7 +119,7 @@ a:hover {
 	
 div.outline {
   border: 1px solid #808080;
-  padding: 0px;
+  padding: 5px;
   background: white;
 }
 

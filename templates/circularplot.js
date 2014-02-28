@@ -11,7 +11,7 @@ var {{ plotName|default:"circular" }}data = [
 	  linear_mouseclick: 'clickGene',{% endif %}
 	  items: [
 		{% for gene in genes %}
-		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{{ gene.name }}" },
+		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{{ gene.locus }}", accnum: "{{ gene.name}}" },
 		{% endfor %}
 		]
 	},
@@ -25,7 +25,7 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseout_callback: 'mouseoutIsland',
 	  mouseclick: 'clickTrack',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
-	  linear_mouseclick: 'clickGene',{% endif %}
+	  linear_mouseclick: 'clickIsland',{% endif %}
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Islandpick" %}{id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" },{% endif %}
@@ -41,7 +41,7 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseout_callback: 'mouseoutIsland',
 	  mouseclick: 'clickTrack',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
-	  linear_mouseclick: 'clickGene',{% endif %}
+	  linear_mouseclick: 'clickIsland',{% endif %}
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Sigi" %}
@@ -60,7 +60,7 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseout_callback: 'mouseoutIsland',
 	  mouseclick: 'clickTrack',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
-	  linear_mouseclick: 'clickGene',{% endif %}
+	  linear_mouseclick: 'clickIsland',{% endif %}
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Dimob" %}
@@ -114,7 +114,7 @@ var {{ plotName|default:"circular" }}data = [
 	}{% endif %}
 ];
 
-var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500 };
+var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20 };
 var {{ plotName|default:"circular" }}Track = new circularTrack({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
 
 var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: 600, height: 150};
@@ -230,7 +230,12 @@ window.onload = function() {
 };
 
 function clickGene(d) {
+	var url = 'http://www.ncbi.nlm.nih.gov/protein/' + d.accnum;
 
+	window.open(url);
+}
+
+function clickIsland(d) {
 	var view_start = Math.max(0, (d.start-500));
 	var view_end = Math.min((d.end+500), {{genomesize|default_if_none:"0"}});
 	var url = 'http://www.ncbi.nlm.nih.gov/projects/sviewer/?id={{ ext_id|default_if_none:"nothing" }}&v=' + view_start + '..' + view_end + '&m=' + d.start + ',' + d.end;

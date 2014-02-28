@@ -3,6 +3,8 @@
 <p>Hovering over islands within the image will show gene annotations while clicking on them will highlight the corresponding GI in the table.</p>
 <p><strong>Individual prediction methods can be selected below.</strong></p>
 <div class="outline">
+<span class="subHeader">Legend</span><strong> </strong><span class="subHeader">(<a href="{% url 'about' %}">Help</a>)</span><br />
+&nbsp;<br />
   <span class="red"><input type="checkbox" name="showIntegrated" onchange="updateStrand(this, 'integrated'); return false;" checked>Integrated</span><br />
   <span class="green"><input type="checkbox" name="showIslandpick" {% if not methods.Islandpick %}disabled=true{% endif %} onchange="updateStrand(this, 'islandpick'); return false;" checked>IslandPick</span><br />
   <span class="orange"><input type="checkbox" name="showSigi" {% if not methods.Sigi %}disabled=true{% endif %} onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span><br />
@@ -15,4 +17,9 @@
 No virulence factors found.
 {% endfor %}
 </div>
+<p>&nbsp;</p>
+<p><span class="subHeader">Additional Tools (<a href="{% url 'about' %}#analysis">Help</a>)  </span></p>
+  <li><a href="reference_input.php?query_input=117174">IslandPick</a> can be run using manually selected comparison genomes instead of default genomes.</li>
+  <li><a href="http://www.sanger.ac.uk/Software/Artemis/">Artemis</a> (with  <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to conduct further analysis of GIs. Artemis can be easily run using the <a href="http://www.sanger.ac.uk/Software/Artemis/v11/u5.5/Artemis.jnlp">web start version</a>.</li>
+  <li><a href="http://asap.ahabs.wisc.edu/mauve/">Mauve  </a> (using <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to produce whole genome alignments and view conserved regions surronding GIs. </li>	
 </span>

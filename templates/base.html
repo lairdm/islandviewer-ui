@@ -34,10 +34,10 @@
 </head>
 
 <body>
-
 	<div class="header">IslandViewer <span class="subheader">| An integrated interface for computational identification and visualization of genomic islands</span></div>
 
 	<div class="navbar navbar-default navbar-static-top navbar-iv" role="navigation">
+	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
   		<div class="navbar-header">
     		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -47,7 +47,6 @@
       			<span class="icon-bar"></span>
     		</button>
     	</div>
-
 		<!-- Collect the nav links, forms, and other content for toggling -->
   		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     		<ul class="nav navbar-nav">
@@ -61,11 +60,17 @@
     			<li ><a href="{% url 'acknowledgements' %}">Acknowldgements</a></li>
     		</ul>
     	</div>
+	  </div>
 	</div>
 	
+  <div class="container-fluid">
 	<div class="mainbody">
-		<div class="col-sm-3 sidebar">{% block sidebar %}{% endblock %}&nbsp;</div>
-		<div class="col-sm-9 content">{% block content %}{% endblock %}</div>
+	 <div class="row">
+		<div id="sidebar2" class="col-sm-2 sidebar columns">{% block sidebar %}{% endblock %}&nbsp;</div>
+		<div class="col-sm-10 content columns">{% block content %}{% endblock %}</div>
 	</div>
+	</div>
+  </div>
+ 
 </body>
 </html>
