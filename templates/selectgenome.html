@@ -22,14 +22,14 @@ Use the search box to bring matching genomes to the top of the list.
 <span class="pageName">IslandViewer</span><br />
 &nbsp;<br />
 &nbsp;<br />
-<select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Choose a genome...">
+<select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select a genome...">
 <option></option>
 {% for genome in analysis %}
 <option value="{{ genome.aid }}">{{ genome.name }} ({{ genome.ext_id }})</option>
 {% endfor %}
 </select><br /> 
 &nbsp;<br />
-<input id="gotoresults" type="button" value="Browse Results" onclick="return goto_results()" />
+<input id="gotoresults" type="button" value="Go to Genome" onclick="return goto_results()" />
 <script type="text/javascript">
     $(window).ready(function() {
 		$(".chosen-select").chosen({disable_search_threshold: 10, no_results_text: "Oops, no genomes matching that name!", search_contains: true});
