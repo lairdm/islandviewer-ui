@@ -7,7 +7,7 @@
 <table>
 <tr>
   <td class="downloadtable">Select download type:<br />
-	  <select id="downloadtype" name="downloadtype" onchange="onChangeDownloadType()" class="chosen-select">
+	  <select id="downloadtype" name="downloadtype" onchange="onChangeDownloadType()" class="chosen-select download-select">
 	    <option value="coordinates">Coordinates</option>
 	    <option value="sequence">Sequence</option>
 	    <option value="image">Image</option>
@@ -16,7 +16,7 @@
   <td class="downloadtable">
   	<span id="resultstypecontainer">
   	  Select results type(s):<br />
-  	  <select id="resultstype" name="methods" class="chosen-select" onchange="updateDownloadLink()" multiple>
+  	  <select id="resultstype" name="methods" class="chosen-select download-select" onchange="updateDownloadLink()" multiple>
   	    <option value="integrated">Integrated results</option>
   	    <option value="sigi">All SIGI-HMM</option>
   	    <option value="dimob">All Dimob</option>
@@ -27,7 +27,7 @@
   <td class="downloadtable">
 	<span id="downloadformatcontainer">
   	  Select download format:<br />
-  	  <select id="downloadformat" name="format" class="chosen-select" onchange="updateDownloadLink()">
+  	  <select id="downloadformat" name="format" class="chosen-select download-select" onchange="updateDownloadLink()">
   	    <option value="tab">Tab delimited</option>
   	    <option value="csv">CSV</option>
   	    <option value="excel">Excel</option>
@@ -48,7 +48,7 @@
 	});
 	
 	$(window).ready(function() {
-		$(".chosen-select").chosen({disable_search_threshold: 10});
+		$(".chosen-select").chosen({disable_search_threshold: 10, width: "150px"});
 		updateDownloadLink();
 	});
 	

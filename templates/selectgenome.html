@@ -5,6 +5,8 @@
 <link href="{% static 'js/select2-3.4.5/select2.css' %}" rel="stylesheet">
 <link href="{% static 'js/select2-3.4.5/select2-bootstrap.css' %}" rel="stylesheet">
 <script src="{% static 'js/select2-3.4.5/select2.js' %}"></script>
+<link href="{% static 'js/chosen/chosen.min.css' %}" rel="stylesheet">
+<script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
 
 {% endblock %}
 
@@ -16,10 +18,12 @@ Use the search box to bring matching genomes to the top of the list.
 {% endblock %}
 
 {% block content %}
+<div style="height: 500px; width: 400px;">
 <span class="pageName">IslandViewer</span><br />
 &nbsp;<br />
 &nbsp;<br />
-<select id="genomelist">
+<select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Choose a genome...">
+<option></option>
 {% for genome in analysis %}
 <option value="{{ genome.aid }}">{{ genome.name }} ({{ genome.ext_id }})</option>
 {% endfor %}
@@ -27,13 +31,22 @@ Use the search box to bring matching genomes to the top of the list.
 &nbsp;<br />
 <input id="gotoresults" type="button" value="Browse Results" onclick="return goto_results()" />
 <script type="text/javascript">
-    $("#genomelist").select2();
+    $(window).ready(function() {
+		$(".chosen-select").chosen({disable_search_threshold: 10, no_results_text: "Oops, no genomes matching that name!", search_contains: true});
+	});
+	
+    //$("#genomelist").select2();
     
     function goto_results()
     {
-    	var url = "{% url "results" 999 %}".replace(999, $("#genomelist").val());
+    	if(!($("#genomelist").val())) {
+    		return;
+    	}
+ 
+    	var url = "{% url "results" 9999 %}".replace(9999, $("#genomelist").val());
     	window.location = url;
     	
     }
 </script>
+</div>
 {% endblock content %}

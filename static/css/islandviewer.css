@@ -46,6 +46,8 @@ body {
 .mainbody {
 	height: 100%;
 	min-height: 100%;
+	background-color: #fff;
+	
 }
 
 @media (min-width: 768px) {
@@ -69,8 +71,15 @@ body {
 	padding-top: 5px;
 }
 
-#sidebar{
-#  max-width:230px !important;
+@media (min-width: 860px) {
+  .same_height{
+      margin-bottom: -99999px;
+      padding-bottom: 99999px;
+  }
+
+  .equal_height {
+      overflow: hidden; 
+  }
 }
 
 .headertext {
@@ -350,7 +359,7 @@ input[type=file] {
     background-image: url("../img/details_close.png");
 }
 
-.chosen-container { width: 150px !important; }
+.download-select { width: 150px !important; }
 
 .downloadtable {
     vertical-align: top;
