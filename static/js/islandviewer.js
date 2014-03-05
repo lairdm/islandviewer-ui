@@ -25,7 +25,7 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 	    url: url,
 	    type: "get",
 	    success: function(data) {
-		var html = "<table class=\"genespopup\"><tr><th>Island</th><th>Gene Name</th><th>Accnum</th><th>Product</th></tr>";
+		var html = "<table class=\"genespopup\"><tr><th>Prediction Method</th><th>Gene Name</th><th>Accnum</th><th>Product</th></tr>";
 		genes = data.genes
 		for(var gene in genes) {
 		    if(genes.hasOwnProperty(gene)) {
