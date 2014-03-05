@@ -202,8 +202,8 @@ input[type=file] {
 
 .circularVirulence_ARDB {
 	stroke: black;
-	fill: yellow;
-	color:yellow;
+	fill: #e5e500;
+	color:#cccc00;
 	font-size:14px;
 	font-weight:bold;	
 }

@@ -10,6 +10,12 @@ STATUS_CHOICES = [
     (STATUS['COMPLETE'], 'Complete'),
 ]
 
+VIRULENCE_FACTORS = {
+    'VFDB': 'VFDB',
+    'ARDB': 'ARDB',
+    'PAG': 'Pathogen-associated genes'
+}
+
 class CustomGenome(models.Model):
     cid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=60)

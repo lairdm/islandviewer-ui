@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from django.utils import simplejson
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS
 from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
@@ -51,13 +51,21 @@ def results(request, aid):
 
         # Fetch the virulence factors
         island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
-        vir_dict = dict(Virulence.objects.using('microbedb').filter(protein_accnum__in=
-                                                              list(island_genes.values_list('name', flat=True))).values_list('protein_accnum', 'source'))
-
+        vir_list = Virulence.objects.using('microbedb').filter(protein_accnum__in=
+                                                              list(island_genes.values_list('name', flat=True))).values_list('source', flat=True).distinct()
+#        vir_dict = dict(Virulence.objects.using('microbedb').filter(protein_accnum__in=
+#                                                              list(island_genes.values_list('name', flat=True))).values_list('protein_accnum', 'source'))
         context['vir_types'] = {}
-        for gene in island_genes:
-            if vir_dict.has_key(gene.name):
-                context['vir_types'][vir_dict[gene.name]] = True
+        context['has_vir'] = False
+        for vir in VIRULENCE_FACTORS.keys():
+            if vir in vir_list:
+                context['vir_types'][vir] = True
+                context['has_vir'] = True
+            else:
+                context['vir_types'][vir] = False
+#        for gene in island_genes:
+#            if vir_dict.has_key(gene.name):
+#                context['vir_types'][vir_dict[gene.name]] = True
 
         # Remember the methods we have available
         context['methods'] = dict.fromkeys(GenomicIsland.objects.filter(aid_id=aid).values_list("prediction_method", flat=True).distinct(), 1)
