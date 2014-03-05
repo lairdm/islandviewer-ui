@@ -11,7 +11,7 @@ var {{ plotName|default:"circular" }}data = [
 	  linear_mouseclick: 'clickGene',{% endif %}
 	  items: [
 		{% for gene in genes %}
-		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{{ gene.locus }}", accnum: "{{ gene.name}}" },
+		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{{ gene.locus }}", accnum: "{{ gene.name }}" },
 		{% endfor %}
 		]
 	},
@@ -122,6 +122,15 @@ var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|d
 {{ plotName|default:"circular" }}Track.attachBrush({{ plotName|default:"circular" }}LinearTrack);
 {{ plotName|default:"circular" }}LinearTrack.addBrushCallback({{ plotName|default:"circular" }}Track);
 
+var islandviewerObj = new Islandviewer('{{ext_id}}');
+{{ plotName|default:"circular" }}Track.attachBrush(islandviewerObj);
+{{ plotName|default:"circular" }}LinearTrack.addBrushCallback(islandviewerObj);
+
+$('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{ container }}_svg" },
+	                    height: 550, width: 450,
+			    title: "Genes",
+			    autoOpen: false } );
+
 function updateStrand(cb, strand) {
   var track = '';
 
@@ -155,7 +164,15 @@ function updateVirulence(cb, vir_factor) {
   }
 }
 
-function showHoverGenes(d) {
+function showHoverGenes(d, do_half_range) {
+
+  var half_range = typeof do_half_range !== 'undefined' ? (d.end - d.start)/2 : 0;
+
+  $('#gene_dialog').dialog("open");
+  islandviewerObj.update_finished(Math.max(0,(d.start-half_range)), Math.min({{ genomesize }}, (d.end+half_range)));
+}
+
+function showIslandGenes(d) {
 
   $.getJSON('{% url 'genesjson' gi_id='00000' %}'.replace('00000', d.id), function(data) {
 	  var tablediv = $('#geneslist');
@@ -217,7 +234,10 @@ function clickTrack(d) {
 
   {{ plotName|default:"circular" }}Track.showBrush();
   
-  showHoverGenes(d);
+  showIslandGenes(d);
+
+  showHoverGenes(d, true);
+
 }
 
 window.onload = function() {

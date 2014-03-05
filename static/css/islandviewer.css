@@ -301,6 +301,40 @@ input[type=file] {
 	visibility: hidden;
 }
 
+/* Gene popup window section */
+
+.ui-widget-header {
+	background: #006600 !important;
+	font:12px arial;
+	font-weight:bold;
+	color: white !important;
+}
+
+.genespopup {
+	font:12px arial;
+}
+
+.genespopup td, 
+.genespopup th {
+	padding: 5px;
+}
+
+.islandbox {
+	width: 25px;
+	height: 15px;
+}
+
+.orangeislandbox {
+	background: orange;
+}
+
+.greenislandbox {
+	background: green;
+}
+
+.blueislandbox {
+	background: blue;
+}
 
 /* Section for GI tables */
 .gitable .odd.method0 {

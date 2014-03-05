@@ -2,8 +2,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES
 from django.utils import simplejson
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES
 from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
@@ -11,6 +11,7 @@ from uploadparser import uploader
 from metasched import pipeline, graph
 from .forms import UploadGenomeForm
 from .utils.formatter import *
+import json
 import re
 import pprint
 
@@ -283,6 +284,33 @@ def genesjson(request, gi_id):
     context['genes'] = Genes.objects.raw("select Genes.* FROM Genes, IslandGenes WHERE IslandGenes.gi = %s AND Genes.id = IslandGenes.gene_id ORDER BY Genes.start", params)
 
     return render(request, "genes.json", context, content_type='application/json')
+
+def genesbybpjson(request):
+    context = {}
+    
+    if not request.method == 'GET':
+        return HttpResponse(status = 403)
+    
+    if request.GET.get('ext_id'):
+        ext_id = request.GET.get('ext_id')
+    else:
+        return HttpResponse(status = 403)
+    
+    if request.GET.get('start') and request.GET.get('start').isdigit():
+        start = request.GET.get('start')
+    else:
+        return HttpResponse(status = 403)
+
+    if request.GET.get('end') and request.GET.get('end').isdigit():
+        end = request.GET.get('end')
+    else:
+        return HttpResponse(status = 403)
+    
+    params = [ext_id, start, end]
+    context['genes'] = Genes.objects.raw("SELECT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, GROUP_CONCAT( ig.gi ) AS gi , GROUP_CONCAT( gi.prediction_method ) AS method FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi WHERE ext_id = %s AND g.start >=%s AND g.end <=%s GROUP BY g.id", params)
+
+    return render(request, "genesbybp.json", context, content_type='application/json')
+
     
 def downloadCoordinates(request):
     
