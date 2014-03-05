@@ -35,13 +35,13 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 			    methods = row.method.split(',');
 			console.log(methods);
 			    if($.inArray('Islandpick', methods) >= 0) {
-				html += "<span class=\"islandbox greenislandbox\">&nbsp;</span>";
+				html += "<span class=\"islandbox greenislandbox\">&nbsp;&nbsp;</span>";
 			    }
 			    if($.inArray('Sigi', methods) >= 0) {
-				html += "<span class=\"islandbox orangeislandbox\">&nbsp;</span>";
+				html += "<span class=\"islandbox orangeislandbox\">&nbsp;&nbsp;</span>";
 			    }
 			    if($.inArray('Dimob', methods) >= 0) {
-				html += "<span class=\"islandbox blueislandbox\">&nbsp;</span>";
+				html += "<span class=\"islandbox blueislandbox\">&nbsp;&nbsp;</span>";
 			    }
 			}
 			html += "&nbsp;</td><td>" + row.gene + "</td><td>" + row.name + "</td><td>" + row.product + "</td></tr>";
