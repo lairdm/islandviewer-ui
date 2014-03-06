@@ -126,6 +126,11 @@ body {
 	line-height:20px;
 	letter-spacing:0.1em;
 }
+
+.loadingimg {
+		margin-left: 250px;
+		margin-top: 250px; 
+}
 	
 a:hover {
 	color: #003366;
