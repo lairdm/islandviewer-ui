@@ -9,6 +9,8 @@ var {{ plotName|default:"circular" }}data = [
 	  showTooltip: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: 'clickGene',{% endif %}
+	  linear_mouseover: 'islandviewerObj',
+	  linear_mouseout: 'islandviewerObj',
 	  items: [
 		{% for gene in genes %}
 		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{{ gene.locus }}", accnum: "{{ gene.name }}" },
@@ -26,6 +28,8 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseclick: 'clickTrack',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: 'clickIsland',{% endif %}
+	  linear_mouseover: 'islandviewerObj',
+	  linear_mouseout: 'islandviewerObj',
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Islandpick" %}{id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" },{% endif %}
@@ -42,6 +46,8 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseclick: 'clickTrack',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: 'clickIsland',{% endif %}
+	  linear_mouseover: 'islandviewerObj',
+	  linear_mouseout: 'islandviewerObj',
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Sigi" %}
@@ -61,6 +67,8 @@ var {{ plotName|default:"circular" }}data = [
 	  mouseclick: 'clickTrack',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: 'clickIsland',{% endif %}
+	  linear_mouseover: 'islandviewerObj',
+	  linear_mouseout: 'islandviewerObj',
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Dimob" %}

@@ -30,10 +30,18 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 		for(var gene in genes) {
 		    if(genes.hasOwnProperty(gene)) {
 			row = genes[gene];
-			html += "<tr><td>"
+			html += "<tr id=\"gene_overlay_" + row.geneid + "\" ";
+			if(row.gi && row.gi !== 0) {
+			    html += "class=\"";
+			    gis = row.gi.split(',');
+			    for(var i = 0; i < gis.length; i++) {
+				html += "islandset_" + gis[i] + ' ';
+			    }
+			    html += "\"><td>"
+			}
+
 			if(row.method && row.method !== 0) {
 			    methods = row.method.split(',');
-			console.log(methods);
 			    if($.inArray('Islandpick', methods) >= 0) {
 				html += "<span class=\"islandbox greenislandbox\">&nbsp;&nbsp;</span>";
 			    }
@@ -51,4 +59,20 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 		$('#gene_dialog').html(html);
 	    }
 	});
+}
+
+Islandviewer.prototype.mouseover = function(trackName, d) {
+    if(trackName == 'circularGenes') {
+	$('#gene_overlay_' + d.id).addClass("highlight_row");
+    } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
+	$('.islandset_' + d.id).addClass("highlight_row");
+    }
+}
+
+Islandviewer.prototype.mouseout = function(trackName, d) {
+    if(trackName == 'circularGenes') {
+	$('#gene_overlay_' + d.id).removeClass("highlight_row");
+    } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
+	$('.islandset_' + d.id).removeClass("highlight_row");
+    }
 }

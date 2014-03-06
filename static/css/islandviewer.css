@@ -336,6 +336,10 @@ input[type=file] {
 	background: blue;
 }
 
+.highlight_row {
+	background-color: #cccccc;
+}
+
 /* Section for GI tables */
 .gitable .odd.method0 {
 	background-color: #E8606A !important;	

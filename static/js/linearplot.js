@@ -228,8 +228,28 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 		null;
 	    }
 	})
-    .on('mouseover', tip.show )
-    .on('mouseout', tip.hide);
+    .on('mouseover', function(d) { 
+	    tip.show(d);
+	    if('undefined' !== typeof track.linear_mouseover) {
+		var fn = window[track.linear_mouseover];
+		if('object' ==  typeof fn) {
+		    return fn.mouseover(track.trackName, d);
+		} else if('function' == typeof fn) {
+		    return fn(d);
+		}
+	    }	
+	})
+    .on('mouseout', function(d) { 
+	    tip.hide(d);
+	    if('undefined' !== typeof track.linear_mouseout) {
+		var fn = window[track.linear_mouseout];
+		if('object' ==  typeof fn) {
+		    return fn.mouseout(track.trackName, d);
+		} else if('function' == typeof fn) {
+		    return fn(d);
+		}
+	    }	
+	});
 
     if(('undefined' !== typeof track.showLabels) && typeof track.showLabels) {
 	entering_rects.append("text")
@@ -316,8 +336,28 @@ genomeTrack.prototype.displayTrack = function(track, i) {
 		null;
 	    }
 	})
-    .on('mouseover', tip.show )
-    .on('mouseout', tip.hide);
+    .on('mouseover', function(d) { 
+	    tip.show(d);
+	    if('undefined' !== typeof track.linear_mouseover) {
+		var fn = window[track.linear_mouseover];
+		if('object' ==  typeof fn) {
+		    return fn.mouseover(track.trackName, d);
+		} else if('function' == typeof fn) {
+		    return fn(d);
+		}
+	    }	
+	})
+    .on('mouseout', function(d) { 
+	    tip.hide(d);
+	    if('undefined' !== typeof track.linear_mouseout) {
+		var fn = window[track.linear_mouseout];
+		if('object' ==  typeof fn) {
+		    return fn.mouseout(track.trackName, d);
+		} else if('function' == typeof fn) {
+		    return fn(d);
+		}
+	    }	
+	});
 
     if('undefined' !== typeof track.showLabels) {
 	entering_rects.append("text")
@@ -356,7 +396,7 @@ genomeTrack.prototype.update = function(startbp, endbp) {
 }
 
 genomeTrack.prototype.update_finished = function(startbp, endbp) {
-    console.log("Thank you, got: " + startbp, endbp);
+    //    console.log("Thank you, got: " + startbp, endbp);
 
 }
 
