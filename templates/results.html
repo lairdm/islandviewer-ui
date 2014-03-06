@@ -52,7 +52,7 @@
     <div id="circularchart"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
     <div id="gene_dialog"></div>
 	<div id="circularchartlinearwrapper" class="linear_hidden"><img id="circularchartlinearclose" width="20" height="20" src="{% static 'img/close.svg' %}"><div id="circularchartlinear"></div></div>
-    <div id="geneslist" class="hidden"><img id="genelistclose" width="20" height="20" src="{% static 'img/close.svg' %}">
+    <!--<div id="geneslist" class="hidden"><img id="genelistclose" width="20" height="20" src="{% static 'img/close.svg' %}">
     <span id="geneslistnothing" class="hidden">Sorry, no genes were found in this island.</span>
     <span id="geneslistvalues" class="hidden"><table id="geneslisttable" class="gitable table table-condensed idb-table" style="font-size: 90%">
 	<thead>
@@ -64,9 +64,9 @@
     </div>
 
     <div class="hidden"><button id="save_as_png" value="">
-			Save as High-Res PNG</button></div>
+			Save as High-Res PNG</button></div>-->
     <script src="/islandviewer/plot/{{ aid }}"></script>
-	&nbsp;<br />
+
     {% include "results.download.html" %}
     {% include "gitable.html" %}
 
