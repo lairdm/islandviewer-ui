@@ -11,8 +11,8 @@ STATUS_CHOICES = [
 ]
 
 VIRULENCE_FACTORS = {
-    'VFDB': 'VFDB',
-    'ARDB': 'ARDB',
+    'VFDB': 'Virulence factors',
+    'ARDB': 'Resistance genes',
     'PAG': 'Pathogen-associated genes'
 }
 
