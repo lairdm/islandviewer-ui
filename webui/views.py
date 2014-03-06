@@ -100,7 +100,7 @@ def circularplotjs(request, aid):
 #        context['genomesize'] = '6000000'
 
     # Fill in the GIs
-    context['gis'] = GenomicIsland.objects.filter(aid_id=aid).all()
+    context['gis'] = GenomicIsland.objects.filter(aid_id=aid).order_by('start').all()
     
     # Fetch the GC plot info
     try:

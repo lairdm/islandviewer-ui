@@ -242,7 +242,7 @@ function clickTrack(d) {
 
   {{ plotName|default:"circular" }}Track.showBrush();
   
-  showIslandGenes(d);
+//  showIslandGenes(d);
 
   showHoverGenes(d, true);
 
@@ -255,6 +255,28 @@ window.onload = function() {
   }
 
   {{ plotName|default:"circular" }}Track.hideBrush();
+
+  for(var i=0; i < {{ plotName|default:"circular" }}data.length; i++) {
+    if({{ plotName|default:"circular" }}data[i].trackName == "{{ plotName|default:"circular" }}Integrated") {
+      if({{ plotName|default:"circular" }}data[i].items.length > 0) {
+        item = {{ plotName|default:"circular" }}data[i].items[0];
+	var wrapperdiv = $('#circularchartlinearwrapper');
+        if(wrapperdiv.hasClass("hidden")) {
+        wrapperdiv.removeClass("hidden").addClass("visible");
+      }
+
+      var half_range = (item.end - item.start)/2;
+      {{ plotName|default:"circular" }}LinearTrack.update(Math.max(0,(item.start-half_range)), Math.min({{ genomesize }}, (item.end+half_range)));
+
+      {{ plotName|default:"circular" }}Track.moveBrushbyBP(Math.max(0,(item.start-half_range)), 
+                                                       Math.min({{ genomesize }}, (item.end+half_range)));
+
+      {{ plotName|default:"circular" }}Track.showBrush();
+        
+      }
+    }
+  }
+
 };
 
 function clickGene(d) {

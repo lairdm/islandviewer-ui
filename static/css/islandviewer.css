@@ -96,6 +96,12 @@ body {
 	line-height:20px;
 	letter-spacing:0.1em;
 	}
+.sectionHeader {
+	font:14px times new roman;
+	font-weight:bold;
+	line-height:20px;
+}
+
 .smalltext {
     font:14px times new roman;
     color: #555555;

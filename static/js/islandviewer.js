@@ -37,9 +37,9 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 			    for(var i = 0; i < gis.length; i++) {
 				html += "islandset_" + gis[i] + ' ';
 			    }
-			    html += "\"><td>"
 			}
-
+			html += "\"><td>";
+			
 			if(row.method && row.method !== 0) {
 			    methods = row.method.split(',');
 			    if($.inArray('Islandpick', methods) >= 0) {
