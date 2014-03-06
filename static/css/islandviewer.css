@@ -312,6 +312,23 @@ input[type=file] {
 	visibility: hidden;
 }
 
+.xaxislinear text {
+	font:12px arial;
+}
+
+.xaxislinear path {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;    
+}
+
+.xaxislinear line {
+    shape-rendering: crispEdges;
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+
+
 /* Gene popup window section */
 
 .ui-widget-header {

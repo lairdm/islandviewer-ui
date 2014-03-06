@@ -59,7 +59,8 @@ function genomeTrack(layout,tracks) {
     this.chart.append("defs").append("clipPath")
 	.attr("id", "trackClip_" + this.layout.name)
 	.append("rect")
-	.attr("width", this.layout.width_without_margins + this.layout.right_margin)
+	.attr("width", this.layout.width_without_margins)
+	//	.attr("width", this.layout.width_without_margins + this.layout.right_margin)
 	.attr("height", this.layout.height)
 	.attr("transform", "translate(0,0)");
     //	.attr("transform", "translate(" + this.layout.left_margin + ",0)");
@@ -87,13 +88,15 @@ function genomeTrack(layout,tracks) {
     this.axisContainer = this.chart.append("g")
 	.attr('class', 'trackAxis')
 	.attr('width', this.layout.width_without_margins)
-	.attr("transform", "translate(" + (this.layout.left_margin + 15) + "," + this.layout.height_without_axis + ")");
+	.attr("transform", "translate(" + (this.layout.left_margin + 5) + "," + this.layout.height_without_axis + ")");
 
     this.xAxis = d3.svg.axis().scale(this.x1).orient("bottom")
+	.innerTickSize(-this.layout.height)
+	.outerTickSize(0)
 	.tickFormat(d3.format("s"));
 
     this.axisContainer.append("g")
-	.attr("class", "x axis bottom")
+	.attr("class", "xaxislinear")
 	.attr('width', this.layout.width_without_margins)
 
 	.attr("transform", "translate(0," + 10 + ")")
@@ -121,7 +124,7 @@ function genomeTrack(layout,tracks) {
 	    this.itemRects[i] = this.main.append("g")
 		.attr("class", this.tracks[i].trackName)
 		.attr("width", this.layout.width_without_margins)
-		.attr("clip-path", "url(#clipPath_" + this.layout.name + ")");
+		.attr("clip-path", "url(#trackClip_" + this.layout.name + ")");
 	    this.displayTrack(this.tracks[i], i);
 	    break;
 	default:
@@ -381,7 +384,7 @@ genomeTrack.prototype.displayTrack = function(track, i) {
 }
 
 genomeTrack.prototype.displayAxis = function() {
-    this.axisContainer.select(".x.axis.bottom").call(this.xAxis);
+    this.axisContainer.select(".xaxislinear").call(this.xAxis);
 }
 
 genomeTrack.prototype.update = function(startbp, endbp) {
@@ -421,7 +424,7 @@ genomeTrack.prototype.redraw = function() {
 	}
     }
     
-    this.axisContainer.select(".x.axis.bottom").call(this.xAxis);
+    this.axisContainer.select(".xaxislinear").call(this.xAxis);
 
 }
 
