@@ -52,6 +52,19 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 				html += "<span class=\"islandbox blueislandbox\">&nbsp;&nbsp;</span>";
 			    }
 			}
+			if(row.virulence && row.virulence !== 0) {
+			    console.log("here " + row.name);
+			    virulence = row.virulence.split(',');
+			    if($.inArray('ARDB', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_ARDB\">&nbsp;&nbsp;&nbsp;</span>";
+			    }
+			    if($.inArray('VFDB', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_VFDB\">&nbsp;&nbsp;&nbsp;</span>";
+			    }
+			    if($.inArray('PAG', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_PAG\">&nbsp;</span>";
+			    }
+			}
 			html += "&nbsp;</td><td>" + row.gene + "</td><td>" + row.name + "</td><td>" + row.product + "</td></tr>";
 		    }
 		}

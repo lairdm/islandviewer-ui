@@ -10,7 +10,8 @@
   				"product": "{{ gene.product|default:'' }}",
   				"locus": "{{ gene.locus|default:'' }}",
   				"gi": "{{ gene.gi|default:'' }}",
-  				"method": "{{ gene.method|default:'' }}"
+  				"method": "{{ gene.method|default:'' }}",
+  				"virulence": "{{ gene.virulence|default:'' }}"
   			}{% if not forloop.last %},{% endif %}
   			{% endfor %}
   		]

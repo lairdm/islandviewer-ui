@@ -198,7 +198,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 
     rects.selectAll("text")
     .attr("dx", "2px")
-    .attr("dy", "1em")
+    .attr("dy", "0.94em")
     .each(function (d) {
 	    var bb = this.getBBox();
 	    var slice_length = x1(d.end) - x1(d.start) - 2; // -2 to offset the dx above
@@ -218,7 +218,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     .each(function (d) { d.width = x1(d.end) - x1(d.start); })
     .attr("class", function(d) {return track.trackName + '_' + (d.strand == 1 ? 'pos' : 'neg') + ' ' + ((d.width > 5) ? (track.trackName + '_' + (d.strand == 1 ? 'pos_zoomed' : 'neg_zoomed')) : '' );})
     .attr("width", function(d) {return d.width;})
-    .attr("height", function(d) {return .8 * y1(1);})
+    .attr("height", function(d) {return .9 * y1(1);})
     .on("click", function(d,i) {
 	    if('undefined' !== typeof track.linear_mouseclick) {
 		var fn = window[track.linear_mouseclick];

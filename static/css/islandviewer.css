@@ -352,6 +352,17 @@ input[type=file] {
 	height: 15px;
 }
 
+.virulencecircle {
+	width: 8px;
+	height: 8px;
+	stroke: black;
+	border-radius: 50%;
+	display: inline-block;
+	margin-left: 1px;
+	margin-right: 1px;
+	border: 1px solid #000;
+}
+
 .orangeislandbox {
 	background: orange;
 }
@@ -362,6 +373,21 @@ input[type=file] {
 
 .blueislandbox {
 	background: blue;
+}
+
+.virulencecircle_VFDB {
+	stroke: none;
+	background: purple;
+}
+
+.virulencecircle_ARDB {
+	stroke: none;
+	background: #e5e500;
+}
+
+.virulencecircle_PAG {
+	stroke: none;
+	background: orange;
 }
 
 .highlight_row {
