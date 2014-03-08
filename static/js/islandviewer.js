@@ -19,7 +19,7 @@ Islandviewer.prototype.update = function(startBP, endBP) {
 Islandviewer.prototype.update_finished = function(startBP, endBP) {
     url = '/islandviewer/json/genes/?ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
 
-    console.log(url);
+    //    console.log(url);
 
     $.ajax({
 	    url: url,
