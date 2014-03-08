@@ -112,11 +112,17 @@ var {{ plotName|default:"circular" }}data = [
 	  glyphType: '{{ virulenceShape|default:"circle" }}',
 	  radius: {{ virulenceRadius|default:175 }},
 	  pixel_spacing: 3,
+          linear_pixel_spacing: 6,
 	  glyph_buffer: 3,
+	  linear_glyph_buffer: 6,
 	  glyphSize: 20,
+	  linear_glyphSize: 30,
+          linear_padding: 4,
+          linear_height: 5,
+          linear_invert: true,
 	  items: [
 	     {% for vir in vir_factors %}
-	       {id: {{ forloop.counter }}, bp: {{ vir.0 }}, type: '{{ vir.1 }}'},
+	       {id: {{ forloop.counter }}, bp: {{ vir.0 }}, type: '{{ vir.1 }}', name: '{{external_id}}'},
 	     {% endfor %}
 	         ]
 	}{% endif %}
@@ -269,6 +275,7 @@ window.onload = function() {
 
       var half_range = (item.end - item.start)/2;
       {{ plotName|default:"circular" }}LinearTrack.update(Math.max(0,(item.start-half_range)), Math.min({{ genomesize }}, (item.end+half_range)));
+//      {{ plotName|default:"circular" }}LinearTrack.update(2840000,2905000);
 
       {{ plotName|default:"circular" }}Track.moveBrushbyBP(Math.max(0,(item.start-half_range)), 
                                                        Math.min({{ genomesize }}, (item.end+half_range)));

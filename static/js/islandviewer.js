@@ -53,7 +53,6 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 			    }
 			}
 			if(row.virulence && row.virulence !== 0) {
-			    console.log("here " + row.name);
 			    virulence = row.virulence.split(',');
 			    if($.inArray('ARDB', virulence) >= 0) {
 				html += "<span class=\"virulencecircle virulencecircle_ARDB\">&nbsp;&nbsp;&nbsp;</span>";
