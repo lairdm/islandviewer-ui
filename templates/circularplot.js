@@ -286,7 +286,9 @@ window.onload = function() {
     }
   }
 
+
 };
+
 
 function clickGene(d) {
 	var url = 'http://www.ncbi.nlm.nih.gov/protein/' + d.accnum;
