@@ -19,7 +19,7 @@ Islandviewer.prototype.update = function(startBP, endBP) {
 Islandviewer.prototype.update_finished = function(startBP, endBP) {
     url = '/islandviewer/json/genes/?ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
 
-    //    console.log(url);
+//        console.log(url);
 
     $.ajax({
 	    url: url,
@@ -38,6 +38,7 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 				html += "islandset_" + gis[i] + ' ';
 			    }
 			}
+			html += 'gene_' + row.name.replace('.', '') + ' ';
 			html += "\"><td>";
 			
 			if(row.method && row.method !== 0) {
@@ -78,6 +79,8 @@ Islandviewer.prototype.mouseover = function(trackName, d) {
 	$('#gene_overlay_' + d.id).addClass("highlight_row");
     } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
 	$('.islandset_' + d.id).addClass("highlight_row");
+    } else if(trackName == 'circularVirulence') {
+        $('.gene_' + d.name.replace('.', '')).addClass("highlight_row");
     }
 }
 
@@ -86,5 +89,7 @@ Islandviewer.prototype.mouseout = function(trackName, d) {
 	$('#gene_overlay_' + d.id).removeClass("highlight_row");
     } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
 	$('.islandset_' + d.id).removeClass("highlight_row");
+    } else if(trackName == 'circularVirulence') {
+        $('.gene_' + d.name.replace('.', '')).removeClass("highlight_row");
     }
 }

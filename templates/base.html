@@ -49,7 +49,7 @@
     	</div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
   		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    		<ul class="nav navbar-nav">
+    		<ul class="nav navbar-nav navbar-left">
     			<li ><a href="{% url 'browse' %}">Browse</a></li>
     			<li ><a href="{% url 'about' %}">About</a></li>
     			<li ><a href="{% url 'uploadform' %}">Genome Upload</a></li>
@@ -59,6 +59,11 @@
     			<li ><a href="{% url 'faq' %}">FAQ</a></li>
     			<li ><a href="{% url 'acknowledgements' %}">Acknowldgements</a></li>
     		</ul>
+    		{% if showtour %}
+    		<ul class="nav navbar-nav navbar-right hidden-xs hidden-small">
+    			<li ><a href="javascript:feature_tour();">Take a Tour</a></li>
+			</ul>
+			{% endif %}
     	</div>
 	  </div>
 	</div>

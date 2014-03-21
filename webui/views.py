@@ -73,6 +73,8 @@ def results(request, aid):
         CHOICES = dict(STATUS_CHOICES)
         context['status'] = CHOICES[analysis.status]
     
+        context['showtour'] = True
+    
     return render(request, 'results.html', context)
 
 def circularplotjs(request, aid):
@@ -117,7 +119,7 @@ def circularplotjs(request, aid):
     context['vir_factors'] = []
     for gene in island_genes:
         if vir_dict.has_key(gene.name):
-            context['vir_factors'].append((gene.start,vir_dict[gene.name],))
+            context['vir_factors'].append((gene.start,vir_dict[gene.name],gene.name,))
 
 #    pprint.pprint(context['vir_factors']) 
     
@@ -315,7 +317,7 @@ def genesbybpjson(request):
         return HttpResponse(status = 403)
     
     params = [ext_id, start, end]
-    context['genes'] = Genes.objects.raw("SELECT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, GROUP_CONCAT( ig.gi ) AS gi , GROUP_CONCAT( gi.prediction_method ) AS method, GROUP_CONCAT( v.source ) AS virulence FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE ext_id = %s AND g.start >=%s AND g.end <=%s GROUP BY g.id", params)
+    context['genes'] = Genes.objects.raw("SELECT DISTINCT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, GROUP_CONCAT( ig.gi ) AS gi , GROUP_CONCAT( DISTINCT gi.prediction_method ) AS method, GROUP_CONCAT( DISTINCT v.source ) AS virulence FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE ext_id = %s AND g.start >=%s AND g.end <=%s GROUP BY g.id", params)
 
     return render(request, "genesbybp.json", context, content_type='application/json')
 

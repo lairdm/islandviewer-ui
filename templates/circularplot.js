@@ -120,9 +120,12 @@ var {{ plotName|default:"circular" }}data = [
           linear_padding: 4,
           linear_height: 5,
           linear_invert: true,
+	  showTooltip: true,
+	  linear_mouseover: 'islandviewerObj',
+	  linear_mouseout: 'islandviewerObj',
 	  items: [
 	     {% for vir in vir_factors %}
-	       {id: {{ forloop.counter }}, bp: {{ vir.0 }}, type: '{{ vir.1 }}', name: '{{external_id}}'},
+	       {id: {{ forloop.counter }}, bp: {{ vir.0 }}, type: '{{ vir.1 }}', name: '{{ vir.2 }}'},
 	     {% endfor %}
 	         ]
 	}{% endif %}
@@ -281,7 +284,8 @@ window.onload = function() {
                                                        Math.min({{ genomesize }}, (item.end+half_range)));
 
       {{ plotName|default:"circular" }}Track.showBrush();
-        
+
+      islandviewerObj.update_finished(Math.max(0,(item.start-half_range)), Math.min({{ genomesize }}, (item.end+half_range)));
       }
     }
   }
@@ -339,6 +343,65 @@ var geneList = $('#geneslisttable').dataTable({
 
 });
 
+
+function feature_tour() {
+//                 $('#gene_dialog').dialog("open");
+	var intro = introJs();
+	var dialog_was_open = false;
+        $('#download_dialog').removeClass("hidden");
+        if($('#gene_dialog').dialog( "isOpen" ) === false) {
+          $('#gene_dialog').dialog("open");
+          dialog_was_open = false;
+        } else {
+          dialog_was_open = true;
+        }
+        intro.onexit(function() {
+          if(dialog_was_open === false) {
+	    $('#gene_dialog').dialog( "close" );
+          }
+          $('#download_dialog').addClass("hidden");
+        });
+
+        intro.oncomplete(function() {
+          if(dialog_was_open === false) {
+	    $('#gene_dialog').dialog( "close" );
+          }
+          $('#download_dialog').addClass("hidden");
+        });
+
+	intro.setOptions({
+	  showStepNumbers: false,
+	  steps: [
+	    {
+	      element: document.querySelector('{{ container }}'),
+	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can also be use to refocus and zoom the linear viewer.",
+	      position: 'right'
+	    },
+	    {
+	      element: '{{ container }}linear',
+	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively. Clicking on a gene will take you to the NCBI gene card and clicking on an island will take you the the NCBI genome viewer for that bp range.<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.",
+	      position: 'top'
+	    },
+	    {
+	      element: '#gene_dialog',
+	      intro: "<b>Gene list</b><br />The gene dialog will show all the genes in the range currently visible in the linear viewer.  Islands and virulence factors are displayed by colour coded glyphs.<br />&nbsp;<br />The dialog may be resized and moved using your mouse.",
+	      position: 'left'
+	    },
+	    {
+	      element: document.querySelector('#legend'),
+	      intro: "<b>Legend</b><br />Individual tracks can be turned on and off using legend, they will be dynamically added/removed from the circular viewer.",
+	      position: 'right'
+	    },
+	    {
+	      element: document.querySelector('#download_container'),
+	      intro: "<b>Download dialog</b><br />Results and the circular viewer can be downloaded via the download dialog, click to expand it.",
+	      position: 'top'
+	    }
+	  ]
+	});
+
+	intro.start();
+}
 
 function submit_download_form(output_format, basefilename)
 {

@@ -8,6 +8,8 @@
     <script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="{% static 'js/intro.js-0.7.1/introjs.css' %}" />
+    <script src="{% static 'js/intro.js-0.7.1/intro.js' %}"></script>
 
 {% endblock %}
 
@@ -49,9 +51,9 @@
     <script src="{% static 'js/FileSaver/FileSaver.js' %}"></script>
     <script src="{% static 'js/jquery.dataTables.js' %}"></script>
     <span class="pageName">{{ genomename }}</span>
-    <div id="circularchart"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
+    <div id="circularchart" style="width:550px; "><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
     <div id="gene_dialog"></div>
-	<div id="circularchartlinearwrapper" class="linear_hidden"><img id="circularchartlinearclose" width="20" height="20" src="{% static 'img/close.svg' %}"><div id="circularchartlinear"></div></div>
+	<div id="circularchartlinearwrapper" class="linear_hidden"><img id="circularchartlinearclose" width="20" height="20" src="{% static 'img/close.svg' %}"><div id="circularchartlinear" style="width:600px;"></div></div>
     <!--<div id="geneslist" class="hidden"><img id="genelistclose" width="20" height="20" src="{% static 'img/close.svg' %}">
     <span id="geneslistnothing" class="hidden">Sorry, no genes were found in this island.</span>
     <span id="geneslistvalues" class="hidden"><table id="geneslisttable" class="gitable table table-condensed idb-table" style="font-size: 90%">
