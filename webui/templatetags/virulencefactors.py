@@ -15,6 +15,6 @@ def virulence_factor_str(value):
 def no_virulence_factor_str(value):
     for v in VIRULENCE_FACTORS:
         if v == value:
-            return  "No " + VIRULENCE_FACTORS[v].lower() + " found."
+            return  "No " + VIRULENCE_FACTORS[v].lower() + " found"
        
     return "Unknown"
