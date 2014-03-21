@@ -8,14 +8,14 @@
 &nbsp;<br />
 <span class="sectionHeader">Prediction Method</span><br />
   <span class="red"><input type="checkbox" name="showIntegrated" onchange="updateStrand(this, 'integrated'); return false;" checked>Integrated</span><br />
-  <span class="green"><input type="checkbox" name="showIslandpick" {% if not methods.Islandpick %}disabled=true{% endif %} onchange="updateStrand(this, 'islandpick'); return false;" checked>IslandPick</span><br />
-  <span class="orange"><input type="checkbox" name="showSigi" {% if not methods.Sigi %}disabled=true{% endif %} onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span><br />
-  <span class="blue"><input type="checkbox" name="showDimob" {% if not methods.Dimob %}disabled=true{% endif %} onchange="updateStrand(this, 'dimob'); return false;" checked>IslandPath-DIMOB</span><br />
+  <span class="green"><input type="checkbox" name="showIslandpick" {% if not methods.Islandpick %}disabled=true{% endif %} onchange="updateStrand(this, 'islandpick'); return false;" checked>IslandPick</span>{% if not methods.Islandpick %} (No results found){% endif %}<br />
+  <span class="orange"><input type="checkbox" name="showSigi" {% if not methods.Sigi %}disabled=true{% endif %} onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span>{% if not methods.Sigi %} (No results found){% endif %}<br />
+  <span class="blue"><input type="checkbox" name="showDimob" {% if not methods.Dimob %}disabled=true{% endif %} onchange="updateStrand(this, 'dimob'); return false;" checked>IslandPath-DIMOB</span>{% if not methods.Dimob %} (No results found){% endif %}<br />
 &nbsp;<br />
 {% if has_vir %}
 {% for vir, v in vir_types.items %} 
 {% if forloop.first %}<span class="sectionHeader">Display virulence factors</span></br />{% endif %}
-  <span class="{{ plotName|default:"circular" }}Virulence_{{ vir }}"><input type="checkbox" name="show{{ vir }}" {% if v %}onchange="updateVirulence(this, '{{ vir }}'); return false;" checked{% else %}disabled=true{% endif %}>{{ vir|virulence_factor_str }}</span><br />
+  <span class="{{ plotName|default:"circular" }}Virulence_{{ vir }}"><input type="checkbox" name="show{{ vir }}" {% if v %}onchange="updateVirulence(this, '{{ vir }}'); return false;" checked>{{ vir|virulence_factor_str }}{% else %}disabled=true>{{ vir|no_virulence_factor_str }}{% endif %}</span><br />
 {% endfor %}
 {% else %}
 Virulence factor/anti-microbial resistance data not available.
