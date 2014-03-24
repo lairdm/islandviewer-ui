@@ -328,6 +328,10 @@ input[type=file] {
     opacity: 0.7;
 }
 
+.dragbar-line {
+    stroke-width: 1;	
+    stroke: lightgrey;
+}
 
 /* Gene popup window section */
 
