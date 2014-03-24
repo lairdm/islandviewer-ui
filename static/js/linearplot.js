@@ -6,6 +6,7 @@ var linearTrackDefaults = {
     bottom_margin: 5,
     axis_height: 50,
     name: "defaultlinear",
+    dragresize: true,
 };
 
 function genomeTrack(layout,tracks) {
@@ -72,41 +73,40 @@ function genomeTrack(layout,tracks) {
 	.attr("class", "mainTrack");
 
     // Resize dragger
+    if(this.layout.dragresize == true) {
+	var dragright = d3.behavior.drag()
+	    .on("dragstart", function() {  d3.event.sourceEvent.stopPropagation(); })
+	    .on("drag", this.dragresize.bind(this));
 
-    var dragright = d3.behavior.drag()
-	//	.origin(function(d) { return d; })
-	//	.origin(Object)
-	.on("drag", this.dragresize.bind(this));
+	this.dragbar_y_mid = this.layout.height/2;
+	this.dragbar = this.chart.append("g")
+	    .attr("transform", "translate(" + (this.layout.width-this.layout.right_margin) + "," + (this.dragbar_y_mid-10) + ")")
+	    .attr("width", 25)
+	    .attr("height", 20)
+	    .attr("fill", "lightblue")
+	    .attr("fill-opacity", .2)
+	    .attr("cursor", "ew-resize")
+	    .call(dragright);
 
-    this.dragbar_y_mid = this.layout.height/2;
-    this.dragbar = this.main.append("g")
-	.attr("transform", "translate(" + this.layout.width_without_margins + "," + (this.dragbar_y_mid-10) + ")")
-	.attr("width", 25)
-	.attr("height", 20)
-	.attr("fill", "lightblue")
-	.attr("fill-opacity", .2)
-	.attr("cursor", "ew-resize")
-	.call(dragright);
-
-    this.dragbar.append("line")
-	.attr("x1", 5)
-	.attr("x2", 5)
-	.attr("y1", 0)
-	.attr("y2", 20)
-	.attr("class", "dragbar-line");
-    this.dragbar.append("line")
-	.attr("x1", 8)
-	.attr("x2", 8)
-	.attr("y1", 0)
-	.attr("y2", 20)
-	.attr("class", "dragbar-line");
-    this.dragbar.append("line")
-	.attr("x1", 11)
-	.attr("x2", 11)
-	.attr("y1", 0)
-	.attr("y2", 20)
-	.attr("class", "dragbar-line");
-	
+	this.dragbar.append("line")
+	    .attr("x1", 5)
+	    .attr("x2", 5)
+	    .attr("y1", 0)
+	    .attr("y2", 20)
+	    .attr("class", "dragbar-line");
+	this.dragbar.append("line")
+	    .attr("x1", 8)
+	    .attr("x2", 8)
+	    .attr("y1", 0)
+	    .attr("y2", 20)
+	    .attr("class", "dragbar-line");
+	this.dragbar.append("line")
+	    .attr("x1", 11)
+	    .attr("x2", 11)
+	    .attr("y1", 0)
+	    .attr("y2", 20)
+	    .attr("class", "dragbar-line");
+    }
 	
 
     // Start with showing the entire genome
@@ -181,6 +181,19 @@ function genomeTrack(layout,tracks) {
 		.attr("width", this.layout.width_without_margins)
 		.attr("clip-path", "url(#trackClip_" + this.layout.name + ")");
 	    this.displayGlyphTrack(this.tracks[i], i);
+	    break;
+	case "plot":
+	    this.tracks[i].g = this.itemRects[i] = this.main.append("g")
+		.attr("class", this.tracks[i].trackName)
+		.attr("width", this.layout.width_without_margins)
+		.attr("clip-path", "url(#trackClip_" + this.layout.name + ")");
+	    this.tracks[i].g.append("path")
+		.attr("class", this.tracks[i].trackName)
+		.attr("id", this.tracks[i].trackName)
+		.attr("stroke-width", 1)
+		.attr("fill", "none");
+
+	    this.displayPlotTrack(this.tracks[i], i);
 	    break;
 	default:
 	    // Do nothing for an unknown track type
@@ -438,6 +451,43 @@ genomeTrack.prototype.displayTrack = function(track, i) {
     rects.exit().remove();
 }
 
+genomeTrack.prototype.displayPlotTrack = function(track, i) {
+    var visStart = this.visStart,
+    visEnd = this.visEnd,
+    x1 = this.x1,
+    y1 = this.y1;
+
+    if((typeof track.visible == 'undefined') || (track.visible == false)) {
+    	return;
+    }
+
+    if((typeof track.linear_plot_width == 'undefined') || (typeof track.linear_plot_height == 'undefined')) {
+//    if((typeof track.linear_plot_width == 'undefined')) {
+	return;
+    }
+
+    var startItem = parseInt(visStart / track.bp_per_element);
+    var endItem = Math.min(parseInt(visEnd / track.bp_per_element), track.items.length);
+    var offset = ((startItem+1) * track.bp_per_element) - visStart;
+
+    var items = track.items.filter(function(d, i) { return i >= startItem && i <= endItem } );
+
+    track.plotScale = d3.scale.linear()
+	.domain([track.plot_min, track.plot_max])
+	.range([track.linear_plot_height+(track.linear_plot_width/2), track.linear_plot_height-(track.linear_plot_width/2)]);
+
+    var lineFunction = d3.svg.line()
+	.x(function(d, i) { return x1((i*track.bp_per_element)); } )
+	.y(function(d, i) { return track.plotScale(d); } )
+	.interpolate("linear");
+
+     var plot = this.itemRects[i].selectAll("path")
+	.attr("d", lineFunction(track.items))
+
+//    plot.exit().remove();
+
+}
+
 genomeTrack.prototype.displayGlyphTrack = function(track, i) {
     var visStart = this.visStart,
     visEnd = this.visEnd,
@@ -446,14 +496,6 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
 
     if((typeof track.visible !== 'undefined') && (track.visible != false)) {
     	return;
-    }
-
-    // Because of how the tooltip library binds to the SVG object we have to turn it
-    // on or off here rather than in the .on() call, we'll redirect the calls to
-    // a dummy do-nothing object if we're not showing tips in this context.
-    var tip = {show: function() {}, hide: function() {} };
-    if(('undefined' !== typeof track.showTooltip) && typeof track.showTooltip) {
-	tip = this.tip;
     }
 
     var items = track.items.filter(function(d) {return d.bp <= visEnd && d.bp >= visStart;});
@@ -489,7 +531,7 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
     var entering_glyphs = glyphs.enter()
     .append('path')
     .attr('id', function(d,i) { return track.trackName + "_glyph" + d.id; })
-    .attr('class', function(d) {return track.trackName + '_' + d.type})
+    .attr('class', function(d) {return track.trackName + '_' + d.type + " linear_" + track.trackName + '_' + d.type; })
     .attr("d", d3.svg.symbol().type(track.glyphType).size(track.linear_glyphSize))
     .attr("transform", function(d,i) {  return "translate(" + (x1(d.bp) + track.padding) + ',' + (track.linear_height - (track.linear_glyph_buffer * d.stackCount * track.invert))  + ")"; })
     .on("click", function(d,i) {
@@ -505,7 +547,6 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
 	    }
 	})
     .on('mouseover', function(d) { 
-	    tip.show(d);
 	    if('undefined' !== typeof track.linear_mouseover) {
 		var fn = window[track.linear_mouseover];
 		if('object' ==  typeof fn) {
@@ -516,7 +557,6 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
 	    }	
 	})
     .on('mouseout', function(d) { 
-	    tip.hide(d);
 	    if('undefined' !== typeof track.linear_mouseout) {
 		var fn = window[track.linear_mouseout];
 		if('object' ==  typeof fn) {
@@ -559,9 +599,6 @@ genomeTrack.prototype.resize = function(newWidth) {
 	this.layout.width - this.layout.left_margin -
 	this.layout.right_margin;
 
-    console.log("new width: " + this.layout.width);
-    console.log("new width_without_margins: " + this.layout.width_without_margins);
-
     this.x
 	.range([0,this.layout.width_without_margins]);
     this.x1
@@ -570,7 +607,6 @@ genomeTrack.prototype.resize = function(newWidth) {
     this.chart
 	.attr("width", this.layout.width)
 
-    console.log(this.clipPath);
     this.clipPath
 	.attr("width", this.layout.width_without_margins)
     
@@ -584,10 +620,11 @@ genomeTrack.prototype.resize = function(newWidth) {
 genomeTrack.prototype.dragresize = function(d) {
     var newWidth = d3.event.x;
     this.dragbar
-    .attr("transform", "translate(" + (newWidth- this.layout.left_margin -
+    .attr("transform", "translate(" + (newWidth -
 				       this.layout.right_margin) + "," + (this.dragbar_y_mid-15) + ")")
 
     this.resize(newWidth);
+    //    d3.event.preventDefault();
 
 }
 
@@ -608,7 +645,10 @@ genomeTrack.prototype.redraw = function() {
 	    this.displayTrack(this.tracks[i], i);
 	    break;
 	case "glyph":
-	this.displayGlyphTrack(this.tracks[i], i);
+	    this.displayGlyphTrack(this.tracks[i], i);
+	    break;
+	case "plot":
+	    this.displayPlotTrack(this.tracks[i], i);
 	    break;
 	default:
 	    // Do nothing for an unknown track type
