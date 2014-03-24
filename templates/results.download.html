@@ -24,6 +24,13 @@
   	    <option value="islandpick">All Islandpick</option>
       </select>
 	</span>
+  	<span id="imageformatcontainer" class="hidden">
+	  Select results type(s):<br />
+	  <select id="plottype" name="methods" class="chosen-select download-select" onchange="updateDownloadLink()">
+	    <option value="circular">Circular plot</option>
+	    <option value="linear">Linear plot</option>
+    </select>
+	</span>
   </td>
   <td class="downloadtable">
 	<span id="downloadformatcontainer">
@@ -85,14 +92,23 @@
 //			console.log("{% url "downloadcoordinates" %}?"+params);
 			$("#downloadResultsButton").attr("href", "{% url "downloadcoordinates" %}?aid={{ aid }}&"+params);
 			$('#resultstypecontainer').toggleClass('hidden', false);
+			$('#imageformatcontainer').toggleClass('hidden', true);
 		} else if(downloadtype == 'Sequence') {
 			$("#downloadResultsButton").attr("href", "{% url "downloadsequences" %}?aid={{ aid }}&"+params);						
 			$('#resultstypecontainer').toggleClass('hidden', false);
+			$('#imageformatcontainer').toggleClass('hidden', true);
 		} else {
 			$('#resultstypecontainer').toggleClass('hidden', true);
+			$('#imageformatcontainer').toggleClass('hidden', false);
 			var imageformat = $('#downloadformat').find(":selected").val();
-			$("#downloadResultsButton").attr("href", "javascript:submit_download_form(\"" + imageformat + "\", \"{{ genomename|cleanfilename }}\");"); 
-//			submit_download_form("svg", $("#downloadResultsButton"));
+			var plottype = $('#plottype').find(":selected").val();
+			if(plottype == 'circular') {
+			//			$("#downloadResultsButton").attr("href", "javascript:submit_download_form(\"" + imageformat + "\", \"{{ genomename|cleanfilename }}\");"); 
+				$("#downloadResultsButton").attr("href", "javascript:{{ plotName|default:"circular" }}Track.savePlot(1, \"{{ genomename|cleanfilename }}\", \"islandplot.css\", \"" + imageformat + "\");");
+			} else {
+			$	("#downloadResultsButton").attr("href", "javascript:{{ plotName|default:"circular" }}LinearTrack.savePlot(1, \"{{ genomename|cleanfilename }}\", \"islandplot.css\", \"" + imageformat + "\");"); 
+			}
+			//			submit_download_form("svg", $("#downloadResultsButton"));
 		}
 	}
 	

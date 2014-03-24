@@ -419,7 +419,7 @@ function submit_download_form(output_format, basefilename)
 	// I have all svg styling in svg_elements.css
 	for (var i=0;i<document.styleSheets.length; i++) {
 	  str = document.styleSheets[i].href;
-	  if (str.substr(str.length-16)=="islandviewer.css"){
+	  if (str.substr(str.length-14)=="islandplot.css"){
       	    var rules = document.styleSheets[i].rules;
             for (var j=0; j<rules.length;j++){
              style.textContent += (rules[j].cssText + "\n");
@@ -445,6 +445,7 @@ var content = clonedSVG.innerHTML.trim();
 	if(output_format == 'svg') {
 //	    hrefobj.attr("href", "data:image/svg+xml;base64," + btoa(content))
 	    var a = document.createElement('a');
+	console.log(content);
 	    a.href = "data:application/octet-stream;base64;attachment," + btoa(content);
 	    a.download = basefilename + ".svg";
 	    a.click();
