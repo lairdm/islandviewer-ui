@@ -131,3 +131,9 @@
     stroke-width: 1;	
     stroke: lightgrey;
 }
+
+.dragbar-shadow {
+    stroke-width: 1;	
+    stroke: lightgrey;
+    fill: transparent;
+}
