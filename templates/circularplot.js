@@ -374,27 +374,37 @@ function feature_tour() {
 	  steps: [
 	    {
 	      element: document.querySelector('{{ container }}'),
-	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can be use to refocus and zoom the linear viewer.<br />&nbsp;<br />And the plot can be resized using the drag bar in the lower right corner.",
+	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer below to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can be dragged to refocus and zoom the linear viewer.<br />&nbsp;<br />The plot can be resized using the drag bar in the lower right corner.",
 	      position: 'right'
 	    },
 	    {
 	      element: '{{ container }}linear',
-	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively. Clicking on a gene will take you to the NCBI gene card and clicking on an island will take you the the NCBI genome viewer for that bp range.<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.<br />&nbsp;<br />And the plot can be resized using the drag bar on the right side.",
+	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively (or use two fingers on your touch pad depending on your device).<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.<br />&nbsp;<br />Clicking on a gene will take you to the NCBI gene card and clicking on an island will take you the the NCBI genome viewer for that bp range.<br />&nbsp;<br />The plot can be resized using the drag bar on the right side.",
 	      position: 'top'
 	    },
 	    {
 	      element: '#gene_dialog',
-	      intro: "<b>Gene list</b><br />The gene dialog will show all the genes in the range currently visible in the linear viewer.  Islands and virulence factors are displayed by colour coded glyphs.<br />&nbsp;<br />The dialog may be resized and moved using your mouse.",
+	      intro: "<b>Gene list</b><br />The gene dialog will show all the genes in the range currently visible in the linear viewer, and bounded by the shaded region bounded by the black circles in the circular viewer. Islands, virulence factors, etc are marked with colour coded glyphs.<br />&nbsp;<br />The dialog may be resized and moved using your mouse.",
 	      position: 'left'
 	    },
 	    {
 	      element: document.querySelector('#legend'),
-	      intro: "<b>Legend</b><br />Individual tracks can be turned on and off using legend, they will be dynamically added/removed from the circular viewer.",
+	      intro: "<b>Legend</b><br />Individual tracks can be turned on and off using legend. They will be dynamically added/removed from the circular viewer.",
 	      position: 'right'
 	    },
 	    {
 	      element: document.querySelector('#download_container'),
 	      intro: "<b>Download dialog</b><br />Results and the circular viewer can be downloaded via the download dialog, click to expand it.",
+	      position: 'top'
+	    },
+	    {
+	      element: document.querySelector('#gitableheader'),
+	      intro: "<b>Genomic Islands table</b><br />Below is a summary of results grouped by detection method.",
+	      position: 'top'
+	    },
+	    {
+	      element: document.querySelector('#legend_help'),
+	      intro: "<b>More questions?</b><br />For more information see our help page and our FAQ, if you still have questions don't hesitate to contact us.",
 	      position: 'top'
 	    }
 	  ]
