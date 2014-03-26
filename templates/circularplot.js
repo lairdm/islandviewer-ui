@@ -374,12 +374,12 @@ function feature_tour() {
 	  steps: [
 	    {
 	      element: document.querySelector('{{ container }}'),
-	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can also be use to refocus and zoom the linear viewer.",
+	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can be use to refocus and zoom the linear viewer.<br />&nbsp;<br />And the plot can be resized using the drag bar in the lower right corner.",
 	      position: 'right'
 	    },
 	    {
 	      element: '{{ container }}linear',
-	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively. Clicking on a gene will take you to the NCBI gene card and clicking on an island will take you the the NCBI genome viewer for that bp range.<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.",
+	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively. Clicking on a gene will take you to the NCBI gene card and clicking on an island will take you the the NCBI genome viewer for that bp range.<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.<br />&nbsp;<br />And the plot can be resized using the drag bar on the right side.",
 	      position: 'top'
 	    },
 	    {
