@@ -115,11 +115,6 @@ function circularTrack(layout,tracks) {
 	    .attr("cursor", "ew-resize")
 	    .call(dragright);
 
-	this.dragbar.append("rect")
-	    .attr("width", 25)
-	    .attr("height", 20)
-	    .attr("fill-opacity", 0);
-
 	this.dragbar.append("line")
 	    .attr("x1", 16)
 	    .attr("x2", 16)
@@ -212,8 +207,6 @@ circularTrack.prototype.moveAxis = function() {
     this.axis_container
 	.selectAll("line")
 	.data(d3.range(0,cfg.genomesize, cfg.spacing))
-        .transition()
-        .duration(1000)
 	.attr("x1", function(d, i){return cfg.w/2 + (20*Math.cos((d*cfg.radians_pre_bp)-Math.PI/2));})
 	.attr("y1", function(d, i){return cfg.h/2 + (20*Math.sin((d*cfg.radians_pre_bp)-Math.PI/2));})
 	.attr("x2", function(d, i){return cfg.w/2 + (cfg.radius*Math.cos((d*cfg.radians_pre_bp)-Math.PI/2));})
@@ -222,8 +215,6 @@ circularTrack.prototype.moveAxis = function() {
     this.axis_container
 	.selectAll("text")
 	.data(d3.range(0,cfg.genomesize, cfg.spacing*cfg.legend_spacing))
-        .transition()
-        .duration(1000)
 	.attr("x", function(d, i){return cfg.w/2 + ((cfg.radius+10)*Math.cos((d*cfg.radians_pre_bp)-Math.PI/2));})
 	.attr("y", function(d, i){return cfg.h/2 + ((cfg.radius+10)*Math.sin((d*cfg.radians_pre_bp)-Math.PI/2));});
 
@@ -932,6 +923,14 @@ circularTrack.prototype.savePlot = function(scaling, filename, stylesheetfile, f
     var containertag = document.getElementById(container);
     var clonedSVG = containertag.cloneNode(true);
     var svg = clonedSVG.getElementsByTagName("svg")[0];
+
+    var tags = svg.getElementsByClassName("dragbar-shadow")
+    for(var i=0; i<tags.length; i++) {
+	if(tags[i].getAttributeNS(null, "name") === name) {
+	    console.log("Removing");
+	    tags[i].parentNode.removeChild(tags[i]);
+        }
+    }
 
     // We need to resize the svg with the new canvas size
     svg.removeAttribute('width');
