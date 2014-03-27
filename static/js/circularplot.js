@@ -31,6 +31,10 @@ function circularTrack(layout,tracks) {
 	    }
 	}
 
+    if('undefined' == typeof layout.plotid) {
+	this.layout.plotid = layout.container.slice(1);
+    }
+
     // Setup some constants we'll need and build the canvas
     this.layout.radians_pre_bp = this.layout.radians/this.layout.genomesize;
     this.layout.min_bp_per_slice = this.layout.min_radians / this.layout.radians_pre_bp;
@@ -114,6 +118,11 @@ function circularTrack(layout,tracks) {
 	    .attr("fill-opacity", .2)
 	    .attr("cursor", "ew-resize")
 	    .call(dragright);
+
+	this.dragbar.append("rect")
+	    .attr("width", 25)
+	    .attr("height", 20)
+	    .attr("fill-opacity", 0);
 
 	this.dragbar.append("line")
 	    .attr("x1", 16)
@@ -207,6 +216,8 @@ circularTrack.prototype.moveAxis = function() {
     this.axis_container
 	.selectAll("line")
 	.data(d3.range(0,cfg.genomesize, cfg.spacing))
+        .transition()
+        .duration(1000)
 	.attr("x1", function(d, i){return cfg.w/2 + (20*Math.cos((d*cfg.radians_pre_bp)-Math.PI/2));})
 	.attr("y1", function(d, i){return cfg.h/2 + (20*Math.sin((d*cfg.radians_pre_bp)-Math.PI/2));})
 	.attr("x2", function(d, i){return cfg.w/2 + (cfg.radius*Math.cos((d*cfg.radians_pre_bp)-Math.PI/2));})
@@ -215,6 +226,8 @@ circularTrack.prototype.moveAxis = function() {
     this.axis_container
 	.selectAll("text")
 	.data(d3.range(0,cfg.genomesize, cfg.spacing*cfg.legend_spacing))
+        .transition()
+        .duration(1000)
 	.attr("x", function(d, i){return cfg.w/2 + ((cfg.radius+10)*Math.cos((d*cfg.radians_pre_bp)-Math.PI/2));})
 	.attr("y", function(d, i){return cfg.h/2 + ((cfg.radius+10)*Math.sin((d*cfg.radians_pre_bp)-Math.PI/2));});
 
@@ -424,9 +437,9 @@ circularTrack.prototype.drawTrack = function(i, animate) {
 	    if('undefined' !== typeof track.mouseclick) {
 		var fn = window[track.mouseclick];
 		if('object' ==  typeof fn) {
-		    return fn.onclick(track.trackName, d);
+		    return fn.onclick(track.trackName, d, cfg.plotid);
 		} else if('function' == typeof fn) {
-		    return fn(d);
+		    return fn(track.trackName, d, cfg.plotid);
 		}
 
 	    } else {
@@ -437,9 +450,11 @@ circularTrack.prototype.drawTrack = function(i, animate) {
 	    if('undefined' !== typeof track.mouseover_callback) {
 		var fn = window[track.mouseover_callback];
 		if('object' ==  typeof fn) {
-		    return fn.mouseover(track.trackName, d);
+		    console.log("calling");
+		    fn.onmouseover(track.trackName, d, cfg.plotid);
+		    return true;
 		} else if('function' == typeof fn) {
-		    return fn(d);
+		    return fn(track.trackNamed, cfg.plotid);
 		}
 
 	    } else {
@@ -450,9 +465,9 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     	    if('undefined' !== typeof track.mouseover_callback) {
 		var fn = window[track.mouseout_callback];
 		if('object' ==  typeof fn) {
-		    return fn.mouseout(track.trackName, d);
+		    return fn.onmouseout(track.trackName, d, cfg.plotid);
 		} else if('function' == typeof fn) {
-		    return fn(d);
+		    return fn(track.trackNamed, cfg.plotid);
 		}
 
     	    } else {
@@ -927,7 +942,6 @@ circularTrack.prototype.savePlot = function(scaling, filename, stylesheetfile, f
     var tags = svg.getElementsByClassName("dragbar-shadow")
     for(var i=0; i<tags.length; i++) {
 	if(tags[i].getAttributeNS(null, "name") === name) {
-	    console.log("Removing");
 	    tags[i].parentNode.removeChild(tags[i]);
         }
     }

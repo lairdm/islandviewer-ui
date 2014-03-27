@@ -111,15 +111,19 @@ def circularplotjs(request, aid):
         pass
     
     # Fetch the virulence factors
+    params = [analysis.ext_id]
+    context['vir_factors'] = Genes.objects.raw("SELECT Genes.id, Genes.name, Genes.start, virulence.source, virulence.external_id FROM Genes, virulence WHERE ext_id=%s AND Genes.name = virulence.protein_accnum", params)
+
+
     island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
-    vir_dict = dict(Virulence.objects.using('microbedb').filter(protein_accnum__in=
-                                                                   list(island_genes.values_list('name', flat=True))).values_list('protein_accnum', 'source'))
     context['genes'] = island_genes
+ #   vir_dict = dict(Virulence.objects.using('microbedb').filter(protein_accnum__in=
+ #                                                                  list(island_genes.values_list('name', flat=True))).values_list('protein_accnum', 'source'))
     
-    context['vir_factors'] = []
-    for gene in island_genes:
-        if vir_dict.has_key(gene.name):
-            context['vir_factors'].append((gene.start,vir_dict[gene.name],gene.name,))
+#    context['vir_factors'] = []
+#    for gene in island_genes:
+#        if vir_dict.has_key(gene.name):
+#            context['vir_factors'].append((gene.start,vir_dict[gene.name],gene.name,))
 
 #    pprint.pprint(context['vir_factors']) 
     

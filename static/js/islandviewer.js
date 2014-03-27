@@ -1,12 +1,97 @@
-function Islandviewer(ext_id) {
+function Islandviewer(ext_id, genomesize) {
     this.ext_id = ext_id;
+    this.genomesize = genomesize;
     console.log("Called constructor " + this.ext_id);
 }
 
-Islandviewer.prototype.onclick = function(trackname, d) {
+Islandviewer.prototype.addCircularPlot = function(layout, data) {
+    this.circularplot = new circularTrack(layout, data);
+
+    return this.circularplot;
+}
+
+Islandviewer.prototype.addLinearPlot = function(layout, data) {
+    this.linearplot = new genomeTrack(layout, data);
+
+    return this.linearplot;
+}
+
+Islandviewer.prototype.onclick = function(trackname, d, plotid) {
     console.log("Got a callback " + d);
     console.log(trackname);
     console.log(d);
+    console.log(plotid);
+
+    if(plotid == 'circularchartlinear') {
+
+      if(trackname == 'circularVirulence') {
+        if(d.type == "VFDB") {
+          var url = 'http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=' + d.name;
+
+	  window.open(url);
+        }
+      } else if(trackname == 'circularGenes') {
+        var url = 'http://www.ncbi.nlm.nih.gov/protein/' + d.accnum;
+
+        window.open(url);
+      } else if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
+
+        var view_start = Math.max(0, (d.start-500));
+	var view_end = Math.min((d.end+500), this.genomesize);
+	var url = 'http://www.ncbi.nlm.nih.gov/projects/sviewer/?id=' + this.ext_id + '&v=' + view_start + '..' + view_end + '&m=' + d.start + ',' + d.end;
+
+	window.open(url);
+      }
+    } else if(plotid == 'circularchart') {
+
+      if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
+        clearTimeout(this.popup_timer);
+
+        var half_range = (d.end - d.start)/2;
+        this.linearplot.update(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
+
+        this.circularplot.moveBrushbyBP(Math.max(0,(d.start-half_range)), 
+                                                       Math.min(this.genomesize, (d.end+half_range)));
+
+        this.circularplot.showBrush();
+  
+        showHoverGenes(d, true);
+
+      }
+    }
+}
+
+Islandviewer.prototype.onmouseover = function(trackname, d, plotid) {
+    console.log("Got a callback " + d);
+    console.log(trackname);
+    console.log(d);
+    console.log(plotid);
+
+    if(plotid == 'circularchartlinear') {
+
+    } else if (plotid == 'circularchart') {
+      if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
+	console.log("timing!");
+        popup_d = d;
+        this.popup_timer = setTimeout(function() {showHoverGenes(popup_d);}, 1000);
+      }
+    }
+}
+
+Islandviewer.prototype.onmouseout = function(trackname, d, plotid) {
+    console.log("Got a callback " + d);
+    console.log(trackname);
+    console.log(d);
+    console.log(plotid);
+
+    if(plotid == 'circularchartlinear') {
+
+    } else if (plotid == 'circularchart') {
+      if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
+        clearTimeout(this.popup_timer);
+      }
+
+    }
 }
 
 // Called by the brush update functions in the visualization
@@ -80,7 +165,7 @@ Islandviewer.prototype.mouseover = function(trackName, d) {
     } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
 	$('.islandset_' + d.id).addClass("highlight_row");
     } else if(trackName == 'circularVirulence') {
-        $('.gene_' + d.name.replace('.', '')).addClass("highlight_row");
+        $('.gene_' + d.gene.replace('.', '')).addClass("highlight_row");
     }
 }
 
@@ -90,6 +175,6 @@ Islandviewer.prototype.mouseout = function(trackName, d) {
     } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
 	$('.islandset_' + d.id).removeClass("highlight_row");
     } else if(trackName == 'circularVirulence') {
-        $('.gene_' + d.name.replace('.', '')).removeClass("highlight_row");
+        $('.gene_' + d.gene.replace('.', '')).removeClass("highlight_row");
     }
 }
