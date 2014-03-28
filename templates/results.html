@@ -53,7 +53,10 @@
     <script src="{% static 'js/FileSaver/FileSaver.js' %}"></script>
     <script src="{% static 'js/jquery.dataTables.js' %}"></script>
     <span class="pageName">{{ genomename }}</span>
-    <div id="circularchart" style="width:550px; "><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
+    <div id="circularcontainer">
+    <div id="circularchart" style="width:550px; display:inline-block; float:left; " draggable="true"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
+    <div id="rightplot" style="float: left;"></div>
+    </div>
     <div id="gene_dialog"></div>
 	<div id="circularchartlinearwrapper" class="visible"><!--<img id="circularchartlinearclose" width="20" height="20" src="{% static 'img/close.svg' %}">--><div id="circularchartlinear" style="width:600px;"></div></div>
     <!--<div id="geneslist" class="hidden"><img id="genelistclose" width="20" height="20" src="{% static 'img/close.svg' %}">

@@ -55,39 +55,54 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid) {
 
         this.circularplot.showBrush();
   
-        showHoverGenes(d, true);
+        this.showHoverGenes(d, true);
 
       }
     }
 }
 
-Islandviewer.prototype.onmouseover = function(trackname, d, plotid) {
+Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
     console.log("Got a callback " + d);
     console.log(trackname);
     console.log(d);
     console.log(plotid);
 
     if(plotid == 'circularchartlinear') {
+      if(trackname == 'circularGenes') {
+  	$('#gene_overlay_' + d.id).addClass("highlight_row");
+      } else if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
+	$('.islandset_' + d.id).addClass("highlight_row");
+      } else if(trackname == 'circularVirulence') {
+        $('.gene_' + d.gene.replace('.', '')).addClass("highlight_row");
+      }
 
     } else if (plotid == 'circularchart') {
       if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
 	console.log("timing!");
-        popup_d = d;
-        this.popup_timer = setTimeout(function() {showHoverGenes(popup_d);}, 1000);
+        this.popup_d = d;
+//        this.popup_timer = setTimeout(function() {this.showHoverGenes(popup_d);}, 1000, [d, this]);
+        this.popup_timer = setTimeout(this.showHoverGenes.bind(this), 1000, this.popup_d, false);
       }
     }
 }
 
-Islandviewer.prototype.onmouseout = function(trackname, d, plotid) {
-    console.log("Got a callback " + d);
+Islandviewer.prototype.mouseout = function(trackname, d, plotid) {
+    console.log("mouseout callback " + d);
     console.log(trackname);
     console.log(d);
     console.log(plotid);
 
     if(plotid == 'circularchartlinear') {
+      if(trackname == 'circularGenes') {
+  	$('#gene_overlay_' + d.id).removeClass("highlight_row");
+      } else if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
+	$('.islandset_' + d.id).removeClass("highlight_row");
+      } else if(trackname == 'circularVirulence') {
+        $('.gene_' + d.gene.replace('.', '')).removeClass("highlight_row");
+      }
 
     } else if (plotid == 'circularchart') {
-      if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
+      if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
         clearTimeout(this.popup_timer);
       }
 
@@ -159,22 +174,11 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 	});
 }
 
-Islandviewer.prototype.mouseover = function(trackName, d) {
-    if(trackName == 'circularGenes') {
-	$('#gene_overlay_' + d.id).addClass("highlight_row");
-    } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
-	$('.islandset_' + d.id).addClass("highlight_row");
-    } else if(trackName == 'circularVirulence') {
-        $('.gene_' + d.gene.replace('.', '')).addClass("highlight_row");
-    }
+Islandviewer.prototype.showHoverGenes = function(d, do_half_range) {
+
+  var half_range = typeof do_half_range !== 'undefined' ? (d.end - d.start)/2 : 0;
+
+  $('#gene_dialog').dialog("open");
+  this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
 }
 
-Islandviewer.prototype.mouseout = function(trackName, d) {
-    if(trackName == 'circularGenes') {
-	$('#gene_overlay_' + d.id).removeClass("highlight_row");
-    } else if((trackName == 'circularIslandpick') || (trackName == 'circularDimob') || (trackName == 'circularSigi')) {
-	$('.islandset_' + d.id).removeClass("highlight_row");
-    } else if(trackName == 'circularVirulence') {
-        $('.gene_' + d.gene.replace('.', '')).removeClass("highlight_row");
-    }
-}

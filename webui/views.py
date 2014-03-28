@@ -82,9 +82,14 @@ def circularplotjs(request, aid):
     context['plotName'] = 'circular'
     if(request.GET.get('name')):
         context['plotName'] = request.GET.get('name')
+    context['varName'] = 'circular'
+    if(request.GET.get('varname')):
+        context['varName'] = request.GET.get('varname')
     context['container'] = '#circularchart'
     if(request.GET.get('container')):
         context['container'] = request.GET.get('container')
+    if(request.GET.get('skipinit')):
+        context['skip_initialize'] = True
 
     # Fetch the analysis
     try:

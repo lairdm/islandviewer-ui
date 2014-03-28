@@ -137,3 +137,14 @@
     stroke: lightgrey;
     fill: transparent;
 }
+
+.move-cross {
+    stroke-width: 1;
+    stroke: lightgrey;
+    fill: lightgrey;
+    cursor:move;
+}
+
+.move-shadow {
+    cursor:move !important;
+}

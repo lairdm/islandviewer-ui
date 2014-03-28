@@ -1,4 +1,4 @@
-var {{ plotName|default:"circular" }}data = [
+var {{ varName|default:"circular" }}data = [
 {% comment %}Genes for linear view{% endcomment %}
 	{ trackName: "{{ plotName|default:"circular" }}Genes",
 	  trackType: "stranded",
@@ -132,11 +132,18 @@ var {{ plotName|default:"circular" }}data = [
 	}{% endif %}
 ];
 
+var {{ varName|default:"circular" }}_genomesize = {{ genomesize }};
+
+{% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
+{% if not skip_initialize %}
+
 var islandviewerObj = new Islandviewer('{{ext_id}}', {{ genomesize|default:"0" }});
 
-var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20 };
+var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true };
+$('{{ container }}').draggable();
 //var {{ plotName|default:"circular" }}Track = new circularTrack({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
-var {{ plotName|default:"circular" }}Track = islandviewerObj.addCircularPlot({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
+var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
+
 
 $('#loadingimg').remove();
 
@@ -144,10 +151,10 @@ var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }
 //var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
 var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
 
-{{ plotName|default:"circular" }}Track.attachBrush({{ plotName|default:"circular" }}LinearTrack);
-{{ plotName|default:"circular" }}LinearTrack.addBrushCallback({{ plotName|default:"circular" }}Track);
+{{ plotName|default:"circular" }}TrackObj.attachBrush({{ plotName|default:"circular" }}LinearTrack);
+{{ plotName|default:"circular" }}LinearTrack.addBrushCallback({{ plotName|default:"circular" }}TrackObj);
 
-{{ plotName|default:"circular" }}Track.attachBrush(islandviewerObj);
+{{ plotName|default:"circular" }}TrackObj.attachBrush(islandviewerObj);
 {{ plotName|default:"circular" }}LinearTrack.addBrushCallback(islandviewerObj);
 
 $('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{ container }}_svg" },
@@ -174,74 +181,27 @@ function updateStrand(cb, strand) {
   }
 
   if(cb.checked) {
-    {{ plotName|default:"circular" }}Track.showTrack(track);
+    {{ plotName|default:"circular" }}TrackObj.showTrack(track);
   } else {
-    {{ plotName|default:"circular" }}Track.hideTrack(track);
+    {{ plotName|default:"circular" }}TrackObj.hideTrack(track);
   }
 }
 
 function updateVirulence(cb, vir_factor) {
   if(cb.checked) {
-    {{ plotName|default:"circular" }}Track.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+    {{ plotName|default:"circular" }}TrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
   } else {
-    {{ plotName|default:"circular" }}Track.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+    {{ plotName|default:"circular" }}TrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
   }
 }
 
-function showHoverGenes(d, do_half_range) {
 
-  var half_range = typeof do_half_range !== 'undefined' ? (d.end - d.start)/2 : 0;
 
-  $('#gene_dialog').dialog("open");
-  islandviewerObj.update_finished(Math.max(0,(d.start-half_range)), Math.min({{ genomesize }}, (d.end+half_range)));
-}
 
-// Old island genes table below the linear view, not used anymore
-function showIslandGenes(d) {
-
-  $.getJSON('{% url 'genesjson' gi_id='00000' %}'.replace('00000', d.id), function(data) {
-	  var tablediv = $('#geneslist');
-	  var toshow; var tohide;
-	  if(data.genes.length == 0) {
-	    toshow = $("#geneslistnothing");
-	    tohide = $("#geneslistvalues");
-          } else {
-	    toshow = $("#geneslistvalues");
-	    tohide = $("#geneslistnothing");
-	  }
-	  if(tablediv.hasClass("hidden")) {
-	    tablediv.removeClass("hidden").addClass("visible");
-	  }
-	  if(toshow.hasClass("hidden")) {
-	    toshow.removeClass("hidden").addClass("visible");
-	  }
-	  if(tohide.hasClass("visible")) {
-	    tohide.removeClass("visible").addClass("hidden");
-	  }
-	  geneList.fnClearTable();
-
-	  geneList.fnAddData(data.genes);
-      });
-}
-
-// Old island genes table below the linear view, not used anymore
-$('#genelistclose').click(function() {
-  var tablediv = $('#geneslist');
-  if(tablediv.hasClass("visible")) {
-    tablediv.removeClass("visible").addClass("hidden");
-  }
-});
-
-var popup_timer;
-var popup_d;
 
 window.onload = function() {
-//  var wrapperdiv = $('#circularchartlinearwrapper');
-//  if(wrapperdiv.hasClass("linear_hidden")) {
-//    wrapperdiv.removeClass("linear_hidden").addClass("hidden");
-//  }
 
-  {{ plotName|default:"circular" }}Track.hideBrush();
+  {{ plotName|default:"circular" }}TrackObj.hideBrush();
 
   for(var i=0; i < {{ plotName|default:"circular" }}data.length; i++) {
     if({{ plotName|default:"circular" }}data[i].trackName == "{{ plotName|default:"circular" }}Integrated") {
@@ -256,56 +216,32 @@ window.onload = function() {
       {{ plotName|default:"circular" }}LinearTrack.update(Math.max(0,(item.start-half_range)), Math.min({{ genomesize }}, (item.end+half_range)));
 //      {{ plotName|default:"circular" }}LinearTrack.update(2840000,2905000);
 
-      {{ plotName|default:"circular" }}Track.moveBrushbyBP(Math.max(0,(item.start-half_range)), 
+      {{ plotName|default:"circular" }}TrackObj.moveBrushbyBP(Math.max(0,(item.start-half_range)), 
                                                        Math.min({{ genomesize }}, (item.end+half_range)));
 
-      {{ plotName|default:"circular" }}Track.showBrush();
+      {{ plotName|default:"circular" }}TrackObj.showBrush();
 
       islandviewerObj.update_finished(Math.max(0,(item.start-half_range)), Math.min({{ genomesize }}, (item.end+half_range)));
       }
     }
   }
 
-
+//  load_second();
 };
 
+function load_second() {
+  var url = "/islandviewer/plot/553?skipinit=true&varname=second";
 
-$('#circularchartlinearclose').click(function() {
-  var tablediv = $('#circularchartlinearwrapper');
-  if(tablediv.hasClass("visible")) {
-    tablediv.removeClass("visible").addClass("hidden");
-  }
+  $.getScript( url, function() {
+    console.log("loaded");
+    console.log(second_genomesize);
 
-  {{ plotName|default:"circular" }}Track.hideBrush();
+    var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart' };
+    var secondTrack = new circularTrack(secondlayout, seconddata);
+    $('#rightplot').draggable();
 
-});
-
-// Old genes list table below the linear view, no longer used
-var geneList = $('#geneslisttable').dataTable({
-	"bPaginate": false,
-    "bLengthChange": false,
-    "bFilter": false,
-    "bSort": false,
-    "bInfo": false,
-    "bAutoWidth": false,
-    "aoColumns": [
-	{"mData": null, "bVisible": true},
-	{"mData": "name", "bVisible": true},
-	{"mData": "gene", "bVisible": true},
-	{"mData": "locus", "bVisible": true},
-	{"mData": "product", "bVisible": true},
-	],
-    "aoColumnDefs": [
-	{ "aTargets": [0],
-	  "mData": null,
-	  "mRender": function(data, type, full) {
-	               return full.start + ".." + full.end + "(" + full.strand + ")";
-	             },
-        }
-      ]
-
-});
-
+  });
+}
 
 function feature_tour() {
 
@@ -376,4 +312,4 @@ function feature_tour() {
 	intro.start();
 }
 
-
+{% endif %}
