@@ -8,9 +8,9 @@ var {{ varName|default:"circular" }}data = [
 	  showLabels: true,
 	  showTooltip: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
-	  linear_mouseclick: 'islandviewerObj',{% endif %}
-	  linear_mouseover: 'islandviewerObj',
-	  linear_mouseout: 'islandviewerObj',
+	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
+	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
+	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
 		{% for gene in genes %}
 		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{{ gene.locus }}", accnum: "{{ gene.name }}" },
@@ -23,13 +23,13 @@ var {{ varName|default:"circular" }}data = [
 	  inner_radius: {{ ip_inner_radius|default:50 }},
 	  outer_radius: {{ ip_outer_radius|default:100 }},
 	  min_slice: true,
-	  mouseover_callback: 'islandviewerObj',
-	  mouseout_callback: 'islandviewerObj',
-	  mouseclick: 'islandviewerObj',
+	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
-	  linear_mouseclick: 'islandviewerObj',{% endif %}
-	  linear_mouseover: 'islandviewerObj',
-	  linear_mouseout: 'islandviewerObj',
+	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
+	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
+	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Islandpick" %}{id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}{% endif %}
@@ -41,13 +41,13 @@ var {{ varName|default:"circular" }}data = [
 	  trackType: "track",
 	  inner_radius: {{ sigi_inner_radius|default:100 }},
 	  outer_radius: {{ sigi_outer_radius|default:150 }},
-	  mouseover_callback: 'islandviewerObj',
-	  mouseout_callback: 'islandviewerObj',
-	  mouseclick: 'islandviewerObj',
+	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
-	  linear_mouseclick: 'islandviewerObj',{% endif %}
-	  linear_mouseover: 'islandviewerObj',
-	  linear_mouseout: 'islandviewerObj',
+	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
+	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
+	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Sigi" %}
@@ -62,13 +62,13 @@ var {{ varName|default:"circular" }}data = [
 	  inner_radius: {{ dimob_inner_radius|default:150 }},
 	  outer_radius: {{ dimob_outer_radius|default:200 }},
 	  min_slice: true,
-	  mouseover_callback: 'islandviewerObj',
-	  mouseout_callback: 'islandviewerObj',
-	  mouseclick: 'islandviewerObj',
+	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
 	  {% if ext_id %}ext_id: '{{ext_id}}',
-	  linear_mouseclick: 'islandviewerObj',{% endif %}
-	  linear_mouseover: 'islandviewerObj',
-	  linear_mouseout: 'islandviewerObj',
+	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
+	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
+	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
 	    {% for gi in gis %}
 	       {% if gi.prediction_method == "Dimob" %}
@@ -82,9 +82,9 @@ var {{ varName|default:"circular" }}data = [
 	  trackType: "track",
 	  inner_radius: {{ int_inner_radius|default:215 }},
 	  outer_radius: {{ int_outer_radius|default:250 }},
-	  mouseover_callback: 'islandviewerObj',
-	  mouseout_callback: 'islandviewerObj',
-	  mouseclick: 'islandviewerObj',
+	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
+	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
 	  skipLinear: true,
 	  items: [
 	    {% for gi in gis %}
@@ -121,9 +121,9 @@ var {{ varName|default:"circular" }}data = [
           linear_height: 5,
           linear_invert: true,
 	  showTooltip: true,
-	  linear_mouseover: 'islandviewerObj',
-	  linear_mouseout: 'islandviewerObj',
-          linear_mouseclick: 'islandviewerObj',
+	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
+	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
+          linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
 	     {% for vir in vir_factors %}
 	       {id: {{ forloop.counter }}, bp: {{ vir.start }}, type: '{{ vir.source }}', name: '{{ vir.external_id }}', gene: '{{ vir.name }}'}{% if not forloop.last %},{% endif %}
@@ -133,6 +133,7 @@ var {{ varName|default:"circular" }}data = [
 ];
 
 var {{ varName|default:"circular" }}_genomesize = {{ genomesize }};
+var {{ varName|default:"circular" }}_extid = "{{ ext_id }}";
 
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
@@ -140,7 +141,9 @@ var {{ varName|default:"circular" }}_genomesize = {{ genomesize }};
 var islandviewerObj = new Islandviewer('{{ext_id}}', {{ genomesize|default:"0" }});
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true };
-$('{{ container }}').draggable();
+
+var {{ varName|default:"circular" }}containerid =  "{{ container }}".slice(1);
+$('{{ container }}').draggable({ handle: ".move_" +  {{ varName|default:"circular" }}containerid });
 //var {{ plotName|default:"circular" }}Track = new circularTrack({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
 var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
 
@@ -162,11 +165,11 @@ $('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{
 			    title: "Genes",
 			    autoOpen: false } );
 
-$('#genome_selector_dialog').dialog( { position: { my: "center", at: "center", of: window },
-                                       height: 250, width: 400,
-                                       title: "Select a genome",
-                                       autoOpen: true
-                                      } );
+//$('#genome_selector_dialog').dialog( { position: { my: "center", at: "center", of: window },
+//                                       height: 300, width: 600,
+//                                       title: "Select a genome",
+//                                       autoOpen: true
+//                                      } );
 
 function updateStrand(cb, strand) {
   var track = '';
@@ -232,44 +235,104 @@ window.onload = function() {
     }
   }
 
+  $("#second_genome_select").chosen({width: "525px"});
+
 //  load_second();
 };
 
 function show_genome_dialog() {
   url = '{% url 'browsejson'  %}';
 
+  if($('#genome_selector_dialog').is(":visible")) {
+    console.log("here");
+    $('#show_second_link').html("Visualize two genomes");
+    return;
+  }
+
   $.ajax({
 	    url: url,
 	    type: "get",
+            dataType: "json",
 	    success: function(data) {
-              console.log(data);
-              var html = "<select id=\"genomelist\" class=\"chosen-select extraclass\" style=\"width:550px;\" data-placeholder=\"Select a genome...\">\n";
-              html += "<option></option>\n";
+              $("#second_genome_select").empty();
               var genomes = data.genomes;
               for(var i = 0; i < genomes.length; ++i) {
-                html += "<option value=\"" + genomes[i].aid + "\">" + genomes[i].name + " (" + genomes[i].ext_id + ")</option>\n";
+                $("#second_genome_select").append("<option value=\"" + genomes[i].aid + "\">" + genomes[i].name + " (" + genomes[i].ext_id + ")</option>\n");
               }
 
-              html += "</select><br />\n";
+              $('#show_second_link').html("Hide dialog");
+              $('#genome_selector_dialog').slideToggle('hidden', false);
+              $("#second_genome_select").trigger("chosen:updated");
+//              $('#genome_selector_dialog').dialog("open");
 
-              $('#genome_selector_dialog').html(html);
-              $('#genome_selector_dialog').dialog("open");
-
+          }, 
+          error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
           }
+
 
   });
 }
 
 function load_second() {
-  var url = "/islandviewer/plot/553?skipinit=true&varname=second";
+  aid = $("#second_genome_select").val();
+
+  console.log("loading " + aid);
+
+  $('#genome_selector_dialog').slideToggle('hidden');
+
+  $('#show_second_link').html("Visualize two genomes");
+  var title = $("#second_genome_select").find(":selected").text();
+
+  $('#second_genome_title').html(title);
+
+  var url = "{% url 'circularplotjs' '9999' %}".replace("9999", aid);
+  url += "?skipinit=true&varname=second";
+//  var url = "/islandviewer/plot/553?skipinit=true&varname=second";
+
+  console.log(url);
 
   $.getScript( url, function() {
     console.log("loaded");
     console.log(second_genomesize);
 
+    window.secondislandviewerObj = new Islandviewer(second_extid, second_genomesize);
+
     var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart' };
-    var secondTrack = new circularTrack(secondlayout, seconddata);
-    $('#rightplot').draggable();
+//    var secondTrackObj = new circularTrack(secondlayout, seconddata);
+    var secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout, seconddata);    
+    $('#rightplot').draggable({ handle: ".move_rightplot" });
+
+    var secondLinearlayout = {genomesize: second_genomesize, container: "#secondchartlinear", width: 600, height: 135, bottom_margin:0};
+//    var secondLinearTrack = new genomeTrack(secondLinearlayout, seconddata);
+    var secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout, seconddata);
+
+    secondTrackObj.attachBrush(secondLinearTrack);
+    secondLinearTrack.addBrushCallback(secondTrackObj);
+
+    secondTrackObj.attachBrush(secondislandviewerObj);
+    secondLinearTrack.addBrushCallback(secondislandviewerObj);
+
+    for(var i=0; i < seconddata.length; i++) {
+      if(seconddata[i].trackName == "{{ plotName|default:"circular" }}Integrated") {
+        if({{ plotName|default:"circular" }}data[i].items.length > 0) {
+          item = {{ plotName|default:"circular" }}data[i].items[0];
+        }
+
+        var half_range = (item.end - item.start)/2;
+        secondLinearTrack.update(Math.max(0,(item.start-half_range)), Math.min(second_genomesize, (item.end+half_range)));
+//      {{ plotName|default:"circular" }}LinearTrack.update(2840000,2905000);
+
+        secondTrackObj.moveBrushbyBP(Math.max(0,(item.start-half_range)), 
+                                                       Math.min(second_genomesize, (item.end+half_range)));
+
+        secondTrackObj.showBrush();
+
+        secondislandviewerObj.update_finished(Math.max(0,(item.start-half_range)), Math.min(second_genomesize, (item.end+half_range)));
+      }
+    }
+
 
   });
 }

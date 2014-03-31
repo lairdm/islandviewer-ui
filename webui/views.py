@@ -90,7 +90,7 @@ def circularplotjs(request, aid):
     context['plotName'] = 'circular'
     if(request.GET.get('name')):
         context['plotName'] = request.GET.get('name')
-    context['varName'] = 'circular'
+    context['varName'] = ''
     if(request.GET.get('varname')):
         context['varName'] = request.GET.get('varname')
     context['container'] = '#circularchart'

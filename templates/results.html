@@ -52,27 +52,27 @@
     <script src="{% static 'js/canvg/canvg.js' %}"></script>
     <script src="{% static 'js/FileSaver/FileSaver.js' %}"></script>
     <script src="{% static 'js/jquery.dataTables.js' %}"></script>
-    <span class="pageName">{{ genomename }}</span>
-    <div id="circularcontainer">
-    <div id="circularchart" style="width:550px; display:inline-block; float:left; " draggable="true"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
-    <div id="rightplot" style="float: left;"></div>
-    </div>
-    <div id="gene_dialog"></div>
-    <div id="genome_selector_dialog"></div>
-	<div id="circularchartlinearwrapper" class="visible"><!--<img id="circularchartlinearclose" width="20" height="20" src="{% static 'img/close.svg' %}">--><div id="circularchartlinear" style="width:600px;"></div></div>
-    <!--<div id="geneslist" class="hidden"><img id="genelistclose" width="20" height="20" src="{% static 'img/close.svg' %}">
-    <span id="geneslistnothing" class="hidden">Sorry, no genes were found in this island.</span>
-    <span id="geneslistvalues" class="hidden"><table id="geneslisttable" class="gitable table table-condensed idb-table" style="font-size: 90%">
-	<thead>
-      <tr>
-        <td>Coordinates</td><td>Name</td><td>Gene</td><td>Locus</td><td>Product</td>
-      </tr>
-    </thead>
-    </table></span>
+    <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
+    <select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
+    		<option></option>
+    </select><br />
+    <span ><a href="javascript:load_second();">Display genome</a></span><br />
+    &nbsp;<br />
+ 	</div>
+ 	<div id="outer_circular" style="white-space: nowrap;">
+    <div id="circularcontainer" style="width:550px; display:inline-block; ">
+      <span class="pageName">{{ genomename }}</span><br />
+      <div id="circularchart" draggable="true"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
     </div>
 
-    <div class="hidden"><button id="save_as_png" value="">
-			Save as High-Res PNG</button></div>-->
+    <div id="secondcircularcontainer" style="display:inline-block; vertical-align: top;">
+      <span class="pageName" id="second_genome_title"></span><br />
+      <div id="rightplot" ></div>
+    </div>
+    </div>
+	<div id="circularchartlinearwrapper" class="visible"><div id="circularchartlinear" style="width:600px;"></div></div>
+	<div id="secondlinearwrapper" class="visible"><div id="secondchartlinear" style="width:600px;"></div></div>
+	<div id="gene_dialog"></div>
     <script src="/islandviewer/plot/{{ aid }}"></script>
 
     {% include "results.download.html" %}
