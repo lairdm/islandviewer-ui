@@ -1,0 +1,10 @@
+{
+  "genomes": [
+             {% for genome in analysis %}
+              { "name": "{{ genome.name }}",
+                "aid": {{ genome.aid }},
+                "ext_id": "{{ genome.ext_id }}"
+              }{% if not forloop.last %},{% endif %}
+             {% endfor %}  
+             ]
+} 
