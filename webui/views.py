@@ -27,6 +27,14 @@ def showgenomes(request):
     
     return render(request, 'selectgenome.html', context)
 
+def showgenomesjson(request):
+    context = {}
+    
+    params = [STATUS['COMPLETE'], Analysis.MICROBEDB]
+    context['analysis'] = Analysis.objects.raw("SELECT Analysis.aid as aid, Analysis.ext_id as ext_id, NameCache.name as name FROM Analysis, NameCache WHERE Analysis.ext_id = NameCache.cid AND Analysis.status = %s AND Analysis.default_analysis = 1 AND Analysis.atype = %s ORDER BY NameCache.name", params)
+    
+    return render(request, "selectgenome.json", context, content_type='text/javascript')
+
 def results(request, aid):
     # Create the context we're going to add
     # our variables for rending to

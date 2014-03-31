@@ -162,6 +162,12 @@ $('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{
 			    title: "Genes",
 			    autoOpen: false } );
 
+$('#genome_selector_dialog').dialog( { position: { my: "center", at: "center", of: window },
+                                       height: 250, width: 400,
+                                       title: "Select a genome",
+                                       autoOpen: true
+                                      } );
+
 function updateStrand(cb, strand) {
   var track = '';
 
@@ -228,6 +234,31 @@ window.onload = function() {
 
 //  load_second();
 };
+
+function show_genome_dialog() {
+  url = '{% url 'browsejson'  %}';
+
+  $.ajax({
+	    url: url,
+	    type: "get",
+	    success: function(data) {
+              console.log(data);
+              var html = "<select id=\"genomelist\" class=\"chosen-select extraclass\" style=\"width:550px;\" data-placeholder=\"Select a genome...\">\n";
+              html += "<option></option>\n";
+              var genomes = data.genomes;
+              for(var i = 0; i < genomes.length; ++i) {
+                html += "<option value=\"" + genomes[i].aid + "\">" + genomes[i].name + " (" + genomes[i].ext_id + ")</option>\n";
+              }
+
+              html += "</select><br />\n";
+
+              $('#genome_selector_dialog').html(html);
+              $('#genome_selector_dialog').dialog("open");
+
+          }
+
+  });
+}
 
 function load_second() {
   var url = "/islandviewer/plot/553?skipinit=true&varname=second";
