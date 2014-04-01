@@ -52,6 +52,7 @@
     <script src="{% static 'js/canvg/canvg.js' %}"></script>
     <script src="{% static 'js/FileSaver/FileSaver.js' %}"></script>
     <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+	<div id="gene_dialog"></div>
     <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
     <select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
     		<option></option>
@@ -66,13 +67,16 @@
     </div>
 
     <div id="secondcircularcontainer" style="display:inline-block; vertical-align: top;">
-      <span class="pageName" id="second_genome_title"></span><br />
+      <span id="second_genome_title_wrapper" style="display:none;"><img onclick="javascript:hide_second();" src="{% static 'img/close.svg' %}" height="20px" style="vertical-align:top;">&nbsp;<span class="pageName" id="second_genome_title"></span></span><br />
       <div id="rightplot" ></div>
     </div>
     </div>
-	<div id="circularchartlinearwrapper" class="visible"><div id="circularchartlinear" style="width:600px;"></div></div>
-	<div id="secondlinearwrapper" class="visible"><div id="secondchartlinear" style="width:600px;"></div></div>
-	<div id="gene_dialog"></div>
+	<div id="circularchartlinearwrapper" class="visible">
+	  <div id="circularchartlinear" style="width:600px;"></div>
+	</div>
+	<div id="secondlinearwrapper" class="visible">
+	  <div id="secondchartlinear" style="width:600px;"></div>
+	</div>
     <script src="/islandviewer/plot/{{ aid }}"></script>
 
     {% include "results.download.html" %}

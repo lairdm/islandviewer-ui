@@ -1,7 +1,8 @@
-function Islandviewer(ext_id, genomesize) {
+function Islandviewer(ext_id, genomesize, genomename) {
     this.ext_id = ext_id;
     this.genomesize = genomesize;
-    console.log("Called constructor " + this.ext_id);
+    this.genomename = genomename;
+    console.log("Called constructor " + this.ext_id + ' ' + genomename);
 }
 
 Islandviewer.prototype.addCircularPlot = function(layout, data) {
@@ -118,6 +119,7 @@ Islandviewer.prototype.update = function(startBP, endBP) {
 
 Islandviewer.prototype.update_finished = function(startBP, endBP) {
     url = '/islandviewer/json/genes/?ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
+    self = this;
 
 //        console.log(url);
 
@@ -131,8 +133,8 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 		    if(genes.hasOwnProperty(gene)) {
 			row = genes[gene];
 			html += "<tr id=\"gene_overlay_" + row.geneid + "\" ";
+			html += "class=\"";
 			if(row.gi && row.gi !== 0) {
-			    html += "class=\"";
 			    gis = row.gi.split(',');
 			    for(var i = 0; i < gis.length; i++) {
 				html += "islandset_" + gis[i] + ' ';
@@ -165,11 +167,14 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 				html += "<span class=\"virulencecircle virulencecircle_PAG\">&nbsp;</span>";
 			    }
 			}
-			html += "&nbsp;</td><td>" + row.gene + "</td><td>" + row.name + "</td><td>" + row.product + "</td></tr>";
+
+			html += "&nbsp;</td><td>" + row.gene + "</td><td><a href=\"http://www.ncbi.nlm.nih.gov/protein/" + row.name + "\" target=\"_blank\">" + row.name + "</a></td><td>" + row.product + "</td></tr>";
 		    }
 		}
 		html += "</table>";
 		$('#gene_dialog').html(html);
+                $('#gene_dialog').dialog('option', 'title', 'Genes (' + self.genomename + ')');
+
 	    }
 	});
 }

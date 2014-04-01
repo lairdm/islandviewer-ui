@@ -134,11 +134,12 @@ var {{ varName|default:"circular" }}data = [
 
 var {{ varName|default:"circular" }}_genomesize = {{ genomesize }};
 var {{ varName|default:"circular" }}_extid = "{{ ext_id }}";
+var {{ varName|default:"circular" }}_genomename = "{{ genomename }}";
 
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
 
-var islandviewerObj = new Islandviewer('{{ext_id}}', {{ genomesize|default:"0" }});
+var islandviewerObj = new Islandviewer('{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}");
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true };
 
@@ -191,16 +192,28 @@ function updateStrand(cb, strand) {
 
   if(cb.checked) {
     {{ plotName|default:"circular" }}TrackObj.showTrack(track);
+    if('undefined' !== typeof window.secondTrackObj) {
+      window.secondTrackObj.showTrack(track);
+    }
   } else {
     {{ plotName|default:"circular" }}TrackObj.hideTrack(track);
+    if('undefined' !== typeof window.secondTrackObj) {
+      window.secondTrackObj.hideTrack(track);
+    }
   }
 }
 
 function updateVirulence(cb, vir_factor) {
   if(cb.checked) {
     {{ plotName|default:"circular" }}TrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+    if('undefined' !== typeof window.secondTrackObj) {
+      window.secondTrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+    }
   } else {
     {{ plotName|default:"circular" }}TrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+    if('undefined' !== typeof window.secondTrackObj) {
+      window.secondTrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+    }
   }
 }
 
@@ -244,8 +257,8 @@ function show_genome_dialog() {
   url = '{% url 'browsejson'  %}';
 
   if($('#genome_selector_dialog').is(":visible")) {
-    console.log("here");
     $('#show_second_link').html("Visualize two genomes");
+    $('#genome_selector_dialog').slideToggle('hidden', false);
     return;
   }
 
@@ -286,6 +299,7 @@ function load_second() {
   var title = $("#second_genome_select").find(":selected").text();
 
   $('#second_genome_title').html(title);
+  $('#second_genome_title_wrapper').show();
 
   var url = "{% url 'circularplotjs' '9999' %}".replace("9999", aid);
   url += "?skipinit=true&varname=second";
@@ -297,16 +311,16 @@ function load_second() {
     console.log("loaded");
     console.log(second_genomesize);
 
-    window.secondislandviewerObj = new Islandviewer(second_extid, second_genomesize);
+    window.secondislandviewerObj = new Islandviewer(second_extid, second_genomesize, second_genomename);
 
     var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart' };
 //    var secondTrackObj = new circularTrack(secondlayout, seconddata);
-    var secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout, seconddata);    
+    window.secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout, seconddata);    
     $('#rightplot').draggable({ handle: ".move_rightplot" });
 
-    var secondLinearlayout = {genomesize: second_genomesize, container: "#secondchartlinear", width: 600, height: 135, bottom_margin:0};
+    var secondLinearlayout = {genomesize: second_genomesize, container: "#secondchartlinear", width: 600, height: 135, bottom_margin:0, plotid: 'circularchartlinear'};
 //    var secondLinearTrack = new genomeTrack(secondLinearlayout, seconddata);
-    var secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout, seconddata);
+    window.secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout, seconddata);
 
     secondTrackObj.attachBrush(secondLinearTrack);
     secondLinearTrack.addBrushCallback(secondTrackObj);
@@ -335,6 +349,17 @@ function load_second() {
 
 
   });
+}
+
+function hide_second() {
+  $('#second_genome_title_wrapper').hide();
+
+  $('#rightplot').html('');
+  $('#secondchartlinear').html('');
+
+  delete secondislandviewerObj;
+  delete secondTrackObj;
+  delete secondLinearTrack;
 }
 
 function feature_tour() {
@@ -383,6 +408,11 @@ function feature_tour() {
 	    {
 	      element: document.querySelector('#legend'),
 	      intro: "<b>Legend</b><br />Individual tracks can be turned on and off using legend. They will be dynamically added/removed from the circular viewer.",
+	      position: 'right'
+	    },
+	    {
+	      element: document.querySelector('#show_second_link'),
+	      intro: "<b>Visualize two genomes</b><br />A second genome can be display to allow comparison of results. Click here to show the genome selector.",
 	      position: 'right'
 	    },
 	    {

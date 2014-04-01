@@ -109,8 +109,10 @@ def circularplotjs(request, aid):
     if(analysis.atype == Analysis.CUSTOM):
         genome = CustomGenome.objects.get(pk=analysis.ext_id)
         context['genomesize'] = genome.rep_size
+        context['genomename'] = genome.name
     elif(analysis.atype == Analysis.MICROBEDB):
-        context['genomesize'] = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].rep_size
+        (context['genomesize'], gpv_id) = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id).values_list("rep_size", "gpv_id")[0]
+        context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
         context['ext_id'] = analysis.ext_id
 #        context['genomesize'] = '6000000'
 
