@@ -269,6 +269,14 @@ input[type=file] {
 }
 
 /* Section for GI tables */
+.gitable_fullwidth {
+  max-width: 100%;
+}
+
+.gitable_halfwidth {
+  max-width: 600px;
+}
+
 .gitable .odd.method0 {
 	background-color: #E8606A !important;	
 }
@@ -307,6 +315,9 @@ input[type=file] {
 }
 .visible>div {
 	display:block;
+}
+.visinline {
+    display:inline-block;
 }
 
 /* Section for download expand/collapse */

@@ -330,8 +330,8 @@ function load_second() {
 
     for(var i=0; i < seconddata.length; i++) {
       if(seconddata[i].trackName == "{{ plotName|default:"circular" }}Integrated") {
-        if({{ plotName|default:"circular" }}data[i].items.length > 0) {
-          item = {{ plotName|default:"circular" }}data[i].items[0];
+        if(seconddata[i].items.length > 0) {
+          item = seconddata[i].items[0];
         }
 
         var half_range = (item.end - item.start)/2;
@@ -347,8 +347,27 @@ function load_second() {
       }
     }
 
+    // Next we need to display the gi table, this will involve
+    // changing the div from hidden to inline-block,
+    // resizing the existing gitable to fit, and calling the redraw
+    // function for the table headers
+    $('#main_gitable').switchClass('gitable_fullwidth', 'gitable_halfwidth', 400, 'swing', function() { oTable.fnAdjustColumnSizing(); });
+    $('#right_gitable').switchClass('hidden', 'visinline', 400, 'swing', function() { 
+      var url = "{% url 'tablejson' aid='9999' %}".replace('9999', aid);
+      if('undefined' !== typeof secondoTable) {
 
-  });
+        secondoTable.fnSettings().sAjaxSource= "url";
+        secondoTable.fnReloadAjax(url);
+//        secondoTable.fnDraw();
+      } else {
+
+        window.secondoTable = create_gitable("rightgitable", url); 
+      }
+    });
+    
+
+
+  }); // end getScript()
 }
 
 function hide_second() {
@@ -360,6 +379,13 @@ function hide_second() {
   delete secondislandviewerObj;
   delete secondTrackObj;
   delete secondLinearTrack;
+
+  $('#right_gitable').switchClass('visinline', 'hidden');
+//  secondoTable.fnDestroy();
+//  delete secondoTable;
+
+  $('#main_gitable').switchClass('gitable_halfwidth', 'gitable_fullwidth', 400, 'swing', function() { oTable.fnAdjustColumnSizing(); });
+
 }
 
 function feature_tour() {
