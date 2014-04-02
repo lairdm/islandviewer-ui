@@ -258,7 +258,7 @@ function show_genome_dialog() {
 
   if($('#genome_selector_dialog').is(":visible")) {
     $('#show_second_link').html("Visualize two genomes");
-    $('#genome_selector_dialog').slideToggle('hidden', false);
+    $('#genome_selector_dialog').slideToggle('fast');
     return;
   }
 
@@ -274,7 +274,7 @@ function show_genome_dialog() {
               }
 
               $('#show_second_link').html("Hide dialog");
-              $('#genome_selector_dialog').slideToggle('hidden', false);
+              $('#genome_selector_dialog').slideToggle('fast');
               $("#second_genome_select").trigger("chosen:updated");
 //              $('#genome_selector_dialog').dialog("open");
 
@@ -293,7 +293,7 @@ function load_second() {
 
   console.log("loading " + aid);
 
-  $('#genome_selector_dialog').slideToggle('hidden');
+  $('#genome_selector_dialog').slideToggle('fast');
 
   $('#show_second_link').html("Visualize two genomes");
   var title = $("#second_genome_select").find(":selected").text();
