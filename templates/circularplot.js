@@ -380,12 +380,10 @@ function hide_second() {
   delete secondTrackObj;
   delete secondLinearTrack;
 
-  $('#right_gitable').switchClass('visinline', 'hidden');
-//  secondoTable.fnDestroy();
-//  delete secondoTable;
+  $('#right_gitable').switchClass('visinline', 'hidden', function() {
 
-  $('#main_gitable').switchClass('gitable_halfwidth', 'gitable_fullwidth', 400, 'swing', function() { oTable.fnAdjustColumnSizing(); });
-
+      $('#main_gitable').switchClass('gitable_halfwidth', 'gitable_fullwidth', 400, 'swing', function() { oTable.fnAdjustColumnSizing(); });
+  });
 }
 
 function feature_tour() {
