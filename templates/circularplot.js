@@ -293,7 +293,7 @@ function load_second() {
 
   console.log("loading " + aid);
 
-  $('#genome_selector_dialog').slideToggle('fast');
+  $('#genome_selector_dialog').slideToggle();
 
   $('#show_second_link').html("Visualize two genomes");
   var title = $("#second_genome_select").find(":selected").text();
