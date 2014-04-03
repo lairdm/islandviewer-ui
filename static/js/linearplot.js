@@ -55,7 +55,7 @@ function genomeTrack(layout,tracks) {
 	.on("zoom", this.rescale.bind(this))
 	.on("zoomend", this.callBrushFinished.bind(this));
 
-    d3.select(layout.container).select("svg").remove();
+    this.layout.plotid = layout.container.slice(1);
 
     this.chart = d3.select(layout.container)
 	.append("svg")

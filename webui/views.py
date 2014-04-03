@@ -58,25 +58,21 @@ def results(request, aid):
 #            context['genomename'] = 'Something from Microbedb'
 
         # Fetch the virulence factors
-        island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
-        vir_list = Virulence.objects.using('microbedb').filter(protein_accnum__in=
-                                                              list(island_genes.values_list('name', flat=True))).values_list('source', flat=True).distinct()
-#        vir_dict = dict(Virulence.objects.using('microbedb').filter(protein_accnum__in=
-#                                                              list(island_genes.values_list('name', flat=True))).values_list('protein_accnum', 'source'))
-        context['vir_types'] = {}
-        context['has_vir'] = False
-        for vir in VIRULENCE_FACTORS.keys():
-            if vir in vir_list:
-                context['vir_types'][vir] = True
-                context['has_vir'] = True
-            else:
-                context['vir_types'][vir] = False
-#        for gene in island_genes:
-#            if vir_dict.has_key(gene.name):
-#                context['vir_types'][vir_dict[gene.name]] = True
+#        island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
+#        vir_list = Virulence.objects.using('microbedb').filter(protein_accnum__in=
+#                                                              list(island_genes.values_list('name', flat=True))).values_list('source', flat=True).distinct()
+#        context['vir_types'] = {}
+#        context['has_vir'] = False
+#        for vir in VIRULENCE_FACTORS.keys():
+#            if vir in vir_list:
+#                context['vir_types'][vir] = True
+#                context['has_vir'] = True
+#            else:
+#                context['vir_types'][vir] = False
+
 
         # Remember the methods we have available
-        context['methods'] = dict.fromkeys(GenomicIsland.objects.filter(aid_id=aid).values_list("prediction_method", flat=True).distinct(), 1)
+#        context['methods'] = dict.fromkeys(GenomicIsland.objects.filter(aid_id=aid).values_list("prediction_method", flat=True).distinct(), 1)
 
         CHOICES = dict(STATUS_CHOICES)
         context['status'] = CHOICES[analysis.status]

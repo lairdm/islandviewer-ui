@@ -139,21 +139,22 @@ var {{ varName|default:"circular" }}_genomename = "{{ genomename }}";
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
 
-var islandviewerObj = new Islandviewer('{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}");
+var islandviewerObj = new Islandviewer('{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
+
+update_legend();
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true };
 
 var {{ varName|default:"circular" }}containerid =  "{{ container }}".slice(1);
 $('{{ container }}').draggable({ handle: ".move_" +  {{ varName|default:"circular" }}containerid });
 //var {{ plotName|default:"circular" }}Track = new circularTrack({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
-var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot({{ plotName|default:"circular" }}layout, {{ plotName|default:"circular" }}data);
-
+var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot({{ plotName|default:"circular" }}layout);
 
 $('#loadingimg').remove();
 
 var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: 600, height: 135, bottom_margin:0};
 //var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
-var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
+var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot({{ plotName|default:"circular" }}Linearlayout);
 
 {{ plotName|default:"circular" }}TrackObj.attachBrush({{ plotName|default:"circular" }}LinearTrack);
 {{ plotName|default:"circular" }}LinearTrack.addBrushCallback({{ plotName|default:"circular" }}TrackObj);
@@ -291,7 +292,7 @@ function show_genome_dialog() {
 function load_second() {
   aid = $("#second_genome_select").val();
 
-  console.log("loading " + aid);
+//  console.log("loading " + aid);
 
   $('#genome_selector_dialog').slideToggle();
 
@@ -305,22 +306,22 @@ function load_second() {
   url += "?skipinit=true&varname=second";
 //  var url = "/islandviewer/plot/553?skipinit=true&varname=second";
 
-  console.log(url);
+//  console.log(url);
 
   $.getScript( url, function() {
-    console.log("loaded");
-    console.log(second_genomesize);
+//    console.log("loaded");
+//    console.log(second_genomesize);
 
-    window.secondislandviewerObj = new Islandviewer(second_extid, second_genomesize, second_genomename);
+    window.secondislandviewerObj = new Islandviewer(second_extid, second_genomesize, second_genomename, seconddata);
 
     var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart' };
 //    var secondTrackObj = new circularTrack(secondlayout, seconddata);
-    window.secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout, seconddata);    
+    window.secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout);    
     $('#rightplot').draggable({ handle: ".move_rightplot" });
 
     var secondLinearlayout = {genomesize: second_genomesize, container: "#secondchartlinear", width: 600, height: 135, bottom_margin:0, plotid: 'circularchartlinear'};
 //    var secondLinearTrack = new genomeTrack(secondLinearlayout, seconddata);
-    window.secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout, seconddata);
+    window.secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout);
 
     secondTrackObj.attachBrush(secondLinearTrack);
     secondLinearTrack.addBrushCallback(secondTrackObj);
@@ -363,6 +364,8 @@ function load_second() {
 
         window.secondoTable = create_gitable("rightgitable", url); 
       }
+
+      update_legend();
     });
     
 
@@ -376,14 +379,48 @@ function hide_second() {
   $('#rightplot').html('');
   $('#secondchartlinear').html('');
 
-  delete secondislandviewerObj;
-  delete secondTrackObj;
-  delete secondLinearTrack;
+  window.secondislandviewerObj = undefined;
+  secondTrackObj = undefined;
+  secondLinearTrack = undefined;
+
+  update_legend();
 
   $('#right_gitable').switchClass('visinline', 'hidden', function() {
 
       $('#main_gitable').switchClass('gitable_halfwidth', 'gitable_fullwidth', 400, 'swing', function() { oTable.fnAdjustColumnSizing(); });
   });
+}
+
+function update_legend() {
+  var methods = islandviewerObj.findMethods();
+
+  // Merge in the second genome's methods
+  if('undefined' !== typeof secondislandviewerObj) {
+    secondmethods = secondislandviewerObj.findMethods();
+
+    // Go this way around to force a deep copy of the object
+    for(var key in methods) {
+      if(methods.hasOwnProperty(key)) {
+        secondmethods[key] = true;
+      }
+    }
+
+    methods = secondmethods;
+  }
+
+  // Now update the legend
+  var allmethods = ['circularIslandpick', 'circularSigi', 'circularDimob', 'PAG', 'VFDB', 'ARDB'];
+  for(var i = 0; i < allmethods.length; i++ ) {
+    method = allmethods[i];
+    if(methods[method]) {
+      $('#show' + method).removeAttr("disabled");
+      $('#no' + method).hide();
+    } else {
+      $('#show' + method).attr("disabled", true);
+      $('#no' + method).show();
+    }
+  }
+
 }
 
 function feature_tour() {
@@ -436,7 +473,7 @@ function feature_tour() {
 	    },
 	    {
 	      element: document.querySelector('#show_second_link'),
-	      intro: "<b>Visualize two genomes</b><br />A second genome can be display to allow comparison of results. Click here to show the genome selector.",
+	      intro: "<b>Visualize two genomes</b><br />A second genome can be displayed to allow comparison of results (highly similar genomes are most suitable). Click here to show the genome selector.",
 	      position: 'right'
 	    },
 	    {

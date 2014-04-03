@@ -1,27 +1,28 @@
-function Islandviewer(ext_id, genomesize, genomename) {
+function Islandviewer(ext_id, genomesize, genomename, trackdata) {
     this.ext_id = ext_id;
     this.genomesize = genomesize;
     this.genomename = genomename;
+    this.trackdata = trackdata;
     console.log("Called constructor " + this.ext_id + ' ' + genomename);
 }
 
-Islandviewer.prototype.addCircularPlot = function(layout, data) {
-    this.circularplot = new circularTrack(layout, data);
+Islandviewer.prototype.addCircularPlot = function(layout) {
+    this.circularplot = new circularTrack(layout, this.trackdata);
 
     return this.circularplot;
 }
 
-Islandviewer.prototype.addLinearPlot = function(layout, data) {
-    this.linearplot = new genomeTrack(layout, data);
+Islandviewer.prototype.addLinearPlot = function(layout) {
+    this.linearplot = new genomeTrack(layout, this.trackdata);
 
     return this.linearplot;
 }
 
 Islandviewer.prototype.onclick = function(trackname, d, plotid) {
-    console.log("Got a callback " + d);
-    console.log(trackname);
-    console.log(d);
-    console.log(plotid);
+//    console.log("Got a callback " + d);
+//    console.log(trackname);
+//    console.log(d);
+//    console.log(plotid);
 
     if(plotid == 'circularchartlinear') {
 
@@ -63,10 +64,10 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid) {
 }
 
 Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
-    console.log("Got a callback " + d);
-    console.log(trackname);
-    console.log(d);
-    console.log(plotid);
+//    console.log("Got a callback " + d);
+//    console.log(trackname);
+//    console.log(d);
+//    console.log(plotid);
 
     if(plotid == 'circularchartlinear') {
       if(trackname == 'circularGenes') {
@@ -79,7 +80,7 @@ Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
 
     } else if (plotid == 'circularchart') {
       if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
-	console.log("timing!");
+
         this.popup_d = d;
 //        this.popup_timer = setTimeout(function() {this.showHoverGenes(popup_d);}, 1000, [d, this]);
         this.popup_timer = setTimeout(this.showHoverGenes.bind(this), 1000, this.popup_d, false);
@@ -88,10 +89,10 @@ Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
 }
 
 Islandviewer.prototype.mouseout = function(trackname, d, plotid) {
-    console.log("mouseout callback " + d);
-    console.log(trackname);
-    console.log(d);
-    console.log(plotid);
+//    console.log("mouseout callback " + d);
+//    console.log(trackname);
+//    console.log(d);
+//    console.log(plotid);
 
     if(plotid == 'circularchartlinear') {
       if(trackname == 'circularGenes') {
@@ -185,5 +186,35 @@ Islandviewer.prototype.showHoverGenes = function(d, do_half_range) {
 
   $('#gene_dialog').dialog("open");
   this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
+}
+
+Islandviewer.prototype.findMethods = function() {
+
+    if('undefined' === typeof this.types) {
+      var types = {};
+
+      // Loop through the data and find all methods
+      for(var i=0; i < this.trackdata.length; i++) {
+        if(this.trackdata[i].trackName == "circularIslandpick" || 
+           this.trackdata[i].trackName == "circularSigi" || 
+           this.trackdata[i].trackName == "circularDimob") {
+
+           if(this.trackdata[i].items.length > 0) {
+             types[ this.trackdata[i].trackName] = true;
+           }
+        } else if(this.trackdata[i].trackName == "circularVirulence") {
+          items = this.trackdata[i].items;
+          for(var j=0; j < items.length; j++) {
+            if(!(items[j].type in types)) {
+              types[items[j].type] = true;
+            }
+          }
+        }
+      }
+
+      this.types = types;
+    }
+
+    return this.types;
 }
 
