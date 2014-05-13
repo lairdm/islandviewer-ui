@@ -167,6 +167,11 @@ div.outline {
 	line-height:26px;
 }
 
+.linearLabel {
+	font:0.9em arial;
+	color: #1F1A80;
+}
+
 input[type=file] {
 	display: inline;
 }

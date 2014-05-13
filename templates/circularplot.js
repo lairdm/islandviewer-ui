@@ -366,6 +366,9 @@ function load_second() {
       }
 
       update_legend();
+
+      $('#linearname').html({{ varName|default:"circular" }}_genomename);
+      $('#secondlinearname').html(second_genomename);
     });
     
 
@@ -384,6 +387,9 @@ function hide_second() {
   secondLinearTrack = undefined;
 
   update_legend();
+
+  $('#linearname').html('');
+  $('#secondlinearname').html('');
 
   $('#right_gitable').switchClass('visinline', 'hidden', function() {
 
