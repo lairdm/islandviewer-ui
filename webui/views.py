@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from django.utils import simplejson
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS
 from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
@@ -53,8 +53,9 @@ def results(request, aid):
             genome = CustomGenome.objects.get(pk=analysis.ext_id)
             context['genomename'] = genome.name
         elif(analysis.atype == Analysis.MICROBEDB):
-            gpv_id = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].gpv_id
-            context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
+#            gpv_id = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].gpv_id
+#            context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
+            context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
 #            context['genomename'] = 'Something from Microbedb'
 
         # Fetch the virulence factors
@@ -108,7 +109,8 @@ def circularplotjs(request, aid):
         context['genomename'] = genome.name
     elif(analysis.atype == Analysis.MICROBEDB):
         (context['genomesize'], gpv_id) = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id).values_list("rep_size", "gpv_id")[0]
-        context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
+#        context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
+        context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
         context['ext_id'] = analysis.ext_id
 #        context['genomesize'] = '6000000'
 
