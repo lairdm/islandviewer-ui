@@ -104,7 +104,7 @@
 			var plottype = $('#plottype').find(":selected").val();
 			if(plottype == 'circular') {
 			//			$("#downloadResultsButton").attr("href", "javascript:submit_download_form(\"" + imageformat + "\", \"{{ genomename|cleanfilename }}\");"); 
-				$("#downloadResultsButton").attr("href", "javascript:{{ plotName|default:"circular" }}Track.savePlot(1, \"{{ genomename|cleanfilename }}\", \"islandplot.css\", \"" + imageformat + "\");");
+				$("#downloadResultsButton").attr("href", "javascript:{{ plotName|default:"circular" }}TrackObj.savePlot(1, \"{{ genomename|cleanfilename }}\", \"islandplot.css\", \"" + imageformat + "\");");
 			} else {
 			$	("#downloadResultsButton").attr("href", "javascript:{{ plotName|default:"circular" }}LinearTrack.savePlot(1, \"{{ genomename|cleanfilename }}\", \"islandplot.css\", \"" + imageformat + "\");"); 
 			}
