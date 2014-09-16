@@ -254,7 +254,7 @@ input[type=file] {
 	background: blue;
 }
 
-.virulencecircle_VFDB {
+.virulencecircle_VFDB, virulencecircle_Victors, .virulencecircle_PATRIC_VF {
 	stroke: none;
 	background: purple;
 }
