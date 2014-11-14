@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
-from django.utils import simplejson
+import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS
 from django.core.urlresolvers import reverse
 from islandplot import plot
