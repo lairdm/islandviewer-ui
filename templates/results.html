@@ -84,6 +84,10 @@
     {% include "results.download.html" %}
     
       {% include "gitable.html" %}
+  {% elif status == "Error" %}
+  <div class="pageName">{{ genomename }}</div>
+  
+  There was an error processing your genome, please contact us to assist in investigating this issue.
   {% else %}
    <div class="pageName">{{ genomename }}</div>
   
