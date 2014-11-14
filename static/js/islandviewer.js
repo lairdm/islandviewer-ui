@@ -119,7 +119,7 @@ Islandviewer.prototype.update = function(startBP, endBP) {
 }
 
 Islandviewer.prototype.update_finished = function(startBP, endBP) {
-    url = '{% url 'genesbybpjson' %}?ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
+    url = '../../json/genes/?ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
     self = this;
 
 //        console.log(url);
