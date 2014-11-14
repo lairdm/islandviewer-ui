@@ -30,7 +30,7 @@
 	stroke: lightblue !important;
 }
 
-.circularVirulence_VFDB {
+.circularVirulence_VFDB, .circularVirulence_Victors, .circularVirulence_PATRIC_VF {
 	stroke: black;
 	fill: purple;
 	color:purple;
