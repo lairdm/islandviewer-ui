@@ -17,6 +17,8 @@
 {% if not noanalysis %}
   {% if status == "Complete" %}
     {% include "resultssidebar.html" %}
+  {% elif status == "Error" %}
+
   {% else %}
   &nbsp;<br />
   <span class="smalltext">
