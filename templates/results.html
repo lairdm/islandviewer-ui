@@ -79,7 +79,7 @@
 	  <span id="secondlinearname" class="linearLabel"></span>
 	  <div id="secondchartlinear" style="width:600px;"></div>
 	</div>
-    <script src="/islandviewer/plot/{{ aid }}"></script>
+    <script src="{% url 'circularplotjs' aid %}"></script>
 
     {% include "results.download.html" %}
     
