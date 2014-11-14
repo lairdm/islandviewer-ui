@@ -35,7 +35,8 @@ def send_job(genome_data, genome_format, genome_name, email, ip_addr, host=defau
 
     decoded_json = json.loads(ret)
 
-    print decoded_json
+    if settings.DEBUG:
+        print decoded_json
     
     return decoded_json
 

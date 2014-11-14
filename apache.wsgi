@@ -20,5 +20,7 @@ activate_env=os.path.join(activate_path, "activate_this" + "." + "py")
 execfile(activate_env, dict(__file__=activate_env))
 
 import django.core.handlers.wsgi
+from django.core.wsgi import get_wsgi_application
 
-application = django.core.handlers.wsgi.WSGIHandler()
+application = get_wsgi_application()
+#application = django.core.handlers.wsgi.WSGIHandler()
