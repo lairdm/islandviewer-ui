@@ -1,5 +1,6 @@
 import os
 import paths
+import env
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -9,7 +10,10 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/islandviewer/static/'
+if env.TEST_ENV:
+    STATIC_URL = '/islandviewer_dev/static/'
+else:
+    STATIC_URL = '/islandviewer/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
