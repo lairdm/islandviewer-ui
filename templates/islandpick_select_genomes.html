@@ -15,12 +15,15 @@
 		
 		$.ajaxSetup({ 
 		     beforeSend: function(xhr, settings) {
+				console.log("fuck you!");
 		         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
 		             // Only send the token to relative URLs i.e. locally.
 		             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
 		         }
 		     } 
 		});
+
+		//$("#loadingspinner").hide("fast");
 	}; // onload end
 
 	function getCookie(name)
@@ -50,14 +53,18 @@
 		}
 		
 		console.log("calling " + url)
-		
+
 	    $.ajax({
 	        type: "get",
-	        async: false,
+	        //async: false,
 	        url: url,
 	        dataType: "json",
+	        beforeSend: function () { 
+	    		$("#loadingspinner").show("fast");
+	    	},
 	        success: function (json) {
-	    	
+	    		$("#loadingspinner").hide("fast");
+
 	    		if('genomes' in json) {
 	    			genomes = json['genomes'];
 	    			listcontainer = $('#genome_selection');
@@ -98,10 +105,11 @@
 	    			);			
 	    	},
 	    	error: function () {
+	    		$("#loadingspinner").hide("fast");
 	    		communicationError();
 	    	}
 	    });
-
+		
 	}
 	
 	function communicationError () {
@@ -245,5 +253,6 @@
 	   <svg id="svgCanvas" width=800 height=1200>
 	   </svg>
    {% csrf_token %}
+   <div id="loadingspinner" class="loading" style="display:none;"></div>                                                                                                                                                                         
 
 {% endblock content %}

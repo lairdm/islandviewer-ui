@@ -229,12 +229,13 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 	    type: "get",
 	    success: function(data) {
     	        $('#gene_dialog').dialog("open");
-		var html = "<ul>\n";
+		var html = "<a class=\"genespopup\" href=\"../../islandpick/select/" + aid + "/\" >[ Change comparison genomes ]</a><br />&nbsp;<br />";
+		html += "<ul class=\"genespopup\">\n";
 		genomes = data.genomes
 		for(var cid in genomes) {
 		    genome = genomes[cid];
 
-		    if(!JSON.parse(genome['selected'])) {
+		    if((typeof genome['used'] === 'undefined') || !JSON.parse(genome['used'])) {
 		        continue;
 		    }
 		    html += '<li><a href="../../accession/' + cid + '/">' + genome['name'] + '(' + genome['dist'] + ')</a></li>\n';
@@ -242,7 +243,7 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 		html += '</ul>'
 
 		$('#gene_dialog').html(html);
-                $('#gene_dialog').dialog('option', 'title', 'Comparison Genomes (Change)');
+                $('#gene_dialog').dialog('option', 'title', 'Comparison Genomes');
 	     }
      });
 }
