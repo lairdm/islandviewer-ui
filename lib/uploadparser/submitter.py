@@ -8,7 +8,9 @@ import sys
 import socket
 import json
 import base64
+import time
 from django.conf import settings
+import pprint
 
 default_host = settings.ISLANDVIEWER_HOST
 default_port = settings.ISLANDVIEWER_PORT
@@ -39,6 +41,31 @@ def send_job(genome_data, genome_format, genome_name, email, ip_addr, host=defau
         print decoded_json
     
     return decoded_json
+
+def send_picker(accnum, host=default_host, port=default_port, **kwargs):
+    try:
+        s = connect_to_server(host, port)
+    except Exception as e:
+        if settings.DEBUG:
+            print "Socket error: " +  str(e) + " to " + host + ":" + str(port)
+            raise Exception("Socket error: " +  str(e) + " to " + host + ":" + str(port))
+        raise Exception("Failure to submit file")
+
+    json_obj = {'action': 'picker', 'accnum': accnum}
+    json_obj.update(kwargs)
+
+    json_str = json.dumps(json_obj)
+    json_str += "\nEOF\n"
+
+    ret = send_message(s, json_str)
+
+    decoded_json = json.loads(ret)
+
+#    if settings.DEBUG:
+#        print decoded_json
+    
+    return decoded_json
+    
 
 def connect_to_server(host, port):
 
@@ -75,9 +102,48 @@ def send_message(s, message):
         raise Exception("Socket failure", "Error sending message to server")
 
     #Now receive data
-    reply = s.recv(4096)
+#    reply = s.recv(4096)
+    try:
+        reply = recv_timeout(s,30)
+    except Exception as e:
+        if settings.DEBUG:
+            print e
+        raise e
 
     return reply
+
+def recv_timeout(the_socket,timeout=2):
+    the_socket.setblocking(0)
+    total_data=[];data='';begin=time.time()
+    while 1:
+        # If we've received data, see if the connection has been closed
+        # yes not proper socket programming, but it fits the protocol we 
+        # already made
+        if total_data:
+            try:
+                the_socket.send('ping')
+            except Exception as e:
+                if settings.DEBUG:
+                    print e
+                return ''.join(total_data)
+        #if you got some data, then break after wait sec
+        elif total_data and time.time()-begin>timeout:
+            raise Exception("Connection timeout", "Timeout waiting for data back from the server (received some data)")
+#            break
+        #if you got no data at all, wait a little longer
+        elif time.time()-begin>timeout*2:
+            raise Exception("Connection timeout", "Timeout waiting for data back from the server")
+#            break
+        try:
+            data=the_socket.recv(8192)
+            if data:
+                total_data.append(data)
+                begin=time.time()
+            else:
+                time.sleep(0.1)
+        except Exception as e:
+            pass
+    return ''.join(total_data)
 
 if __name__ == "__main__":
     

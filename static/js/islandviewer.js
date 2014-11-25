@@ -218,3 +218,32 @@ Islandviewer.prototype.findMethods = function() {
     return this.types;
 }
 
+Islandviewer.prototype.showIslandpickGenomes = function(aid) {
+    url = '../../json/islandpick/' + aid + '/';
+    self = this;
+
+//        console.log(url);
+
+    $.ajax({
+	    url: url,
+	    type: "get",
+	    success: function(data) {
+    	        $('#gene_dialog').dialog("open");
+		var html = "<ul>\n";
+		genomes = data.genomes
+		for(var cid in genomes) {
+		    genome = genomes[cid];
+
+		    if(!JSON.parse(genome['selected'])) {
+		        continue;
+		    }
+		    html += '<li><a href="../../accession/' + cid + '/">' + genome['name'] + '(' + genome['dist'] + ')</a></li>\n';
+                }
+		html += '</ul>'
+
+		$('#gene_dialog').html(html);
+                $('#gene_dialog').dialog('option', 'title', 'Comparison Genomes (Change)');
+	     }
+     });
+}
+

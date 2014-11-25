@@ -3,17 +3,19 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
 import json
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS
 from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
 from uploadparser import uploader
+from uploadparser.submitter import send_picker 
 from metasched import pipeline, graph
 from .forms import UploadGenomeForm
 from .utils.formatter import *
 import json
 import re
 import pprint
+from collections import OrderedDict
 
 def index(request):
     return render(request, 'index.html')
@@ -82,6 +84,17 @@ def results(request, aid):
     
     return render(request, 'results.html', context)
 
+def resultsbyaccnum(request, accnum):
+
+    try:
+        analysis = get_object_or_404(Analysis, ext_id=accnum, default_analysis=True, atype=Analysis.MICROBEDB)
+        return results(request, analysis.aid)
+        
+    except Exception as e:
+        print e
+        return HttpResponse(status = 403)
+        
+        
 def circularplotjs(request, aid):
     context = {}
     context['plotName'] = 'circular'
@@ -99,6 +112,7 @@ def circularplotjs(request, aid):
     # Fetch the analysis
     try:
         analysis = Analysis.objects.get(pk=aid)
+        context['aid'] = aid
     except Analysis.DoesNotExist:
         pass
 
@@ -339,6 +353,141 @@ def genesbybpjson(request):
 
     return render(request, "genesbybp.json", context, content_type='application/json')
 
+def islandpick_select_genomes(request, aid):
+    context = {}
+    
+    try:
+        analysis = Analysis.objects.get(pk=aid)
+        context['aid'] = analysis.aid
+
+        # Fetch the genome name and such
+        if(analysis.atype == Analysis.CUSTOM):
+            genome = CustomGenome.objects.get(pk=analysis.ext_id)
+            context['genomename'] = genome.name
+        elif(analysis.atype == Analysis.MICROBEDB):
+            context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
+
+    except:
+        pass
+
+    return render(request, "islandpick_select_genomes.html", context)
+
+
+def islandpick_genomes(request, aid):
+    context = {}
+    
+    try:
+        analysis = Analysis.objects.get(pk=aid)
+        context['accnum'] = analysis.ext_id
+    except Analysis.DoesNotExist:
+        if settings.DEBUG:
+            print "Can't fetch analysis"
+        return HttpResponse(status = 403)
+        
+    kwargs = {}
+
+    selected = {}
+    try:
+        iptask = GIAnalysisTask.objects.get(aid=aid, prediction_method='Islandpick')
+        
+        parameters = json.loads(iptask.parameters)
+        context['parameters'] = parameters
+
+        if 'min_cutoff' in parameters:
+            kwargs.update({'min_cutoff': float(parameters['min_cutoff'])})
+
+        if 'max_distance' in parameters:
+            kwargs.update({'max_cutoff': float(parameters['max_cutoff'])})
+
+    except Exception as e:
+        if settings.DEBUG:
+            print e
+        return HttpResponse(status = 403)
+
+    try:
+        if request.GET.get('min_cutoff'):
+            kwargs.update({'min_cutoff': float(request.GET.get('min_cutoff'))})
+            
+        if request.GET.get('max_cutoff'):
+            kwargs.update({'max_cutoff': float(request.GET.get('max_cutoff'))})
+
+        if request.GET.get('max_dist_single_cutoff'):
+            kwargs.update({'max_dist_single_cutoff': float(request.GET.get('max_dist_single_cutoff'))})
+
+        if request.GET.get('min_compare_cutoff'):
+            kwargs.update({'min_compare_cutoff': float(request.GET.get('min_compare_cutoff'))})
+
+        if request.GET.get('max_compare_cutoff'):
+            kwargs.update({'max_compare_cutoff': float(request.GET.get('max_compare_cutoff'))})
+        
+    except ValueError as e:
+        if settings.DEBUG:
+            print e
+        return HttpResponse(status = 403)
+
+    genomes = Distance.find_genomes(analysis.ext_id, **kwargs)
+
+    if request.method == 'GET':
+
+        try:
+            if 'comparison_genomes' in parameters:
+                selected = {x: True for x in parameters['comparison_genomes'].split()}
+
+            # Now get all the names
+            ext_ids = [g for g,d in genomes]
+            cache_names = NameCache.objects.filter(cid__in=ext_ids).values('cid', 'name')
+            cache_names = {x['cid']:x['name'] for x in cache_names}
+            cids = [int(x) for x in ext_ids if x.isdigit()]
+            custom_names = CustomGenome.objects.filter(cid__in=cids).values('cid', 'name')
+            custom_names = {x['cid']:x['name'] for x in custom_names}
+
+#            cluster_list = ext_ids
+#            cluster_list.insert(0, analysis.ext_id)
+#            print len(cluster_list)
+#            context['tree'] = Distance.distance_matrix(cluster_list)
+                                    
+        except Exception as e:
+            print str(e)
+            pass
+
+        genome_list = OrderedDict()
+
+        for g,dist in genomes:
+            genome_list.update({g: {'dist': "%0.3f" % dist,
+                                    'used': (True if g in selected else False),
+                                    'picked' : (True if g in selected and 'reselect' not in request.GET else False),
+                                    'name': (cache_names[g] if g in cache_names else custom_names[g] if g in custom_names else "Unknown" )
+                                    }
+                                })
+
+        if request.GET.get('reselect'):
+            try:
+                # If we're re-selecting the candidates, make the call to the backend
+                picker = send_picker(analysis.ext_id, **kwargs)
+                
+                if 'code' in picker and picker['code'] == 200:
+                    for acc in picker['data']:
+                        if "picked" in picker['data'][acc] and acc in genome_list:
+                            genome_list[acc]["picked"] = 'true'
+                    
+                context['picker'] = picker
+            except Exception as e:
+                if settings.DEBUG:
+                    print "Exception: " + str(e)
+                context['picker'] = {'code': 500}
+
+
+        context['genomes'] = genome_list
+        context['status'] = "OK"            
+        
+        data = json.dumps(context, indent=4, sort_keys=False)
+    
+        return HttpResponse(data, content_type="application/json")
+
+    else:
+        data = json.dumps(context, indent=4, sort_keys=False)
+    
+        return HttpResponse(data, content_type="application/json")
     
 def downloadCoordinates(request):
     

@@ -135,6 +135,7 @@ var {{ varName|default:"circular" }}data = [
 var {{ varName|default:"circular" }}_genomesize = {{ genomesize }};
 var {{ varName|default:"circular" }}_extid = "{{ ext_id }}";
 var {{ varName|default:"circular" }}_genomename = "{{ genomename }}";
+var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
@@ -397,6 +398,10 @@ function hide_second() {
   });
 }
 
+function show_islandpick_genomes() {
+	islandviewerObj.showIslandpickGenomes({{ varName|default:"circular" }}_aid);
+}
+
 function update_legend() {
   var methods = islandviewerObj.findMethods();
 
@@ -424,6 +429,9 @@ function update_legend() {
     } else {
       $('#show' + method).attr("disabled", true);
       $('#no' + method).show();
+      // We'll do the opposite with classes of this name to hide elements
+      // for non-esxistant analysis types, if needed
+      $('.no' + method).hide();
     }
   }
 

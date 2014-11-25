@@ -1,6 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
+import pprint
+from Bio.Phylo.TreeConstruction import _DistanceMatrix, DistanceTreeConstructor
+from Bio import Phylo
+import StringIO
 
 STATUS = {'PENDING':1,'RUNNING':2,'ERROR':3,'COMPLETE':4}
 STATUS_CHOICES = [
@@ -67,6 +71,7 @@ class GIAnalysisTask(models.Model):
     parameters = models.CharField(max_length=15)
     start_date = models.DateTimeField('date started')
     complete_date = models.DateTimeField('date completed')
+        
     class Meta:
         db_table = "GIAnalysisTask"
 
@@ -114,6 +119,61 @@ class Distance(models.Model):
     rep_accnum1 = models.CharField(max_length=15)
     rep_accnum2 = models.CharField(max_length=15)
     distance = models.FloatField()
+
+    @classmethod
+    def find_genomes(cls, accnum, *args, **kwargs):
+        pprint.pprint(kwargs)
+        
+        if 'min_cutoff' in kwargs:
+            min_cutoff = kwargs['min_cutoff']
+        else:
+            min_cutoff = 0.1
+
+        if 'max_cutoff' in kwargs:
+            max_cutoff = kwargs['max_cutoff']
+        else:
+            max_cutoff = 0.42
+            
+        dists = Distance.objects.filter(models.Q(rep_accnum1=accnum) | models.Q(rep_accnum2=accnum), distance__gte=min_cutoff, distance__lte=max_cutoff).order_by('distance')
+        
+        genomes = [(g.rep_accnum1, g.distance) if g.rep_accnum1 != accnum else (g.rep_accnum2, g.distance) for g in dists.all()]
+
+        return genomes
+    
+    @classmethod
+    def distance_matrix(cls, cluster_list):
+        print cluster_list
+        dists = Distance.objects.filter(rep_accnum1__in=cluster_list, rep_accnum2__in=cluster_list)
+        
+        distance_pairs = {g.rep_accnum1 + '_' + g.rep_accnum2: g.distance for g in dists.all()}
+    
+        matrix = []
+        for i in range(0,len(cluster_list)):
+            matrix_iteration = []
+            for j in range(0,i+1):
+                if i == j:
+                    matrix_iteration.append(0)
+                elif cluster_list[i] + '_' + cluster_list[j] in distance_pairs:
+                    matrix_iteration.append(distance_pairs[cluster_list[i] + '_' + cluster_list[j]])
+                elif cluster_list[j] + '_' + cluster_list[i] in distance_pairs:
+                    matrix_iteration.append(distance_pairs[cluster_list[j] + '_' + cluster_list[i]])
+                else:
+                    raise("Error, can't find pair!")
+            matrix.append(matrix_iteration)
+            #print matrix_iteration
+
+        cluster_list = [s.encode('ascii', 'ignore') for s in cluster_list]
+        matrix_obj = _DistanceMatrix(names=cluster_list, matrix=matrix)
+        constructor = DistanceTreeConstructor()
+        tree = constructor.nj(matrix_obj)
+        tree.ladderize()
+        #Phylo.draw_ascii(tree)
+        output = StringIO.StringIO()
+        Phylo.write(tree, output, 'newick')
+        tree_str = output.getvalue()
+        #print tree_str
+        
+        return tree_str
     
     class Meta:
         db_table = "Distance"

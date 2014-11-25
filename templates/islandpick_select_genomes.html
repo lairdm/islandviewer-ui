@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block headextras %}
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="{% static 'js/jsphylosvg/jsphylosvg-min.js' %}"></script>
+    <script src="{% static 'js/jsphylosvg/raphael-min.js' %}"></script>
+
+    <script type="text/javascript">
+	window.onload=function() { 
+		console.log("loaded");
+		
+		updatePickerList();
+		
+		$.ajaxSetup({ 
+		     beforeSend: function(xhr, settings) {
+		         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+		             // Only send the token to relative URLs i.e. locally.
+		             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+		         }
+		     } 
+		});
+	}; // onload end
+
+	function getCookie(name)
+	{
+	    var cookieValue = null;
+	    if (document.cookie && document.cookie != '') {
+	        var cookies = document.cookie.split(';');
+	        for (var i = 0; i < cookies.length; i++) {
+	            var cookie = jQuery.trim(cookies[i]);
+	            // Does this cookie string begin with the name we want?
+	 
+	            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+	                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                break;
+	            }
+	        }
+	    }
+	    return cookieValue;
+	}
+
+	
+	function updatePickerList(params) {
+		url = '{% url 'islandpick_genomes' aid %}';
+		
+		if(params) {
+			url += '?' + params;
+		}
+		
+		console.log("calling " + url)
+		
+	    $.ajax({
+	        type: "get",
+	        async: false,
+	        url: url,
+	        dataType: "json",
+	        success: function (json) {
+	    	
+	    		if('genomes' in json) {
+	    			genomes = json['genomes'];
+	    			listcontainer = $('#genome_selection');
+
+	    			$(listcontainer).html('');
+	    			console.log(Object.keys(genomes).length);
+	    			
+	    			for(g in genomes) {
+	    				genome = genomes[g]
+	    				$(listcontainer).append('<div class="chkLabel"><input id="' + g + '" name="' + g + '" class="islandpick_selection" type="checkbox" ' + ($.parseJSON(genome['picked']) ? 'checked' : '') + '> <span class="smalltext ' + ($.parseJSON(genome['used']) ? 'bodyText_heavy' : ' ') + '">' + genome['dist'] + ', ' + genome['name'] + ' (' + g + ')</span><br /></div>');
+	    			}
+	    			
+	    		}
+	    		
+	    		if('parameters' in json && ('undefined' === typeof params)) {
+	    			parameters = json['parameters'];
+	    			
+	    			for(p in parameters) {
+	    				if($('#' + p.toLocaleLowerCase()).length) {
+	    					$('#' + p.toLocaleLowerCase()).val(parameters[p]);
+	    				}
+	    			}
+	    		}
+	    	
+	    		if('picker' in json && json['picker']['code'] != 200) {
+		    		communicationError();
+	    		}
+	    		
+	    		return;
+	    		console.log(json['tree']);
+	    		tree = json['tree'];
+	    		phylocanvas = new Smits.PhyloCanvas(
+	    				{ 
+	    					newick: tree
+	    				},
+	    				'svgCanvas',
+	    				800, 1200//, 'circular'
+	    			);			
+	    	},
+	    	error: function () {
+	    		communicationError();
+	    	}
+	    });
+
+	}
+	
+	function communicationError () {
+		listcontainer = $('#genome_selection');
+		
+		if(! $("#communicationerror").length) {
+			$(listcontainer).prepend("<p id=\"communicationerror\" class=\"smalltext\">I'm sorry, there was a failure communicating with the server, please try again in a while or contact us.</p>");
+		}
+	}
+	
+	function updatePicker() {
+		params = $(".selection_parameters").serialize();
+		
+		params += '&reselect=true';
+		
+		updatePickerList(params);
+	}
+
+	function resetPicker() {
+		
+		updatePickerList();
+	}
+
+	function runIslandpick() {
+		params = JSON.stringify($(".islandpick_selection").serializeArray());
+//		params = JSON.stringify($(".islandpick_selection, input[name='csrfmiddlewaretoken']").serializeArray());
+		
+		console.log(params);
+
+		url = '{% url 'islandpick_genomes' aid %}';
+
+		$.ajax({
+			  type: "POST",
+			  url: url,
+			  data: params,
+			  async: false,
+			  success: function (json, status, jqXHR) {
+				console.log(json);
+				console.log(status);
+				console.log(jqXHR);
+			  },
+			  dataType: 'json',
+			  error: function(status) {
+				  console.log("failed");
+				  console.log(status);
+			  }
+				  
+			});
+	}
+	
+	</script>
+
+{% endblock %}
+
+{% block sidebar %}
+<p class="smalltext">Depending on the genomes selected for comparison, IslandPick will predict genomic islands of varying insertion ages.</p>
+
+<p><span class="subHeader">IslandPick Selection Parameters</span></p>
+
+<p class="smalltext">Changing the IslandPick paremeters will change the genomes that are picked for comparison.</p> 
+
+<p class="bodyText"><select name="min_cutoff" id="min_cutoff" class="selection_parameters">
+	<option value="0.01">0.01</option>
+	<option value="0.05">0.05</option>
+	<option value="0.08">0.08</option>
+	<option value="0.10" selected="selected">0.10</option>
+	<option value="0.12">0.12</option>
+	<option value="0.15">0.15</option>
+	<option value="0.20">0.20</option>
+</select><a href="#"> Minimum Distance</a></p>
+
+<p class="bodyText"><select name="max_dist_single_cutoff" id="max_dist_single_cutoff" class="selection_parameters">
+<option value="0.20">0.20</option>
+<option value="0.25">0.25</option>
+<option value="0.28">0.28</option>
+<option value="0.30" selected="selected">0.30</option>
+<option value="0.32">0.32</option>
+<option value="0.35">0.35</option>
+<option value="0.40">0.40</option>
+</select><a href="#"> Maximum Single Distance</a></p>
+
+<p class="bodyText"><select name="max_cutoff" id="max_cutoff" class="selection_parameters">
+<option value="0.36">0.36</option>
+<option value="0.40">0.40</option>
+<option value="0.41">0.41</option>
+<option value="0.42" selected="selected">0.42</option>
+<option value="0.43">0.43</option>
+<option value="0.44">0.44</option>
+<option value="0.48">0.48</option>
+</select><a href="#"> Maximum Distance</a></p>
+
+<p class="bodyText"><select name="min_compare_cutoff"  id="min_compare_cutoff" class="selection_parameters">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3" selected="selected">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select><a href="#"> Minimum Genomes Picked</a></p>
+
+<p class="bodyText"><select name="max_compare_cutoff" id="max_compare_cutoff" class="selection_parameters">
+<option value="4">4</option>
+<option value="6" selected="selected">6</option>
+<option value="8">8</option>
+<option value="10">10</option>
+<option value="12">12</option>
+</select><a href="#"> Maximum Genomes Picked</a></p>
+
+<p><input type="button" onclick="updatePicker()" id="updatepicker" value="Update">&nbsp;<input type="button" onclick="resetPicker()" id="resetpicker" value="Default"></p>
+{% endblock %}
+
+{% block content %}
+
+
+	<div class="pageName">{{ genomename }}</div>
+	&nbsp;<br />
+	<table border="0" cellspacing="0" cellpadding="0" width="800">
+	<tr>
+	<td width="440" class="bodyText islandpickTable">
+		<p><span class="subHeader">Reference Genome Selection</span></p>
+		<p class="smalltext">Based on the default IslandPick Selection Parameters , certain genomes will already be selected. You can manually add or remove genomes (below), or you can adjust the IslandPick Selection Parameters (left).</p>
+		<div id="genome_selection">
+		</div>
+	</td>
+	<td width="360" valign="top"  class="islandpickTable">
+		<p><span class="subHeader">Start IslandPick </span></p>
+		<p class="smalltext">Once you are satisfied with the genome selection please select your minimum island size and click "Run IslandPick".</p>
+		<p class="smalltext"><select name="min_gi_size" id="min_gi_size" class="selection_parameters islandpick_selection">
+		<option value="4000">4000</option>
+		<option value="6000">6000</option>
+		<option value="8000" selected="selected">8000</option>
+		<option value="10000">10000</option>
+		<option value="12000">12000</option>
+		<option value="16000">16000</option>
+		<option value="20000">20000</option>
+		</select> Minimum Genomic Island Size</p>
+		<p><input type="button" onclick="runIslandpick()" id="runislandpick" value="Run IslandPick"></p>
+
+	</td>
+	</tr>
+	</table>
+	   <svg id="svgCanvas" width=800 height=1200>
+	   </svg>
+   {% csrf_token %}
+
+{% endblock content %}
