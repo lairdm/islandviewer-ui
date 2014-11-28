@@ -509,6 +509,7 @@ def islandpick_genomes(request, aid):
         
         except Exception as e:
             if settings.DEBUG:
+                print "Error in post"
                 print str(e)
             return HttpResponse(status = 403)
 
