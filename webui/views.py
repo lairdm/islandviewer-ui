@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
 from uploadparser import uploader
-from uploadparser.submitter import send_picker 
+from uploadparser.submitter import send_picker, send_clone
 from metasched import pipeline, graph
 from .forms import UploadGenomeForm
 from .utils.formatter import *
@@ -452,6 +452,7 @@ def islandpick_genomes(request, aid):
 
         genome_list = OrderedDict()
 
+        # We need the genomes to display in order
         for g,dist in genomes:
             genome_list.update({g: {'dist': "%0.3f" % dist,
                                     'used': (True if g in selected else False),
@@ -485,6 +486,32 @@ def islandpick_genomes(request, aid):
         return HttpResponse(data, content_type="application/json")
 
     else:
+        try:
+        
+            print request.GET.get('min_gi_size')
+            accnums = []
+            for name in request.POST:
+                print name, request.POST[name]
+                if name not in (x[0] for  x in genomes):
+                    raise Exception("Error, requested genome isn't in the allowed set")
+                accnums.append(name)
+
+            clone_kwargs = { 'args': { 'modules': { 'Islandpick': { 'args': { 'comparison_genomes':  ' '.join(accnums) } } } } }
+            
+            clone_ret = send_clone(aid, **clone_kwargs)
+            
+            if 'clone' in clone_ret and clone_ret['clone'] == 200:
+                if settings.DEBUG:
+                    print "Job submitted, new aid: " + clone_ret['data']
+                    
+                return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': clone_ret['aid']}))
+                
+        
+        except Exception as e:
+            if settings.DEBUG:
+                print str(e)
+            return HttpResponse(status = 403)
+
         data = json.dumps(context, indent=4, sort_keys=False)
     
         return HttpResponse(data, content_type="application/json")
