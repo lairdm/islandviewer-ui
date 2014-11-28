@@ -495,6 +495,8 @@ def islandpick_genomes(request, aid):
             for name in request.POST:
                 print name, request.POST[name]
                 if name not in (x[0] for  x in genomes):
+                    if settings.DEBUG:
+                        print "Error, " + name + " not in genomes set"
                     raise Exception("Error, requested genome isn't in the allowed set")
                 accnums.append(name)
 

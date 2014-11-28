@@ -156,7 +156,6 @@
 		    		$("#loadingspinner").show("fast");
 		    	},
 			  success: function (json, status, jqXHR) {
-		    	$("#loadingspinner").hide("fast");
 				console.log(json);
 				console.log(status);
 				console.log(jqXHR);
@@ -169,6 +168,8 @@
 				} else {
 					communicationError();
 				}
+
+				$("#loadingspinner").hide("fast");
 			  },
 			  dataType: 'json',
 			  error: function(status) {
