@@ -505,7 +505,7 @@ def islandpick_genomes(request, aid):
                     print "Job submitted, new aid: " + clone_ret['data']
                 
                 context['status'] = 'success'
-                context['aid'] = clone_ret['aid']                
+                context['aid'] = clone_ret['data']                
         
         except Exception as e:
             if settings.DEBUG:
