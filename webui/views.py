@@ -503,9 +503,9 @@ def islandpick_genomes(request, aid):
             if 'clone' in clone_ret and clone_ret['clone'] == 200:
                 if settings.DEBUG:
                     print "Job submitted, new aid: " + clone_ret['data']
-                    
-                return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': clone_ret['aid']}))
                 
+                context['status'] = 'success'
+                context['aid'] = clone_ret['aid']                
         
         except Exception as e:
             if settings.DEBUG:
