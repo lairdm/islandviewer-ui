@@ -152,7 +152,11 @@
 			  url: url,
 			  data: post_params,
 			  async: false,
+		      beforeSend: function () { 
+		    		$("#loadingspinner").show("fast");
+		    	},
 			  success: function (json, status, jqXHR) {
+		    	$("#loadingspinner").hide("fast");
 				console.log(json);
 				console.log(status);
 				console.log(jqXHR);
@@ -168,6 +172,7 @@
 			  },
 			  dataType: 'json',
 			  error: function(status) {
+				  $("#loadingspinner").hide("fast");
 				  console.log("failed");
 				  console.log(status);
 				  communicationError();
