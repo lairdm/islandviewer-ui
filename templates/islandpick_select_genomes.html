@@ -157,7 +157,7 @@
 				console.log(status);
 				console.log(jqXHR);
 				
-				if('status' in json and json['status'] == 'success') {
+				if('status' in json && json['status'] == 'success') {
 					var redirect_url = '{% url 'results' '9999' %}'.replace('9999', json['aid']);
 					
 					console.log(redirect_url);
