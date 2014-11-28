@@ -500,7 +500,7 @@ def islandpick_genomes(request, aid):
             
             clone_ret = send_clone(aid, **clone_kwargs)
             
-            if 'clone' in clone_ret and clone_ret['clone'] == 200:
+            if 'code' in clone_ret and clone_ret['code'] == 200:
                 if settings.DEBUG:
                     print "Job submitted, new aid: " + clone_ret['data']
                 
