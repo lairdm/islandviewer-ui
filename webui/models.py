@@ -122,7 +122,7 @@ class Distance(models.Model):
 
     @classmethod
     def find_genomes(cls, accnum, *args, **kwargs):
-        pprint.pprint(kwargs)
+        #pprint.pprint(kwargs)
         
         if 'min_cutoff' in kwargs:
             min_cutoff = kwargs['min_cutoff']
@@ -133,10 +133,23 @@ class Distance(models.Model):
             max_cutoff = kwargs['max_cutoff']
         else:
             max_cutoff = 0.42
-            
-        dists = Distance.objects.filter(models.Q(rep_accnum1=accnum) | models.Q(rep_accnum2=accnum), distance__gte=min_cutoff, distance__lte=max_cutoff).order_by('distance')
+
+        params = [accnum, accnum, min_cutoff, max_cutoff]
+        sql = "SELECT id, rep_accnum1, rep_accnum2, distance from Distance WHERE (rep_accnum1 = %s or rep_accnum2 = %s) AND "
+        sql_dist = "(distance >= %s AND distance <= %s)"
+
+        if 'extra_genomes' in kwargs:
+            rep_list = ','.join("'" + rep + "'" for rep in kwargs['extra_genomes'])
+            sql += "(" + sql_dist + " OR (rep_accnum1 IN ({}) OR rep_accnum2 IN ({})))".format(rep_list, rep_list)
+        else:
+            sql += sql_dist
         
-        genomes = [(g.rep_accnum1, g.distance) if g.rep_accnum1 != accnum else (g.rep_accnum2, g.distance) for g in dists.all()]
+        #sql += ' ORDER BY distance'
+        
+        dists = Distance.objects.raw(sql, params)
+        #dists = Distance.objects.filter(models.Q(rep_accnum1=accnum) | models.Q(rep_accnum2=accnum), distance__gte=min_cutoff, distance__lte=max_cutoff).order_by('distance')
+        
+        genomes = [(g.rep_accnum1, g.distance) if g.rep_accnum1 != accnum else (g.rep_accnum2, g.distance) for g in dists]
 
         return genomes
     

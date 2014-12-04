@@ -50,6 +50,7 @@ def results(request, aid):
 
     if context['noanalysis'] != True:
         context['aid'] = aid
+        context['default_analysis'] = (True if analysis.default_analysis == 1 else False)
 
         # Fetch the genome name and such
         if(analysis.atype == Analysis.CUSTOM):
@@ -427,13 +428,15 @@ def islandpick_genomes(request, aid):
             print e
         return HttpResponse(status = 403)
 
+    if 'comparison_genomes' in parameters:
+        selected = {x: True for x in parameters['comparison_genomes'].split()}
+        kwargs.update({'extra_genomes': selected})
+        
     genomes = Distance.find_genomes(analysis.ext_id, **kwargs)
 
     if request.method == 'GET':
 
         try:
-            if 'comparison_genomes' in parameters:
-                selected = {x: True for x in parameters['comparison_genomes'].split()}
 
             # Now get all the names
             ext_ids = [g for g,d in genomes]
