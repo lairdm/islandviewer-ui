@@ -114,6 +114,12 @@ body {
     color: #555555;
     line-height:18px;
 }
+.errortext {
+    font:14px times new roman;
+    color: red;
+    line-height:18px;
+}
+
 .bodyText {
 	font:12px arial;
 	color:#333333;

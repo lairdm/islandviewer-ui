@@ -65,6 +65,7 @@
  	<div id="outer_circular" style="white-space: nowrap;">
     <div id="circularcontainer" style="width:550px; display:inline-block; ">
       <span class="pageName">{{ genomename }}</span><br />
+      {% if default_analysis == False %}<span class="errortext">Note: This analysis was run using non-default parameters.  <a href="javascript:show_islandpick_genomes();">See here</a> for more details.</span><br />{% endif %}
       <div id="circularchart" draggable="true"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
     </div>
 
@@ -92,7 +93,6 @@
   There was an error processing your genome, please contact us to assist in investigating this issue.
   {% else %}
    <div class="pageName">{{ genomename }}</div>
-  
    <script src="{% static 'js/dagre-d3.min.js' %}"></script>
   
    <svg id="pipelinegraph" width=500 height=600>
