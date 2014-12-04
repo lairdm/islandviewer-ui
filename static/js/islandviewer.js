@@ -243,7 +243,7 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 		html += '</ul><br />'
 
 		if((typeof data['default_analysis'] !== 'undefined') && !JSON.parse(data['default_analysis'])) {
-			html += 'The genomes used to run IslandPick in this analysis were not the default selections by our algorithm.'
+			html += '<span class="errortext">The genomes used to run IslandPick in this analysis were not the default selections by our algorithm.</span>'
 		}
 
 		$('#gene_dialog').html(html);
