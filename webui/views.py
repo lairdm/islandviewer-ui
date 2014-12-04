@@ -382,6 +382,7 @@ def islandpick_genomes(request, aid):
     try:
         analysis = Analysis.objects.get(pk=aid)
         context['accnum'] = analysis.ext_id
+        context['default_analysis'] = (True if analysis.default_analysis == 1 else False)
     except Analysis.DoesNotExist:
         if settings.DEBUG:
             print "Can't fetch analysis"

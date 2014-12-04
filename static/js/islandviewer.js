@@ -240,7 +240,11 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 		    }
 		    html += '<li><a href="../../accession/' + cid + '/">' + genome['name'] + '(' + genome['dist'] + ')</a></li>\n';
                 }
-		html += '</ul>'
+		html += '</ul><br />'
+
+		if((typeof data['default_analysis'] !== 'undefined') && !JSON.parse(data['default_analysis'])) {
+			html += 'The genomes used to run IslandPick in this analysis were not the default selections by our algorithm.'
+		}
 
 		$('#gene_dialog').html(html);
                 $('#gene_dialog').dialog('option', 'title', 'Comparison Genomes');
