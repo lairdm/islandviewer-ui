@@ -499,17 +499,18 @@ def islandpick_genomes(request, aid):
     else:
         try:
         
-            print request.GET.get('min_gi_size')
+            #print request.GET.get('min_gi_size')
             accnums = []
+            min_gi_size = filter(lambda x: x.isdigit(), request.GET.get('min_gi_size') )
             for name in request.POST:
-                print name, request.POST[name]
+                #print name, request.POST[name]
                 if name not in (x[0] for  x in genomes):
                     if settings.DEBUG:
                         print "Error, " + name + " not in genomes set"
                     raise Exception("Error, requested genome isn't in the allowed set")
                 accnums.append(name)
 
-            clone_kwargs = { 'args': { 'modules': { 'Islandpick': { 'args': { 'comparison_genomes':  ' '.join(accnums) } } } } }
+            clone_kwargs = { 'args': { 'modules': { 'Islandpick': { 'args': { 'comparison_genomes':  ' '.join(accnums), 'MIN_GI_SIZE': min_gi_size } } } } }
             
             clone_ret = send_clone(aid, **clone_kwargs)
             
