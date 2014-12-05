@@ -339,6 +339,11 @@ def genesbybpjson(request):
         ext_id = request.GET.get('ext_id')
     else:
         return HttpResponse(status = 403)
+
+    if request.GET.get('aid'):
+        aid = request.GET.get('aid')
+    else:
+        return HttpResponse(status = 403)
     
     if request.GET.get('start') and request.GET.get('start').isdigit():
         start = request.GET.get('start')
@@ -350,12 +355,8 @@ def genesbybpjson(request):
     else:
         return HttpResponse(status = 403)
     
-    params = [ext_id, start, end]
-    context['genes'] = Genes.objects.raw("SELECT DISTINCT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, GROUP_CONCAT( ig.gi ) AS gi , GROUP_CONCAT( DISTINCT gi.prediction_method ) AS method, GROUP_CONCAT( DISTINCT v.source ) AS virulence FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE ext_id = %s AND g.start >=%s AND g.end <=%s GROUP BY g.id", params)
-    print "SELECT DISTINCT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, GROUP_CONCAT( ig.gi ) AS gi , GROUP_CONCAT( DISTINCT gi.prediction_method ) AS method, GROUP_CONCAT( DISTINCT v.source ) AS virulence FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE ext_id = %s AND g.start >=%s AND g.end <=%s GROUP BY g.id"
-    print start
-    print end
-    print ext_id
+    params = [ext_id, start, end, aid]
+    context['genes'] = Genes.objects.raw("SELECT DISTINCT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, GROUP_CONCAT( ig.gi ) AS gi , GROUP_CONCAT( DISTINCT gi.prediction_method ) AS method, GROUP_CONCAT( DISTINCT v.source ) AS virulence FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE ext_id = %s AND g.start >=%s AND g.end <=%s and gi.aid_id = %s GROUP BY g.id", params)
 
     return render(request, "genesbybp.json", context, content_type='application/json')
 

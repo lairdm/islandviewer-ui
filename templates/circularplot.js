@@ -140,7 +140,7 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
 
-var islandviewerObj = new Islandviewer('{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
+var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
 
 update_legend();
 
@@ -313,7 +313,7 @@ function load_second() {
 //    console.log("loaded");
 //    console.log(second_genomesize);
 
-    window.secondislandviewerObj = new Islandviewer(second_extid, second_genomesize, second_genomename, seconddata);
+    window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
 
     var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart' };
 //    var secondTrackObj = new circularTrack(secondlayout, seconddata);

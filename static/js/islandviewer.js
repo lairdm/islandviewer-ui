@@ -1,4 +1,5 @@
-function Islandviewer(ext_id, genomesize, genomename, trackdata) {
+function Islandviewer(aid, ext_id, genomesize, genomename, trackdata) {
+    this.aid = aid;
     this.ext_id = ext_id;
     this.genomesize = genomesize;
     this.genomename = genomename;
@@ -119,7 +120,7 @@ Islandviewer.prototype.update = function(startBP, endBP) {
 }
 
 Islandviewer.prototype.update_finished = function(startBP, endBP) {
-    url = '../../json/genes/?ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
+    url = '../../json/genes/?aid=' + this.aid + '&ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
     self = this;
 
 //        console.log(url);
