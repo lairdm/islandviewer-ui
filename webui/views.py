@@ -511,15 +511,22 @@ def islandpick_genomes(request, aid):
                 accnums.append(name)
 
             clone_kwargs = { 'args': { 'modules': { 'Islandpick': { 'args': { 'comparison_genomes':  ' '.join(accnums), 'MIN_GI_SIZE': min_gi_size } } } } }
-            
-            clone_ret = send_clone(aid, **clone_kwargs)
-            
-            if 'code' in clone_ret and clone_ret['code'] == 200:
-                if settings.DEBUG:
-                    print "Job submitted, new aid: " + clone_ret['data']
-                
+
+            # Check if we've run these settings before, if so, just redirect to that
+            match_aid = Analysis.find_islandpick(analysis.ext_id, accnums, min_gi_size)
+            if match_aid:
                 context['status'] = 'success'
-                context['aid'] = clone_ret['data']                
+                context['aid'] = match_aid 
+            
+            else:
+                clone_ret = send_clone(aid, **clone_kwargs)
+            
+                if 'code' in clone_ret and clone_ret['code'] == 200:
+                    if settings.DEBUG:
+                        print "Job submitted, new aid: " + clone_ret['data']
+                    
+                    context['status'] = 'success'
+                    context['aid'] = clone_ret['data']                
         
         except Exception as e:
             if settings.DEBUG:

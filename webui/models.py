@@ -1,10 +1,12 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.conf import settings
 import pprint
 from Bio.Phylo.TreeConstruction import _DistanceMatrix, DistanceTreeConstructor
 from Bio import Phylo
 import StringIO
+import json
 
 STATUS = {'PENDING':1,'RUNNING':2,'ERROR':3,'COMPLETE':4}
 STATUS_CHOICES = [
@@ -58,6 +60,60 @@ class Analysis(models.Model):
     microbedb_ver = models.IntegerField(default=0)
     start_date = models.DateTimeField('date started')
     complete_date = models.DateTimeField('date completed')
+
+    # Specialty function to find an analysis with the same 
+    # Islandpick settings (comparison genomes, min_gi_size)
+    
+    @classmethod
+    def find_islandpick(cls, ext_id, genomes, min_gi_size):
+    
+        min_gi_size = int(min_gi_size)
+        if settings.DEBUG:
+            print "Testing for existing islandpick using, ext_id {}, using: ".format(ext_id)
+            
+        analysis = Analysis.objects.filter(ext_id = ext_id)
+        
+        for a in analysis:
+            a_parameters_json = None
+            for task in a.tasks.all():
+                if task.prediction_method == 'Islandpick':
+                    a_parameters_json = task.parameters
+                    break
+            
+            # We found an Islandpick in that analysis
+            if a_parameters_json:
+                if settings.DEBUG:
+                    print "Checking Islandpick in analysis {}".format(a.aid)
+                a_parameters = json.loads(a_parameters_json)
+                
+                if settings.DEBUG:
+                    print "Found parameters:"
+                    pprint.pprint(a_parameters)
+                
+                # First check we have the right fields...
+                if 'comparison_genomes' not in a_parameters and 'min_gi_size' not in a_parameters:
+                    if settings.DEBUG:
+                        print "Either comparison_genomes or min_gi_size aren't in the db for analysis {}, skipping".format(a.aid)
+                    continue
+
+                # Next check the comparison genomes
+                if sorted(a_parameters['comparison_genomes'].split(' ')) != sorted(genomes):
+                    if settings.DEBUG:
+                        print "comparison_genomes for analysis {} don't match, skipping".format(a.aid)
+                    continue
+                
+                # Finally, does the min_gi_size match?
+                if a_parameters['MIN_GI_SIZE'] != min_gi_size:
+                    if settings.DEBUG:
+                        print "min_gi_size for analysis {} doesn't match, skipping".format(a.aid)
+                    continue
+                
+                # We made it this far, we must have a match, return this aid
+                return a.aid
+            
+        # We exited the loop without returning, we must not have
+        # a match, return None
+        return None 
 
     class Meta:
         db_table = "Analysis"
