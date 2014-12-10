@@ -355,7 +355,9 @@ def logsmodule(request, aid):
     else:
         filename = os.path.join(settings.ANALYSIS_PATH, aid, module, 'analysis.log')
     
-    print filename
+    if settings.DEBUG:
+        print filename
+        context['filename'] = filename
     if not os.path.isfile(filename):
         return HttpResponse(status=400)
 
