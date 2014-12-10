@@ -230,7 +230,12 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 	    type: "get",
 	    success: function(data) {
     	        $('#gene_dialog').dialog("open");
-		var html = "<a class=\"genespopup\" href=\"../../islandpick/select/" + aid + "/\" >[ Change comparison genomes ]</a><br />&nbsp;<br />";
+		var html = '';
+		if((typeof data['default_analysis'] !== 'undefined') && !JSON.parse(data['default_analysis'])) {
+			html += '<blockquote style=\"border-left: none;\"><span class="errortext">The genomes used to run IslandPick in this analysis were not the default selections by our algorithm.</span></blockquote>'
+		} else {
+			html += "<blockquote style=\"border-left: none;\"><p class=\"smalltext\">IslandPick results are highly dependent on the comparison genomes selected. The following list of genomes were selected by default. The default selection is provided as a starting point and can be customized (particularly if you do not see any results, or to choose comparison genomes associated with a certain phenotype or phylogenetic distance). To run a customized IslandPick analysis, follow the link below to select a different set of comparison genomes. You are welcome to contact us if you would like more help.</p></blockquote>";
+		}
 		html += "<ul class=\"genespopup\">\n";
 		genomes = data.genomes
 		for(var cid in genomes) {
@@ -241,11 +246,8 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 		    }
 		    html += '<li><a href="../../accession/' + cid + '/">' + genome['name'] + '(' + genome['dist'] + ')</a></li>\n';
                 }
-		html += '</ul><br />'
-
-		if((typeof data['default_analysis'] !== 'undefined') && !JSON.parse(data['default_analysis'])) {
-			html += '<span class="errortext">The genomes used to run IslandPick in this analysis were not the default selections by our algorithm.</span>'
-		}
+		html += '</ul>'
+		html += "<a class=\"genespopup\" href=\"../../islandpick/select/" + aid + "/\" >[ Change comparison genomes ]</a><br />&nbsp;<br />";
 
 		$('#gene_dialog').html(html);
                 $('#gene_dialog').dialog('option', 'title', 'Comparison Genomes');

@@ -11,6 +11,7 @@
 <table id="{{ summarytablename|default:"summarytable" }}" class="summarytable table table-striped table-condensed table-hover idb-table" style="font-size: 90%">
 <thead>
 <tr>
+<th></th>
 <th>aid</th>
 <th>ext_id</th>
 <th>Status</th>
@@ -27,8 +28,11 @@
 </table>
 <script type="text/javascript">
 var displayLength = 30;
+var anOpen = [];
 
 var arrayColumns = [
+                    {"mDataProp": null,"sClass": "control center",
+                    	"sDefaultContent": '<img src="{% static 'img/details_open.png' %}">'},
                     {"mData": "aid", "bVisible": true, "sSortDataType": "dom-text"},
                     {"mData": "ext_id", "bVisible": true},
                     {"mData": "status", "bVisible": true},                    
@@ -39,6 +43,31 @@ var arrayColumns = [
                     {"mData": "Virulence", "bVisible": true},
                     {"mData": "Summary", "bVisible": true},
                 ];
+
+function fnFormatDetails ( oTable, nTr )
+{
+	var oData = oTable.fnGetData( nTr );
+	var url = '{% url 'runstatusdetailsjson' '9999' %}'.replace('9999', oData.aid);
+   	var ret_str = '';
+	$.ajax({
+		url: url,
+		dataType: 'json',
+		async: false,
+		success: function(data) {
+			console.log(data);
+	    	for (var task in data["tasks"]) {
+	    		var status = data["tasks"][task]
+	    			//reload_url = {% url 'restartmodule' '9999' %}.replace('9999', oData.aid) + '?pa';
+	    		
+	    			ret_str += "<tr><td>" + task + ":</td><td><span class=\"" + status + "\">" + status + "</span></td><td><span id=\"restart_" + oData.aid + "_" + task + "\" class=\"restart_" + oData.aid + "\"><a href=\"javascript:restartModule(" + oData.aid + ", '" + task +"');\">[Restart]</a></span></td><td><a href=\"javascript:logsModule(" + oData.aid + ", '" + task +"');\">[Logs]</a></td></tr>";
+	    	}
+	    }
+
+	});
+
+	return "Details <a href=\"javascript:logsModule(" + oData.aid + ", 'All');\">[Logs]</a><br /><table>" + ret_str + "</table><span id=\"message_" + oData.aid + "\"><span>";	
+}
+
 var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
 	"iDisplayLength": displayLength,
     "sScrollX": "100%",
@@ -48,9 +77,9 @@ var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
     "bPaginate": true,
     "sPaginationType": "input",
     "bInfo": true,
-    "bFilter": true,
+    //"bFilter": true,
     "sAjaxSource": "{% url 'runstatusjson' %}",
-    "bServerSide": false,
+    "bServerSide": true,
     "aoColumns": arrayColumns,
     "aaSorting": [[ 0, 'asc' ]],
     "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
@@ -58,56 +87,56 @@ var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
     },
     "aoColumnDefs": [
  					{
- 	    				"aTargets": [1],
+ 	    				"aTargets": [2],
  	    				"mData": null,
  	    				"mRender": function(data, type, full) {
  	        				return '<a href="' + '{%url 'results' '9999' %}'.replace(9999, full.aid) + '">' + full.ext_id + '</a>';
  	    					},
  						},
 					{
-    					"aTargets": [2],
+    					"aTargets": [3],
     					"mData": null,
     					"mRender": function(data, type, full) {
         					return '<span class="' + full.status + '">' + full.status + '</span>';
     					},
 					},
 					{
-	    				"aTargets": [3],
+	    				"aTargets": [4],
 	    				"mData": null,
 	    				"mRender": function(data, type, full) {
 	        				return '<span class="' + full.Distance + '">' + full.Distance + '</span>';
 	    					},
 						},
 					{
-	    				"aTargets": [4],
+	    				"aTargets": [5],
 	    				"mData": null,
 	    				"mRender": function(data, type, full) {
 	        				return '<span class="' + full.Sigi + '">' + full.Sigi + '</span>';
 	    					},
 					},
 					{
-		    			"aTargets": [5],
+		    			"aTargets": [6],
 		    			"mData": null,
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Dimob + '">' + full.Dimob + '</span>';
 		    				},
 					},
 					{
-		    			"aTargets": [6],
+		    			"aTargets": [7],
 		    			"mData": null,
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Islandpick + '">' + full.Islandpick + '</span>';
 		    				},
 					},
 					{
-		    			"aTargets": [7],
+		    			"aTargets": [8],
 		    			"mData": null,
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Virulence + '">' + full.Virulence + '</span>';
 		    				},
 					},
 					{
-		    			"aTargets": [8],
+		    			"aTargets": [9],
 		    			"mData": null,
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Summary + '">' + full.Summary + '</span>';
@@ -115,6 +144,88 @@ var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
 					},
 					]
 });
+
+/* Add event listener for opening and closing details
+ * Note that the indicator for showing which row is open is not controlled by DataTables,
+ * rather it is done here
+ */
+$(document).on('click', '#{{ summarytablename|default:"summarytable" }} td.control', function () {
+	var nTr = this.parentNode;
+	   var i = $.inArray( nTr, anOpen );
+	    
+	   if ( i === -1 ) {
+	      $('img', this).attr( 'src', '{% static 'img/details_close.png' %}' );
+	      oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+	      anOpen.push( nTr );
+	    }
+	    else {
+	      $('img', this).attr( 'src', '{% static 'img/details_open.png' %}' );
+	      oTable.fnClose( nTr );
+	      anOpen.splice( i, 1 );
+	    }
+	} );
+	
+function restartModule(aid, task) {
+
+	var url = '{% url 'restartmodule' '9999' %}'.replace('9999', aid);
+	url += '?module=' + task
+   	var ret_str = '';
+	$.ajax({
+		url: url,
+		dataType: 'json',
+//		async: false,
+		success: function(data) {
+			console.log(data);
+			$('.restart_' + aid).html("[Disabled]");
+			
+			if('undefined' !== typeof data['status'] && data['status'] == 'success') {
+				$('#restart_' + aid + '_' + task).html("[Running]");
+				
+			} else {
+				$('#restart_' + aid + '_' + task).html("[Error]");
+			}
+			
+			$('#message_' + aid).html(data['msg']);
+	    },
+	    error: function(data) {
+			$('.restart_' + aid).html("[Disabled]");
+			$('#restart_' + aid + '_' + task).html("[Error]");
+			
+		
+			$('#message_' + aid).html(data['msg']);
+	    	
+	    }
+	});
+	
+}
+
+function logsModule(aid, task) {
+
+	var url = '{% url 'logsmodule' '9999' %}'.replace('9999', aid);
+	url += '?module=' + task
+   	var ret_str = '';
+	$.ajax({
+		url: url,
+		dataType: 'json',
+//		async: false,
+		success: function(data) {
+			console.log(data);
+			if('undefined' !== typeof data['status'] && data['status'] == 'success') {
+				$('#message_' + aid).html("");
+				var w = window.open(url+'&show=1', '_blank');
+				w.focus();
+			} else {
+				$('#message_' + aid).html("Error opening log");
+			}
+	    },
+	    error: function(data) {
+			$('#message_' + aid).html("Error opening log");
+	    	
+	    }
+	});
+	
+}
+
 </script>
 
 {% endblock content %}

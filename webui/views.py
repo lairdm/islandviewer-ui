@@ -1,10 +1,10 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
 from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
@@ -15,6 +15,7 @@ from .forms import UploadGenomeForm
 from .utils.formatter import *
 import json
 import re
+import os
 import pprint
 from collections import OrderedDict
 
@@ -254,10 +255,122 @@ def runstatus(request):
 def runstatusjson(request):
     context = {}
 
-    context['analysis'] = Analysis.objects.select_related().all()
+    context['sEcho'] = 1
+    if(request.GET.get('sEcho')):
+        sEcho = request.GET.get('sEcho')
+        if not sEcho.isdigit():
+            return HttpResponse(status=400)
+
+ #       print "Setting secho to: " + sEcho
+        context['sEcho'] = int(sEcho)
+
+    startAt = 0
+    if(request.GET.get('iDisplayStart')):
+        startAt = request.GET.get('iDisplayStart')
+        try:
+            int(startAt)
+        except ValueError:
+            return HttpResponse(status=400)
+
+        startAt = int(startAt)
+
+    toShow = 30
+    if(request.GET.get('iDisplayLength')):
+        try:
+            int(request.GET.get('iDisplayLength'))
+        except ValueError:
+            return HttpResponse(status=400)
+
+        iDisplayLength = int(request.GET.get('iDisplayLength'))
+        if iDisplayLength > 0:
+            toShow = iDisplayLength
+
+        toShow = int(toShow)
+
+    endAt = startAt + toShow
+
+    analysis = Analysis.objects.select_related().order_by('-aid').all()
+
+    context['records'] = len(analysis)
+
+    #    context['ranks'] = ranks[startAt:endAt]
+    context['analysis'] = analysis[startAt:endAt]
     
     return render(request, 'status.json', context)
 
+def runstatusdetailsjson(request, aid):
+    context = {}
+    
+    analysis = Analysis.objects.select_related().get(pk=aid)
+    CHOICES = dict(STATUS_CHOICES)
+
+    context['aid'] = analysis.aid
+    
+    context['tasks'] = {}
+    for method in analysis.tasks.all():
+        context['tasks'][method.prediction_method] = CHOICES[method.status]
+    
+    data = json.dumps(context, indent=4, sort_keys=False)
+    
+    return HttpResponse(data, content_type="application/json")
+
+def restartmodule(request, aid):
+    context = {}
+    
+    if(request.GET.get('module') and request.GET.get('module') in MODULES):
+        module = request.GET.get('module')
+    else:
+        return HttpResponse(status=400)
+
+    clone_kwargs = { 'action': 'rerun', 'args': { 'modules': { module: { 'args': {  } } } } }
+
+    clone_ret = send_clone(aid, **clone_kwargs)
+
+    if 'code' in clone_ret and clone_ret['code'] == 200:
+        if settings.DEBUG:
+            print "Job submitted, new aid: " + clone_ret['data']
+        
+        context['status'] = 'success'
+        context['aid'] = clone_ret['data']                
+
+    else:
+        context['status'] = 'failed'
+        context['msg'] = clone_ret['msg']
+
+    data = json.dumps(context, indent=4, sort_keys=False)
+    
+    return HttpResponse(data, content_type="application/json")
+
+def logsmodule(request, aid):
+    context = {}
+    
+    if(request.GET.get('module') and (request.GET.get('module') in MODULES or request.GET.get('module') == 'All')):
+        module = request.GET.get('module')
+    else:
+        return HttpResponse(status=400)
+    
+    # Build the path for the analysis log
+    if module == 'All':
+        filename = os.path.join(settings.ANALYSIS_PATH, aid, 'analysis.log')
+    else:
+        filename = os.path.join(settings.ANALYSIS_PATH, aid, module, 'analysis.log')
+    
+    print filename
+    if not os.path.isfile(filename):
+        return HttpResponse(status=400)
+
+    if(request.GET.get('show')):            
+        fsock = open(filename,"r")
+    
+        response = StreamingHttpResponse(fsock, mimetype='text/plain')
+        
+        return response
+        
+    context['status'] = 'success'
+    data = json.dumps(context, indent=4, sort_keys=False)
+    
+    return HttpResponse(data, content_type="application/json")
+    
 def graphanalysis(request, aid):
     context = {}
     context['aid'] = aid

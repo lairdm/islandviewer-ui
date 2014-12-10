@@ -22,6 +22,8 @@ VIRULENCE_FACTORS = {
     'PAG': 'Pathogen-associated genes'
 }
 
+MODULES = ['Distance', 'Sigi', 'Dimob', 'Islandpick', 'Virulence', 'Summary']
+
 class CustomGenome(models.Model):
     cid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=60)

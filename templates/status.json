@@ -14,7 +14,7 @@
        
      }{% if not forloop.last %},{% endif %}{% endfor %}   
    ],
-   "iTotalRecords": {{ analysis|length }},
-   "iTotalDisplayRecords": 30,
-   "sEcho": 1
+   "iTotalRecords": {{ records }},
+   "iTotalDisplayRecords": {{ records }},
+   "sEcho": {{ sEcho }}
 }
