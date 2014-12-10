@@ -336,6 +336,8 @@ def restartmodule(request, aid):
     else:
         context['status'] = 'failed'
         context['msg'] = clone_ret['msg']
+        if settings.DEBUG:
+            context['debug'] = clone_ret
 
     data = json.dumps(context, indent=4, sort_keys=False)
     
