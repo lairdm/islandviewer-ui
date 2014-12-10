@@ -358,17 +358,21 @@ def logsmodule(request, aid):
     if settings.DEBUG:
         print filename
         context['filename'] = filename
-    if not os.path.isfile(filename):
-        return HttpResponse(status=400)
 
-    if(request.GET.get('show')):            
+    if not os.path.isfile(filename):
+        context['status'] = 'failed'
+        context['msg'] = "File not found"
+
+    elif(request.GET.get('show')):            
         fsock = open(filename,"r")
     
         response = StreamingHttpResponse(fsock, mimetype='text/plain')
         
         return response
+
+    else:
+        context['status'] = 'success'
         
-    context['status'] = 'success'
     data = json.dumps(context, indent=4, sort_keys=False)
     
     return HttpResponse(data, content_type="application/json")
