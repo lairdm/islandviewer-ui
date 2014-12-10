@@ -366,7 +366,7 @@ def logsmodule(request, aid):
     elif(request.GET.get('show')):            
         fsock = open(filename,"r")
     
-        response = StreamingHttpResponse(fsock, mimetype='text/plain')
+        response = StreamingHttpResponse(fsock, content_type='text/plain')
         
         return response
 
