@@ -268,7 +268,11 @@ function show_genome_dialog() {
 	    url: url,
 	    type: "get",
             dataType: "json",
+	        beforeSend: function () { 
+	    		$("#loadingspinner").show("fast");
+	    	},
 	    success: function(data) {
+      		  $("#loadingspinner").hide("fast");
               $("#second_genome_select").empty();
               var genomes = data.genomes;
               for(var i = 0; i < genomes.length; ++i) {
@@ -282,6 +286,7 @@ function show_genome_dialog() {
 
           }, 
           error: function (xhr, ajaxOptions, thrownError) {
+	    	$("#loadingspinner").hide("fast");
             console.log(xhr.status);
             console.log(thrownError);
           }
