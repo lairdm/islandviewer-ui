@@ -45,6 +45,8 @@
 
 	
 	function updatePickerList(params) {
+	    clearError();
+
 		url = '{% url 'islandpick_genomes' aid %}';
 		
 		if(params) {
@@ -119,6 +121,17 @@
 		}
 	}
 	
+	function showError(msg) {
+		
+		errorstr = '<span id="errormsg" class="errortext">' + msg + "</span>";
+		
+		$(errorstr).insertBefore('#genome_selection');
+	}
+	
+	function clearError() {
+		$('#errormsg').remove();
+	}
+	
 	function updatePicker() {
 		params = $(".selection_parameters").serialize();
 		
@@ -133,6 +146,13 @@
 	}
 
 	function runIslandpick() {
+	    clearError();
+		
+		if($(".islandpick_selection:checked").length <= 0) {
+			showError("Error, you must pick at least one comparison genome");
+			return;
+		}
+		
 		post_params = $(".islandpick_selection").serializeArray();
 //		post_params = JSON.stringify($(".islandpick_selection").serialize());
 //		params = JSON.stringify($(".islandpick_selection, input[name='csrfmiddlewaretoken']").serializeArray());
