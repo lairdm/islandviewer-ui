@@ -234,24 +234,39 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 		if((typeof data['default_analysis'] !== 'undefined') && !JSON.parse(data['default_analysis'])) {
 			html += '<blockquote style=\"border-left: none;\"><span class="errortext">The genomes used to run IslandPick in this analysis were not the default selections by our algorithm.</span></blockquote>'
 		} else {
-			html += "<blockquote style=\"border-left: none;\"><p class=\"smalltext\">IslandPick results are highly dependent on the comparison genomes selected. The following list of genomes were selected by default. The default selection is provided as a starting point and can be customized (particularly if you do not see any results, or to choose comparison genomes associated with a certain phenotype or phylogenetic distance). To run a customized IslandPick analysis, follow the link below to select a different set of comparison genomes. You are welcome to contact us if you would like more help.</p></blockquote>";
+			html += "<blockquote style=\"border-left: none;\"><p class=\"smalltext\">IslandPick results are highly dependent on the comparison genomes selected. The following list of genomes were selected by default. The default selection is provided as a starting point and can be customized (particularly if you do not see any results, or to choose comparison genomes associated with a certain phenotype or phylogenetic distance). To run a customized IslandPick analysis, follow the link below to select a different set of comparison genomes. You are welcome to contact us if you would like more help.</p>";
 		}
-		html += "<ul class=\"genespopup\">\n";
 		genomes = data.genomes
-		for(var cid in genomes) {
-		    genome = genomes[cid];
-
-		    if((typeof genome['used'] === 'undefined') || !JSON.parse(genome['used'])) {
-		        continue;
-		    }
-		    html += '<li><a href="../../accession/' + cid + '/">' + genome['name'] + '(' + genome['dist'] + ')</a></li>\n';
-                }
-		html += '</ul>'
-		html += "<a class=\"genespopup\" href=\"../../islandpick/select/" + aid + "/\" >[ Change comparison genomes ]</a><br />&nbsp;<br />";
+		if(objectSize(genomes) == 0) {
+			html += "<span class=\"errortext\">No candidate comparison genomes were found with the default settings.</span><br />&nbsp;<br />";
+		} else {
+			html += "</blockquote><ul class=\"genespopup\">\n";
+			for(var cid in genomes) {
+			    genome = genomes[cid];
+	
+			    if((typeof genome['used'] === 'undefined') || !JSON.parse(genome['used'])) {
+			        continue;
+			    }
+			    html += '<li><a href="../../accession/' + cid + '/">' + genome['name'] + '(' + genome['dist'] + ')</a></li>\n';
+	                }
+			html += '</ul><blockquote style=\"border-left: none;\">'
+		}
+		html += "<a class=\"genespopup\" href=\"../../islandpick/select/" + aid + "/\" >[ Change comparison genomes ]</a></blockquote><br />&nbsp;<br />";
 
 		$('#gene_dialog').html(html);
                 $('#gene_dialog').dialog('option', 'title', 'Comparison Genomes');
 	     }
      });
 }
+
+function objectSize(the_object) {
+	  /* function to validate the existence of each key in the object to get the number of valid keys. */
+	  var object_size = 0;
+	  for (key in the_object){
+	    if (the_object.hasOwnProperty(key)) {
+	      object_size++;
+	    }
+	  }
+	  return object_size;
+	}
 
