@@ -39,6 +39,8 @@ class CustomGenome(models.Model):
 class NameCache(models.Model):
     cid = models.CharField(max_length=15)
     name = models.CharField(max_length=60)
+    cds_num = models.IntegerField(default=0)
+    rep_size = models.IntegerField(default=0)
 
     class Meta:
         db_table = "NameCache"
