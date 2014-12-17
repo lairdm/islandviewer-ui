@@ -272,6 +272,14 @@ class UploadGenome(models.Model):
     class Meta:
         db_table = "UploadGenome"
 
+class Notification(models.Model):
+    analysis = models.ForeignKey(Analysis, related_name='notifications')
+    email = models.EmailField()
+    status = models.IntegerField(default=0)
+    
+    class Meta:
+        db_table = "Notification"
+
 '''
 MicrobeDB models
 '''
