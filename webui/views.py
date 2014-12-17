@@ -316,7 +316,25 @@ def runstatusdetailsjson(request, aid):
     return HttpResponse(data, content_type="application/json")
 
 def add_notify(request, aid):
-    pass
+    context = {}
+    
+    if request.method == 'POST':
+
+        try:
+            analysis = Analysis.objects.get(pk=aid)
+        except Exception as e:
+            if settings.DEBUG:
+                print e
+                
+            return HttpResponse(status=400)
+
+        if 'email' in request.POST:
+            pass
+
+    else:
+        return HttpResponse(status=500)
+
+
 
 def restartmodule(request, aid):
     context = {}
