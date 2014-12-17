@@ -315,6 +315,9 @@ def runstatusdetailsjson(request, aid):
     
     return HttpResponse(data, content_type="application/json")
 
+def add_notify(request, aid):
+    pass
+
 def restartmodule(request, aid):
     context = {}
     

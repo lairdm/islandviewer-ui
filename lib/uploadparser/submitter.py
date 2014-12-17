@@ -94,6 +94,33 @@ def send_clone(aid, host=default_host, port=default_port, **kwargs):
     
     return decoded_json
    
+def send_notify(aid, email, host=default_host, port=default_port, **kwargs):
+    try:
+        s = connect_to_server(host, port)
+    except Exception as e:
+        if settings.DEBUG:
+            print "Socket error: " +  str(e) + " to " + host + ":" + str(port)
+            raise Exception("Socket error: " +  str(e) + " to " + host + ":" + str(port))
+        raise Exception("Failure to submit file")
+
+    json_obj = {'action': 'add_notification', 'aid': aid, 'email': email}
+    json_obj.update(kwargs)
+    
+    json_str = json.dumps(json_obj)
+    json_str += "\nEOF\n"
+
+    if settings.DEBUG:
+        print json_str
+
+    ret = send_message(s, json_str)
+
+    decoded_json = json.loads(ret)
+
+    if settings.DEBUG:
+        print decoded_json
+    
+    return decoded_json
+    
 
 def connect_to_server(host, port):
 
