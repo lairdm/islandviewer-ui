@@ -55,17 +55,17 @@
     <script src="{% static 'js/FileSaver/FileSaver.js' %}"></script>
     <script src="{% static 'js/jquery.dataTables.js' %}"></script>
 	<div id="gene_dialog"></div>
-    <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
-    <select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
-    		<option></option>
-    </select><br />
-    <span ><a href="javascript:load_second();">Display genome</a></span><br />
-    &nbsp;<br />
- 	</div>
- 	<div id="outer_circular" style="white-space: nowrap;">
+    <div id="outer_circular" style="white-space: nowrap;">
     <div id="circularcontainer" style="width:550px; display:inline-block; ">
       <span class="pageName">{{ genomename }}</span><br />
-      {% if default_analysis == False %}<span class="errortext">Note: This analysis was run using non-default parameters.  <a href="javascript:show_islandpick_genomes();">See here</a> for more details.</span><br />{% endif %}
+      <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
+      <select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
+      		<option></option>
+      </select><br />
+      <span ><a href="javascript:load_second();">Display genome</a></span><br />
+      &nbsp;<br />
+   	</div>
+   	  {% if default_analysis == False %}<span class="errortext">Note: This analysis was run using non-default parameters.  <a href="javascript:show_islandpick_genomes();">See here</a> for more details.</span><br />{% endif %}
       <div id="circularchart" draggable="true"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
     </div>
 
@@ -98,10 +98,72 @@
   
    <svg id="pipelinegraph" width=500 height=600>
    <g transform="translate(20, 20)"/>
-   </svg>
+   </svg><br />
 
+   <span class="smalltext" id="email_notify">Receive email notification when job completes:<br /><input type="text" name="email" size="25" class="notify_values" id="email_box" placeholder="Enter email"> <input type="submit" value="Submit Email" onclick="return submit_notify()"><br />
+   <span id="emailerror" class="errortext"></span>
+   </span>
    <script src="{% url 'graphanalysisjs' aid %}"></script>
-  
+
+   <script type="text/javascript">
+	function showError(msg) {
+		
+		errorstr = '<span id="errormsg" class="errortext">' + msg + "</span>";
+		
+		$(errorstr).insertAfter('#email_notify');
+	}
+	
+	function clearError() {
+		$('#errormsg').remove();
+	}
+
+   
+	function submit_notify() {
+	    clearError();
+		
+		if($("#email_box").length <= 0) {
+			showError("Error, you must enter an email address");
+			return;
+		}
+		
+		post_params = $("#email_box").serializeArray();
+//		post_params = JSON.stringify($(".islandpick_selection").serialize());
+//		params = JSON.stringify($(".islandpick_selection, input[name='csrfmiddlewaretoken']").serializeArray());
+
+//		console.log(post_params);
+		
+		url = '{% url 'add_notify' aid %}';
+
+		$.ajax({
+			  type: "POST",
+			  url: url,
+			  data: post_params,
+			  success: function (json, status, jqXHR) {
+				//console.log(json);
+				//console.log(status);
+				//console.log(jqXHR);
+				
+				if('status' in json && json['status'] == 'success') {
+					showError("Email successfully submitted, you should be hearing from us shortly when your analysis is complete.")
+					$("#email_box").val('');
+				} else {
+					  showError("There was a problem submitting your email address, please try again later or contact us for further assistance.");
+				}
+
+			  },
+			  dataType: 'json',
+			  error: function(status) {
+				  console.log("failed");
+				  console.log(status);
+				  showError("There was a problem submitting your email address, please try again later or contact us for further assistance.");
+			  }
+				  
+			});
+	}
+
+   
+   </script>
+   
   {% endif %}
 {% endif %}
 {% endblock content %}

@@ -25,7 +25,7 @@ Use the search box to bring matching genomes to the top of the list.
 <select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select a genome...">
 <option></option>
 {% for genome in analysis %}
-<option value="{{ genome.aid }}">{{ genome.name }} ({{ genome.ext_id }})</option>
+<option value="{{ genome.ext_id }}">{{ genome.name }} ({{ genome.ext_id }})</option>
 {% endfor %}
 </select><br /> 
 &nbsp;<br />
@@ -43,7 +43,7 @@ Use the search box to bring matching genomes to the top of the list.
     		return;
     	}
  
-    	var url = "{% url "results" 9999 %}".replace(9999, $("#genomelist").val());
+    	var url = "{% url "resultsbyaccnum" 'NC11111.1' %}".replace('NC11111.1', $("#genomelist").val());
     	window.location = url;
     	
     }

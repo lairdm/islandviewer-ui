@@ -157,7 +157,7 @@
 //		post_params = JSON.stringify($(".islandpick_selection").serialize());
 //		params = JSON.stringify($(".islandpick_selection, input[name='csrfmiddlewaretoken']").serializeArray());
 
-		console.log(post_params);
+//		console.log(post_params);
 		
 		url_params = $(".selection_parameters").serialize();
 
@@ -175,9 +175,9 @@
 		    		$("#loadingspinner").show("fast");
 		    	},
 			  success: function (json, status, jqXHR) {
-				console.log(json);
-				console.log(status);
-				console.log(jqXHR);
+//				console.log(json);
+//				console.log(status);
+//				console.log(jqXHR);
 				
 				if('status' in json && json['status'] == 'success') {
 					var redirect_url = '{% url 'results' '9999' %}'.replace('9999', json['aid']);

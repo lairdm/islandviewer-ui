@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpRespons
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
+from django import forms
 from django.views.decorators.csrf import csrf_exempt
 import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
@@ -9,7 +10,7 @@ from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
 from uploadparser import uploader
-from uploadparser.submitter import send_picker, send_clone
+from uploadparser.submitter import send_picker, send_clone, send_notify
 from metasched import pipeline, graph
 from .forms import UploadGenomeForm
 from .utils.formatter import *
@@ -128,7 +129,7 @@ def circularplotjs(request, aid):
     elif(analysis.atype == Analysis.MICROBEDB):
 #        (context['genomesize'], gpv_id) = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id).values_list("rep_size", "gpv_id")[0]
 #        context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
-        (context['genomename'], context['genomesize']) = NameCache.objects.get(cid=analysis.ext_id).values_list('name', 'rep_size')
+        (context['genomename'], context['genomesize']) = NameCache.objects.filter(cid=analysis.ext_id).values_list('name', 'rep_size')[0]
 #        context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
         context['ext_id'] = analysis.ext_id
 #        context['genomesize'] = '6000000'
@@ -315,6 +316,7 @@ def runstatusdetailsjson(request, aid):
     
     return HttpResponse(data, content_type="application/json")
 
+@csrf_exempt
 def add_notify(request, aid):
     context = {}
     
@@ -329,12 +331,41 @@ def add_notify(request, aid):
             return HttpResponse(status=400)
 
         if 'email' in request.POST:
-            pass
+            email = request.POST.get('email')
+
+            try: 
+                f = forms.EmailField()
+                f.clean(email)
+                
+                notify_ret = send_notify(aid, email)
+                
+                if 'code' in notify_ret and notify_ret['code'] == 200:
+                    context['status'] = 'success'
+
+                else:
+                    context['status'] = 'failed'
+                    context['msg'] = notify_ret['msg']
+                    if settings.DEBUG:
+                        context['debug'] = notify_ret
+                        
+                 
+            
+            except Exception as e:
+                if settings.DEBUG:
+                    print e
+                return HttpResponse(status=500)
+        else:
+            if settings.DEBUG:
+                print "No email"
+            return HttpResponse(status=500)
+
 
     else:
         return HttpResponse(status=500)
 
-
+    data = json.dumps(context, indent=4, sort_keys=False)
+    
+    return HttpResponse(data, content_type="application/json")
 
 def restartmodule(request, aid):
     context = {}
