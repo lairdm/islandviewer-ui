@@ -307,10 +307,24 @@ def runstatusdetailsjson(request, aid):
     CHOICES = dict(STATUS_CHOICES)
 
     context['aid'] = analysis.aid
+
+    # Fetch the genome name and such
+    if(analysis.atype == Analysis.CUSTOM):
+        genome = CustomGenome.objects.get(pk=analysis.ext_id)
+        context['genomename'] = genome.name
+    elif(analysis.atype == Analysis.MICROBEDB):
+        context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
     
     context['tasks'] = {}
+    context['taskcount'] = {}
     for method in analysis.tasks.all():
         context['tasks'][method.prediction_method] = CHOICES[method.status]
+        try:
+            context['taskcount'][method.prediction_method] = GenomicIsland.objects.filter(aid=analysis, prediction_method=method.prediction_method).count()
+        except Exception as e:
+            if settings.DEBUG:
+                print str(e)
+            pass
     
     data = json.dumps(context, indent=4, sort_keys=False)
     

@@ -49,23 +49,33 @@ function fnFormatDetails ( oTable, nTr )
 	var oData = oTable.fnGetData( nTr );
 	var url = '{% url 'runstatusdetailsjson' '9999' %}'.replace('9999', oData.aid);
    	var ret_str = '';
+   	var header = '';
 	$.ajax({
 		url: url,
 		dataType: 'json',
 		async: false,
 		success: function(data) {
 			console.log(data);
+			header = data['genomename'];
 	    	for (var task in data["tasks"]) {
 	    		var status = data["tasks"][task]
 	    			//reload_url = {% url 'restartmodule' '9999' %}.replace('9999', oData.aid) + '?pa';
 	    		
-	    			ret_str += "<tr><td>" + task + ":</td><td><span class=\"" + status + "\">" + status + "</span></td><td><span id=\"restart_" + oData.aid + "_" + task + "\" class=\"restart_" + oData.aid + "\"><a href=\"javascript:restartModule(" + oData.aid + ", '" + task +"');\">[Restart]</a></span></td><td><a href=\"javascript:logsModule(" + oData.aid + ", '" + task +"');\">[Logs]</a></td></tr>";
+	    			ret_str += "<tr><td>" + task + ":</td><td><span class=\"" + status + "\">" + status + "</span></td>";
+	    			ret_str += '<td>';
+					if('undefined' !== typeof data['taskcount'][task]) {
+						ret_str += data['taskcount'][task];
+					} else {
+						ret_str += '&nbsp;';
+					}
+	    			ret_str += '</td>';
+	    			ret_str += "<td><span id=\"restart_" + oData.aid + "_" + task + "\" class=\"restart_" + oData.aid + "\"><a href=\"javascript:restartModule(" + oData.aid + ", '" + task +"');\">[Restart]</a></span></td><td><a href=\"javascript:logsModule(" + oData.aid + ", '" + task +"');\">[Logs]</a></td></tr>";
 	    	}
 	    }
 
 	});
 
-	return "Details <a href=\"javascript:logsModule(" + oData.aid + ", 'All');\">[Logs]</a><br /><table>" + ret_str + "</table><span id=\"message_" + oData.aid + "\"><span>";	
+	return header + "<br/>Details <a href=\"javascript:logsModule(" + oData.aid + ", 'All');\">[Logs]</a><br /><table>" + ret_str + "</table><span id=\"message_" + oData.aid + "\"><span>";	
 }
 
 var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
