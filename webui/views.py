@@ -625,6 +625,8 @@ def islandpick_genomes(request, aid):
     if 'comparison_genomes' in parameters:
         selected = {x: True for x in parameters['comparison_genomes'].split()}
         kwargs.update({'extra_genomes': selected})
+    else:
+        context['nogenomesselected'] = True
         
     genomes = Distance.find_genomes(analysis.ext_id, **kwargs)
 
