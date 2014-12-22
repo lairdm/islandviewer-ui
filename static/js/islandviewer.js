@@ -237,7 +237,7 @@ Islandviewer.prototype.showIslandpickGenomes = function(aid) {
 			html += "<blockquote style=\"border-left: none;\"><p class=\"smalltext\">IslandPick results are highly dependent on the comparison genomes selected. The following list of genomes were selected by default. The default selection is provided as a starting point and can be customized (particularly if you do not see any results, or to choose comparison genomes associated with a certain phenotype or phylogenetic distance). To run a customized IslandPick analysis, follow the link below to select a different set of comparison genomes. You are welcome to contact us if you would like more help.</p>";
 		}
 		genomes = data.genomes
-		if(typeof data['nogenomesselected'] !== 'undefined' && JSON.parse(data['nogenomesselected']) {
+		if(typeof data['nogenomesselected'] !== 'undefined' && JSON.parse(data['nogenomesselected'])) {
 //		if(objectSize(genomes) == 0) {
 			html += "<span class=\"errortext\">No candidate comparison genomes were found with the default settings.</span><br />&nbsp;<br />";
 		} else {
