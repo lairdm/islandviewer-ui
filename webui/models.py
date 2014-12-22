@@ -533,7 +533,6 @@ class Replicon(models.Model):
     rep_size = models.IntegerField(blank=True, null=True)
     rna_num = models.IntegerField(blank=True, null=True)
     file_types = models.TextField(blank=True)
-    rep_seq = models.TextField(blank=True)
     distance_calculated = models.CharField(max_length=3, blank=True)
     class Meta:
         managed = False
