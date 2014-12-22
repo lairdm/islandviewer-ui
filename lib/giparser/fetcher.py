@@ -211,7 +211,7 @@ class GenbankParser():
         
         try:
             filename = customgenome.filename
-            filename.replace('{{custom_genomes}}', settings.CUSTOM_GENOMES)
+            filename = filename.replace(u'{{custom_genomes}}', settings.CUSTOM_GENOMES)
         except Exception as e:
             if settings.DEBUG:
                 print "Exception raised with filename {}: {}".format(filename, e)
