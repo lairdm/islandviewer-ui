@@ -1,6 +1,7 @@
 from Bio import SeqIO
 from webui.models import Analysis, CustomGenome, GenomicIsland, Replicon, Genomeproject
 from webui.utils.formatter import methodfullnames
+from django.conf import settings
 import os.path
 import textwrap
 import pprint
@@ -208,9 +209,16 @@ class GenbankParser():
         except CustomGenome.DoesNotExist:
             pass
         
+        try:
+            filename = customgenome.filename
+            filename.replace('{{custom_genomes}}', settings.CUSTOM_GENOMES)
+        except Exception as e:
+            if settings.DEBUG:
+                print "Exception raised with filename {}: {}".format(filename, e)
+        
         # Check we actually have a genbank type
         if ".gbk" in customgenome.formats.split():
-            self.fname = customgenome.filename + ".gbk"
+            self.fname = filename + ".gbk"
         else:
             raise Exception("No genbank file")
         
