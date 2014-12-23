@@ -654,7 +654,7 @@ def islandpick_genomes(request, aid):
         genome_list = OrderedDict()
 
         # We need the genomes to display in order
-        for g,dist in genomes:
+        for g,dist in sorted(genomes, key=lambda genome: genome[1]):
             genome_list.update({g: {'dist': "%0.3f" % dist,
                                     'used': (True if g in selected else False),
                                     'picked' : (True if g in selected and 'reselect' not in request.GET else False),
