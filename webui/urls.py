@@ -3,7 +3,8 @@ from django.conf.urls import patterns, url
 from webui import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.index, name='index'),
+#    url(r'^$', views.index, name='index'),
+    url(r'^$', views.showgenomes, name='browse'),
     url(r'^results/(?P<aid>\d+)/$', views.results, name='results'),
     url(r'^accession/(?P<accnum>\w+\.\d+)/$', views.resultsbyaccnum, name='resultsbyaccnum'),
     url(r'^islandpick/select/(?P<aid>\d+)/$', views.islandpick_select_genomes, name='islandpickselectgenomes'),
