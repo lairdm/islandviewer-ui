@@ -74,6 +74,7 @@ class Analysis(models.Model):
         min_gi_size = int(min_gi_size)
         if settings.DEBUG:
             print "Testing for existing islandpick using, ext_id {}, using: ".format(ext_id)
+            print "Looking for min_gi_size: {} and genomes {}".format(min_gi_size, genomes)
             
         analysis = Analysis.objects.filter(ext_id = ext_id)
         
@@ -107,7 +108,7 @@ class Analysis(models.Model):
                     continue
                 
                 # Finally, does the min_gi_size match?
-                if a_parameters['MIN_GI_SIZE'] != min_gi_size:
+                if int(a_parameters['MIN_GI_SIZE']) != min_gi_size:
                     if settings.DEBUG:
                         print "min_gi_size for analysis {} doesn't match, skipping".format(a.aid)
                     continue
