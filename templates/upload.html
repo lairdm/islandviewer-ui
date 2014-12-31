@@ -82,10 +82,9 @@ function submitGenome() {
 	}
 </script>
 
-		<p id="showHint" onClick="showHint();"><b>++++++ Having problems? Click here to show hint. ++++++</b></p>
-		<p id="hideHint" onClick="hideHint();"><b>------ Click here to hide hint. ------</b></p>
-		<div id="hint">
-		  <p>ATTENTION: Check and see if your genome file contains protein sequences for all CDSs <u>AND</u> the complete nucleotide sequence. A valid genome file should have full protein sequence data (under "\translation" tag within "CDS" primary tag) and nucleotide sequence data under ORIGIN or blank header in GENBANK or EMBL format, respectively. For example:</p>
+		<p id="hideHint"><b>Hints for a successful analysis</b></p>
+		<div id="hint2">
+		  <p>Check and see if your genome file contains protein sequences for all CDSs <u>AND</u> the complete nucleotide sequence. A valid genome file should have full protein sequence data (under "\translation" tag within "CDS" primary tag) and nucleotide sequence data under ORIGIN or blank header in GENBANK or EMBL format, respectively. For example:</p>
 		    <span id="gbk">
 		      <p>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDS&nbsp;&nbsp;&nbsp;complement(4043..4849)<br />

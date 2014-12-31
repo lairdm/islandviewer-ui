@@ -18,11 +18,11 @@ Use the search box to bring matching genomes to the top of the list.
 {% endblock %}
 
 {% block content %}
-<div style="height: 500px; width: 400px;">
+<div style=" width: 500px;">
 <span class="pageName">IslandViewer</span><br />
 &nbsp;<br />
-&nbsp;<br />
-<select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select a genome...">
+<p class="bodyText">IslandViewer is a computational tool that integrates three different genomic island prediction methods: IslandPick, IslandPath-DIMOB, and SIGI-HMM. <a href="{% url 'faq' %}">More Information. See our FAQs</a></p>
+<select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select or start typing a genome name...">
 <option></option>
 {% for genome in analysis %}
 <option value="{{ genome.ext_id }}">{{ genome.name }} ({{ genome.ext_id }})</option>
@@ -30,6 +30,22 @@ Use the search box to bring matching genomes to the top of the list.
 </select><br /> 
 &nbsp;<br />
 <input id="gotoresults" type="button" value="Go to Genome" onclick="return goto_results()" />
+<span class="bodyText">
+
+&nbsp;<br />
+&nbsp;<br />
+<p>News:</p>
+<p><font color="red">2013/03/12</font> - New! Pathogen-associated gene annotations are now available on top of GI predictions, as determined in the study by <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0008094" target="_blank">Ho Sui et al., 2009</a>. Custom genome submissions are back online, but if you are experiencing any difficulties, please don't hesitate to contact us. Note that this pathogen-associated genes analysis is currently being updated for a future data release Some genomes will not have any results until this update is completed.</p>
+
+<p>2013/03/10 - Genome submissions are currently unavailable as we are upgrading our submission pipeline. Any jobs submitted on March 10th, 2013 may need to be re-run once the pipeline has been upgraded. We anticipate the pipeline should be back up within one or two days. Please don't hestitate to contact us if you have any further questions. Thank you for your patience as we improve IslandViewer!</p>
+
+<p>2012/12/31 - New changes have been implemented in IslandViewer. This includes incorporation of virulence factor and antibiotic resistance gene classifications from the Virulence Factor Database (VFDB) (see <a href="http://nar.oxfordjournals.org/content/40/D1/D641.full" target="_blank">Chen et al., 2012</a>) and the Antibiotic Resistance Gene Database (ARDB) (see <a href="http://nar.oxfordjournals.org/content/37/suppl_1/D443.long" target="_blank">Liu et al., 2009</a>) respectively, on top of GI predictions as well as a new side-by-side visualization page to compare two genomes. Please note that genomic island predictions have not changed. </p>
+    
+&nbsp;<br />
+&nbsp;<br />
+&nbsp;<br />
+</span>
+
 <script type="text/javascript">
     $(window).ready(function() {
 		$(".chosen-select").chosen({disable_search_threshold: 10, no_results_text: "Oops, no genomes matching that name!", search_contains: true});
