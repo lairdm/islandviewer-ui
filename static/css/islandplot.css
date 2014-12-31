@@ -38,7 +38,7 @@
 	font-weight:bold;
 }
 
-.circularVirulence_ARDB {
+.circularVirulence_ARDB, .circularVirulence_CARD {
 	stroke: black;
 	fill: #e5e500;
 	color:#cccc00;
@@ -53,6 +53,22 @@
 	font-size:14px;
 	font-weight:bold;
 	
+}
+
+.circularVirulence_BLAST {
+	stroke: black;
+	fill: #d1ace9;
+	color: #d1ace9;
+	font-size:14px;
+	font-weight:bold;
+}
+
+.circularVirulence_RGI {
+	stroke: black;
+	fill: #f2f895;
+	color: #f2f895;
+	font-size:14px;
+	font-weight:bold;
 }
 
 .circularGenes_pos {

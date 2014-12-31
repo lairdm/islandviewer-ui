@@ -162,11 +162,26 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 			    if($.inArray('ARDB', virulence) >= 0) {
 				html += "<span class=\"virulencecircle virulencecircle_ARDB\">&nbsp;&nbsp;&nbsp;</span>";
 			    }
+			    if($.inArray('CARD', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_CARD\">&nbsp;&nbsp;&nbsp;</span>";
+			    }
 			    if($.inArray('VFDB', virulence) >= 0) {
 				html += "<span class=\"virulencecircle virulencecircle_VFDB\">&nbsp;&nbsp;&nbsp;</span>";
 			    }
 			    if($.inArray('PAG', virulence) >= 0) {
 				html += "<span class=\"virulencecircle virulencecircle_PAG\">&nbsp;</span>";
+			    }
+			    if($.inArray('RGI', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_RGI\">&nbsp;</span>";
+			    }
+			    if($.inArray('Victors', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_Victors\">&nbsp;&nbsp;&nbsp;</span>";
+			    }
+			    if($.inArray('PATRIC_VF', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_PATRIC_VF\">&nbsp;&nbsp;&nbsp;</span>";
+			    }
+			    if($.inArray('BLAST', virulence) >= 0) {
+				html += "<span class=\"virulencecircle virulencecircle_BLAST\">&nbsp;&nbsp;&nbsp;</span>";
 			    }
 			}
 

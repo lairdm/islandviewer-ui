@@ -271,12 +271,12 @@ input[type=file] {
 	background: blue;
 }
 
-.virulencecircle_VFDB, virulencecircle_Victors, .virulencecircle_PATRIC_VF {
+.virulencecircle_VFDB, .virulencecircle_Victors, .virulencecircle_PATRIC_VF {
 	stroke: none;
 	background: purple;
 }
 
-.virulencecircle_ARDB {
+.virulencecircle_ARDB, .virulencecircle_CARD {
 	stroke: none;
 	background: #e5e500;
 }
@@ -284,6 +284,16 @@ input[type=file] {
 .virulencecircle_PAG {
 	stroke: none;
 	background: orange;
+}
+
+.virulencecircle_BLAST {
+        stroke: none;
+        background: #d1ace9;
+}
+
+.virulencecircle_RGI {
+        stroke: none;
+        background: #f2f895;
 }
 
 .highlight_row {
