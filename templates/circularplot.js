@@ -205,17 +205,33 @@ function updateStrand(cb, strand) {
   }
 }
 
-function updateVirulence(cb, vir_factor) {
-  if(cb.checked) {
-    {{ plotName|default:"circular" }}TrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
-    if('undefined' !== typeof window.secondTrackObj) {
-      window.secondTrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
-    }
-  } else {
-    {{ plotName|default:"circular" }}TrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
-    if('undefined' !== typeof window.secondTrackObj) {
-      window.secondTrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
-    }
+var virulenceMappings = { 'VFDB': ['VFDB', 'Victors', 'Patric_VF'],
+//var virulenceMappings = { 'VFDB': ['VFDB'],
+			  'ARDB': ['ARDB', 'CARD'],
+			  'BLAST': ['BLAST'],
+			  'RGI': ['RGI'],
+			  'PAG': ['PAG']
+			};
+
+function updateVirulence(cb, vir) {
+
+  var vir_factors =  virulenceMappings[vir];
+  for(var x = 0; x < vir_factors.length; x++) {
+      vir_factor = vir_factors[x];
+//      console.log(vir_factor);
+
+      if(cb.checked) {
+	  console.log("showing: " + vir_factor);
+	  {{ plotName|default:"circular" }}TrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+	  if('undefined' !== typeof window.secondTrackObj) {
+	      window.secondTrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+	  }
+      } else {
+	  {{ plotName|default:"circular" }}TrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+	  if('undefined' !== typeof window.secondTrackObj) {
+	      window.secondTrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
+	  }
+      }
   }
 }
 
@@ -424,19 +440,29 @@ function update_legend() {
     methods = secondmethods;
   }
 
+console.log(methods);
   // Now update the legend
-  var allmethods = ['circularIslandpick', 'circularSigi', 'circularDimob', 'PAG', 'VFDB', 'ARDB'];
+  var allmethods = ['circularIslandpick', 'circularSigi', 'circularDimob', 'PAG', 'VFDB', 'ARDB', 'CARD', 'RGI', 'Victors', 'PATRIC_VF', 'BLAST'];
+  // First disable all checkboxes and say nothing is run
+  $('.methodcheckbox').each( function() {
+      $(this).attr("disabled", true);
+  });
+
   for(var i = 0; i < allmethods.length; i++ ) {
     method = allmethods[i];
     if(methods[method]) {
-      $('#show' + method).removeAttr("disabled");
-      $('#no' + method).hide();
-    } else {
-      $('#show' + method).attr("disabled", true);
-      $('#no' + method).show();
-      // We'll do the opposite with classes of this name to hide elements
-      // for non-esxistant analysis types, if needed
+      $('.show' + method).each( function() {
+	  $(this).removeAttr("disabled");
+      });
       $('.no' + method).hide();
+//      $('#show' + method).removeAttr("disabled");
+//      $('#no' + method).hide();
+//    } else {
+//      $('#show' + method).attr("disabled", true);
+//      $('#no' + method).show();
+//      // We'll do the opposite with classes of this name to hide elements
+//      // for non-esxistant analysis types, if needed
+//      $('.no' + method).hide();
     }
   }
 

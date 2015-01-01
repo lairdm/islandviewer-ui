@@ -671,7 +671,7 @@ circularTrack.prototype.drawGlyphTrack = function(i) {
     .attr('class', function(d) {return track.trackName + '_' + d.type + ' ' + track.trackName})
     .attr("d", d3.svg.symbol().type(track.glyphType).size(track.glyphSize))
     .attr("transform", "translate(" + cfg.h/2 + "," + cfg.w/2 + ")")
-    .style("opacity", 0)
+//    .style("opacity", 0)
     .transition()
     .duration(1000)
     .attr("transform", function(d,i) { return "translate(" + x(d,i) + ","

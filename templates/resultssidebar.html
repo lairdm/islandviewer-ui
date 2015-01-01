@@ -8,14 +8,16 @@
 &nbsp;<br />
 <span class="sectionHeader">Prediction Methods</span><br />
   <span class="red"><input id="showIntegrated" type="checkbox" name="showIntegrated" onchange="updateStrand(this, 'integrated'); return false;" checked>Integrated</span><br />
-  <span class="green"><input id="showcircularIslandpick" type="checkbox" name="showIslandpick" onchange="updateStrand(this, 'islandpick'); return false;" checked>IslandPick</span><span id="nocircularIslandpick"> (No results found)</span><br />
-  <span class="orange"><input id="showcircularSigi" type="checkbox" name="showSigi" onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span><span id="nocircularSigi"> (No results found)</span><br />
-  <span class="blue"><input id="showcircularDimob" type="checkbox" name="showDimob" onchange="updateStrand(this, 'dimob'); return false;" checked>IslandPath-DIMOB</span><span id="nocircularDimob"> (No results found)</span><br />
+  <span class="green"><input id="showcircularIslandpick" class="methodcheckbox showcircularIslandpick" type="checkbox" name="showIslandpick" onchange="updateStrand(this, 'islandpick'); return false;" checked>IslandPick</span><span id="nocircularIslandpick" class="nomethodtext nocircularIslandpick"> (No results found)</span><br />
+  <span class="orange"><input id="showcircularSigi" class="methodcheckbox showcircularSigi" type="checkbox" name="showSigi" onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span><span id="nocircularSigi" class="nomethodtext nocircularSigi"> (No results found)</span><br />
+  <span class="blue"><input id="showcircularDimob" class="methodcheckbox showcircularDimob" type="checkbox" name="showDimob" onchange="updateStrand(this, 'dimob'); return false;" checked>IslandPath-DIMOB</span><span id="nocircularDimob" class="nomethodtext nocircularDimob"> (No results found)</span><br />
 &nbsp;<br />
 <span class="sectionHeader">Virulence factors</span></br />
-  <span class="{{ plotName|default:"circular" }}Virulence_ARDB"><input type="checkbox" id="showARDB" name="showARDB" onchange="updateVirulence(this, 'ARDB'); return false;" checked>Resistance genes</span><span id="noARDB"> (No results found)</span><br />
-  <span class="{{ plotName|default:"circular" }}Virulence_VFDB"><input type="checkbox" id="showVFDB" name="showVFDB" onchange="updateVirulence(this, 'VFDB'); return false;" checked>Virulence factors</span><span id="noVFDB"> (No results found)</span><br />
-  <span class="{{ plotName|default:"circular" }}Virulence_PAG"><input type="checkbox" id="showPAG" name="showPAG" onchange="updateVirulence(this, 'PAG'); return false;" checked>Pathogen-associated genes</span><span id="noPAG"> (No results found)</span><br />
+  <span class="{{ plotName|default:"circular" }}Virulence_ARDB"><input type="checkbox" class="methodcheckbox showARDB showCARD" id="showARDB" name="showARDB" onchange="updateVirulence(this, 'ARDB'); return false;" checked>Curated resistance genes</span><span id="noARDB" class="nomethodtext noCARD noARDB"> (No results found)</span><br />
+  <span class="{{ plotName|default:"circular" }}Virulence_VFDB"><input type="checkbox" class="methodcheckbox showVFDB showVictors showPATRIC_VF" id="showVFDB" name="showVFDB" onchange="updateVirulence(this, 'VFDB'); return false;" checked>Curated virulence factors</span><span id="noVFDB" class="nomethodtext noVFDB noVictors noPATRIC_VF"> (No results found)</span><br />
+  <span class="{{ plotName|default:"circular" }}Virulence_PAG"><input type="checkbox" class="methodcheckbox showPAG" id="showPAG" name="showPAG" onchange="updateVirulence(this, 'PAG'); return false;" checked>Pathogen-associated genes</span><span id="noPAG" class="nomethodtext noPAG"> (No results found)</span><br />
+  <span class="{{ plotName|default:"circular" }}Virulence_RGI"><input type="checkbox" class="methodcheckbox showRGI" id="showRGI" name="showRGI" onchange="updateVirulence(this, 'RGI'); return false;" checked>Homologs of resistance genes</span><span id="noRGI" class="nomethodtext noRGI"> (No results found)</span><br />
+  <span class="{{ plotName|default:"circular" }}Virulence_BLAST"><input type="checkbox" class="methodcheckbox showBLAST" id="showBLAST" name="showBLAST" onchange="updateVirulence(this, 'BLAST'); return false;" checked>Homologs of virulence factors</span><span id="noBLAST" class="nomethodtext noBLAST"> (No results found)</span><br />
 </div>
 <p>&nbsp;</p>
 <div><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a></div>
