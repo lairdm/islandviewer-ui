@@ -185,7 +185,11 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 			    }
 			}
 
-			html += "&nbsp;</td><td>" + row.gene + "</td><td><a href=\"http://www.ncbi.nlm.nih.gov/protein/" + row.name + "\" target=\"_blank\">" + row.name + "</a></td><td>" + row.product + "</td></tr>";
+			var gene_name = row.locus;
+			if(row.gene) {
+			    gene_name = row.gene;
+			}
+			html += "&nbsp;</td><td>" + gene_name + "</td><td><a href=\"http://www.ncbi.nlm.nih.gov/protein/" + row.name + "\" target=\"_blank\">" + row.name + "</a></td><td>" + row.product + "</td></tr>";
 		    }
 		}
 		html += "</table>";
