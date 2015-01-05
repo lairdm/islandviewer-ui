@@ -57,6 +57,9 @@ function fnFormatDetails ( oTable, nTr )
 		success: function(data) {
 			console.log(data);
 			header = data['genomename'];
+			if('undefined' !== typeof(data['emails'])) {
+				header += "<br />Emails: " + data['emails'];
+			}
 	    	for (var task in data["tasks"]) {
 	    		var status = data["tasks"][task]
 	    			//reload_url = {% url 'restartmodule' '9999' %}.replace('9999', oData.aid) + '?pa';

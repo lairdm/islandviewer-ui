@@ -5,7 +5,7 @@ from django.conf import settings
 from django import forms
 from django.views.decorators.csrf import csrf_exempt
 import json
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
 from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
@@ -325,6 +325,13 @@ def runstatusdetailsjson(request, aid):
             if settings.DEBUG:
                 print str(e)
             pass
+    
+    try:
+        context['emails'] = ','.join(Notification.objects.filter(analysis=analysis).values_list('email', flat=True))
+    except Exception as e:
+        if settings.DEBUG:
+            print e
+        pass    
     
     data = json.dumps(context, indent=4, sort_keys=False)
     
