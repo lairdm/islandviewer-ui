@@ -28,11 +28,25 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid) {
     if(plotid == 'circularchartlinear') {
 
       if(trackname == 'circularVirulence') {
-        if(d.type == "VFDB") {
-          var url = 'http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=' + d.name;
+	var url = false;
 
+        if(d.type == "VFDB") {
+          url = 'http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=' + d.name;
+
+        } else if(d.type == 'PATRIC_VF') {
+          url = 'http://patricbrc.org/portal/portal/patric/Feature?cType=feature&cId=' + d.name;
+	} else if(d.type == 'Victors') {
+	  url = 'http://www.phidias.us/victors/gene_detail.php?c_mc_victor_id=' + d.name;
+	} else if(d.type == 'CARD') {
+	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.name
+	} else if(d.type == 'RGI') {
+	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.name
+	}
+
+	// Open the link if we've found something
+	if(url) {
 	  window.open(url);
-        }
+	}
       } else if(trackname == 'circularGenes') {
         var url = 'http://www.ncbi.nlm.nih.gov/protein/' + d.accnum;
 
@@ -145,7 +159,7 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 			}
 			html += 'gene_' + row.name.replace('.', '') + ' ';
 			html += "\"><td>";
-			
+//			console.log(row);
 			if(row.method && row.method !== 0) {
 			    methods = row.method.split(',');
 			    if($.inArray('Islandpick', methods) >= 0) {
