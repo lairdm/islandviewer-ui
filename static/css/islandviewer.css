@@ -278,7 +278,7 @@ input[type=file] {
 
 .virulencecircle_ARDB, .virulencecircle_CARD {
 	stroke: none;
-	background: #e5e500;
+	background: #D6639A;
 }
 
 .virulencecircle_PAG {
@@ -293,7 +293,7 @@ input[type=file] {
 
 .virulencecircle_RGI {
         stroke: none;
-        background: #f2f895;
+        background: #FFC2E0;
 }
 
 .highlight_row {

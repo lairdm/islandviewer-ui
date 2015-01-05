@@ -40,8 +40,8 @@
 
 .circularVirulence_ARDB, .circularVirulence_CARD {
 	stroke: black;
-	fill: #e5e500;
-	color:#cccc00;
+	fill: #D6639A;
+	color:#D6639A;
 	font-size:14px;
 	font-weight:bold;	
 }
@@ -65,8 +65,8 @@
 
 .circularVirulence_RGI {
 	stroke: black;
-	fill: #f2f895;
-	color: #f2f895;
+	fill: #FFC2E0;
+	color: #FFC2E0;
 	font-size:14px;
 	font-weight:bold;
 }
