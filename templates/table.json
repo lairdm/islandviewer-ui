@@ -14,6 +14,7 @@
 	        {% comment %}Loop again for the groups by method{% endcomment %}
   	        {% for gi in gis %}
   	        	{
+			    "DT_RowId": "table_{{ gi.gi }}",
 					"gi": {{ gi.gi }},
 					"start": {{ gi.start }},
   	        		"end": {{ gi.end }},
