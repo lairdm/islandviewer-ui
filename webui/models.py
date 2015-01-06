@@ -143,6 +143,20 @@ class GenomicIsland(models.Model):
     end = models.IntegerField(default=0)
     prediction_method = models.CharField(max_length=15)
 
+    @classmethod
+    def sqltodict(cls, query,param):
+        from django.db import connection
+        cursor = connection.cursor()
+        cursor.execute(query,param)
+        fieldnames = [name[0] for name in cursor.description]
+        result = []
+        for row in cursor.fetchall():
+            rowset = []
+            for field in zip(fieldnames, row):
+                rowset.append(field)
+            result.append(dict(rowset))
+        return result
+
     class Meta:
         db_table = "GenomicIsland"
 

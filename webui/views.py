@@ -555,6 +555,23 @@ def genesbybpjson(request):
 
     return render(request, "genesbybp.json", context, content_type='application/json')
 
+#    query = "SELECT DISTINCT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, ig.gi AS gi, gi.prediction_method AS method, v.source AS virulence_source, v.external_id as virulence_id FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi AND gi.aid_id = %s LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE ext_id = %s AND g.start >=%s AND g.end <=%s"
+#    context['genes'] = GenomicIsland.sqltodict(query, params)
+#    genes = Genes.objects.raw("SELECT DISTINCT g.id, g.start, g.end, g.name, g.gene, g.product, g.locus, ig.gi AS gi, gi.prediction_method AS method, v.source AS virulence_source, v.external_id as virulence_id FROM Genes AS g LEFT JOIN IslandGenes AS ig ON g.id = ig.gene_id LEFT JOIN GenomicIsland AS gi ON ig.gi = gi.gi AND gi.aid_id = %s LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE ext_id = %s AND g.start >=%s AND g.end <=%s GROUP BY g.id", params)
+
+#    genes = dict(genes)
+#    pprint.pprint(genes)
+
+#    context['genes'] = []
+#    for gene in genes:
+#        pprint.pprint(gene)
+#        context['genes'].append(dict(gene))
+
+#    data = json.dumps(context, indent=4, sort_keys=True)
+    
+#    return HttpResponse(data, content_type="application/json")
+
+
 def islandpick_select_genomes(request, aid):
     context = {}
     
