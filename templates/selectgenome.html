@@ -21,7 +21,7 @@ Use the search box to bring matching genomes to the top of the list.
 <div style=" width: 500px;">
 <span class="pageName">IslandViewer</span><br />
 &nbsp;<br />
-<p class="bodyText">IslandViewer is a computational tool that integrates three different genomic island prediction methods: IslandPick, IslandPath-DIMOB, and SIGI-HMM. <a href="{% url 'faq' %}">More Information. See our FAQs</a></p>
+<p class="bodyText">IslandViewer is a computational tool that integrates three different genomic island prediction methods: IslandPick, IslandPath-DIMOB, and SIGI-HMM. <a href="{% url 'about' %}">More Information. See our FAQs</a></p>
 <select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select or start typing a genome name...">
 <option></option>
 {% for genome in analysis %}
@@ -35,7 +35,9 @@ Use the search box to bring matching genomes to the top of the list.
 &nbsp;<br />
 &nbsp;<br />
 <p>News:</p>
-<p><font color="red">2013/03/12</font> - New! Pathogen-associated gene annotations are now available on top of GI predictions, as determined in the study by <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0008094" target="_blank">Ho Sui et al., 2009</a>. Custom genome submissions are back online, but if you are experiencing any difficulties, please don't hesitate to contact us. Note that this pathogen-associated genes analysis is currently being updated for a future data release Some genomes will not have any results until this update is completed.</p>
+<p><font color="red">2015/01/01</font> - New: Interactive IslandPlot visualizations are now available for circular and linear genomes views. In addition to this, more curated virulence and resistance gene annotations have been incorporated, as well as homologs of these genes as determined using the Resistance Gene Identifier (RGI) and a custom approach for virulence factors. An updated pathogen-associated genes analysis has also been complete for all available genomes.</p>
+
+<p>2013/03/12 - Pathogen-associated gene annotations are now available on top of GI predictions, as determined in the study by <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0008094" target="_blank">Ho Sui et al., 2009</a>. Custom genome submissions are back online, but if you are experiencing any difficulties, please don't hesitate to contact us. Note that this pathogen-associated genes analysis is currently being updated for a future data release Some genomes will not have any results until this update is completed.</p>
 
 <p>2013/03/10 - Genome submissions are currently unavailable as we are upgrading our submission pipeline. Any jobs submitted on March 10th, 2013 may need to be re-run once the pipeline has been upgraded. We anticipate the pipeline should be back up within one or two days. Please don't hestitate to contact us if you have any further questions. Thank you for your patience as we improve IslandViewer!</p>
 
