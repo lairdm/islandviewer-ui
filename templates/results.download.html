@@ -9,7 +9,7 @@
 <tr>
   <td class="downloadtable">Select download type:<br />
 	  <select id="downloadtype" name="downloadtype" onchange="onChangeDownloadType()" class="chosen-select download-select">
-	    <option value="coordinates">Coordinates</option>
+	    <option value="coordinates">Genomic Islands</option>
 	    <option value="sequence">Sequence</option>
 	    <option value="image">Image</option>
 	  </select>
@@ -66,13 +66,13 @@
 	var imageformats = {png:'High-Res PNG', svg:'SVG'};
 	
 	function onChangeDownloadType() {
-		var downloadtype = $('#downloadtype').find(":selected").text();
+		var downloadtype = $('#downloadtype').find(":selected").val();
 		$('#downloadformat').empty();
-		if(downloadtype == 'Coordinates') {
+		if(downloadtype == 'coordinates') {
 			for (format in coordinateformats) {
 				$('#downloadformat').append("<option value=\"" + format + "\">" + coordinateformats[format] + "</option>"); 
 			}
-		} else if (downloadtype == 'Sequence'){
+		} else if (downloadtype == 'sequence'){
 			for (format in sequenceformats) {
 				$('#downloadformat').append("<option value=\"" + format + "\">" + sequenceformats[format] + "</option>"); 
 			}		
@@ -86,14 +86,14 @@
 	}
 	
 	function updateDownloadLink() {
-		var downloadtype = $('#downloadtype').find(":selected").text();
+		var downloadtype = $('#downloadtype').find(":selected").val();
 		var params = $("#downloadtype, #resultstype, #downloadformat").serialize();
-		if(downloadtype == 'Coordinates') {
+		if(downloadtype == 'coordinates') {
 //			console.log("{% url "downloadcoordinates" %}?"+params);
 			$("#downloadResultsButton").attr("href", "{% url "downloadcoordinates" %}?aid={{ aid }}&"+params);
 			$('#resultstypecontainer').toggleClass('hidden', false);
 			$('#imageformatcontainer').toggleClass('hidden', true);
-		} else if(downloadtype == 'Sequence') {
+		} else if(downloadtype == 'sequence') {
 			$("#downloadResultsButton").attr("href", "{% url "downloadsequences" %}?aid={{ aid }}&"+params);						
 			$('#resultstypecontainer').toggleClass('hidden', false);
 			$('#imageformatcontainer').toggleClass('hidden', true);

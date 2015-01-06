@@ -1,5 +1,5 @@
 from Bio import SeqIO
-from webui.models import Analysis, CustomGenome, GenomicIsland, Replicon, Genomeproject
+from webui.models import Analysis, CustomGenome, GenomicIsland, Replicon, Genomeproject, Genes
 from webui.utils.formatter import methodfullnames
 from django.conf import settings
 import os.path
@@ -37,7 +37,10 @@ class GenbankParser():
         requests the genbank file doesn't need to be reparsed 
         '''
         self.gis = GenomicIsland.objects.filter(aid_id=aid).order_by('start')
-        
+
+        params = [self.analysis.ext_id]
+        self.annotations = Genes.objects.raw("SELECT G.id, G.name, G.start, G.end, V.external_id, V.source FROM Genes AS G JOIN virulence AS V ON G.name = V.protein_accnum WHERE G.ext_id = %s", params)
+                
         gbhandle = SeqIO.parse(self.fname, "genbank")
         records = next(gbhandle)
         # Stash it for later
@@ -149,7 +152,13 @@ class GenbankParser():
                     header += 'prediction_method|' + ",".join(methods_found)
                 else:
                     continue
-            header += " {0} ({1})".format(values['product'], coord)
+
+            if 'protein_id' in values and values['protein_id']:
+                annotations = self.findAnnotations(values['protein_id'])
+                if annotations:
+                    unique_annotations = set(a[0] for a in annotations)
+                    header += '|annotations|' + ",".join(unique_annotations)
+                header += " {0} ({1})".format(values['product'], coord)
             if seqtype == 'protein' and values['protein']:
                 fasta += "{0}\n{1}\n".format(header, "\n".join(textwrap.wrap(values['protein'])))
             elif seqtype == 'nuc' and values['dna']:
@@ -202,6 +211,23 @@ class GenbankParser():
                 return methods_found
                 
         return methods_found
+
+    def findAnnotations(self, name):
+        annotations_found = []
+        
+        for annotation in self.annotations:
+            if annotation.name == name:
+                annotations_found.append((annotation.source, annotation.external_id))
+            
+        return annotations_found
+        
+    def fetchAnnotations(self):
+        annotations = []
+        
+        for annotation in self.annotations:
+            annotations.append((annotation.source, annotation.external_id, annotation.name, annotation.start, annotation.end))
+
+        return annotations
         
     def fetchCustomFile(self,ext_id):
         try:

@@ -16,14 +16,15 @@ def formatCSV(resultset, methods, filename, delimiter=False):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
     
-    pprint.pprint(resultset)
+    if settings.DEBUG:
+        pprint.pprint(resultset)
     
     if delimiter:
         writer = csv.writer(response, delimiter=delimiter)
     else:
         writer = csv.writer(response)
     
-    line = ["Island start", "Island end", "Length", "Method", "Gene name", "Gene ID", "Locus", "Gene start", "Gene end", "Strand", "Product"]
+    line = ["Island start", "Island end", "Length", "Method", "Gene name", "Gene ID", "Locus", "Gene start", "Gene end", "Strand", "Product", "Annotations"]
     writer.writerow(line)
     
     # Loop through again for integrated
@@ -31,7 +32,7 @@ def formatCSV(resultset, methods, filename, delimiter=False):
         for island in resultset:
             line = [island.island_start, island.island_end]
             line.append(int(island.island_end) - int(island.island_start))
-            line += ["Predicted by at least one method", island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product]
+            line += ["Predicted by at least one method", island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product, island.virulence]
             writer.writerow(line)
 
     results_list = list(resultset)
@@ -41,13 +42,13 @@ def formatCSV(resultset, methods, filename, delimiter=False):
             line = [island.island_start, island.island_end]
             line.append(int(island.island_end) - int(island.island_start))
             method = methodfullnames[island.prediction_method.lower()]
-            line += [method, island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product]
+            line += [method, island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product, island.virulence]
             writer.writerow(line)
             
     return response
 
 def formatGenbank(resultset, seqobj, methods, filename):
-    response = HttpResponse(mimetype='plain/text')
+    response = HttpResponse(content_type='plain/text')
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
     feature_offset = 0;
     
@@ -66,12 +67,17 @@ def formatGenbank(resultset, seqobj, methods, filename):
                                             type = "Misc", qualifiers={'note': 'Genomic Island: Predicted by ' + methodfullnames[island.prediction_method.lower()]}), feature_offset)
             feature_offset += 1
 
+    for annotation in seqobj.fetchAnnotations():
+        seqobj.insertFeature(SeqFeature(FeatureLocation(annotation[3], annotation[4]),
+                                        type = "Misc", qualifiers={'note': 'Annotation: ' + annotation[2] + ', ' + annotation[0] + ': ' + makeAnnotationStr(annotation[1], annotation[0]) }), feature_offset)
+        feature_offset += 1
+
     seqobj.writeGenbank(response)
     
     return response
 
 def formatFasta(resultset, seqobj, methods, filename):
-    response = HttpResponse(mimetype='plain/text')
+    response = HttpResponse(content_type='plain/text')
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
    
     response.write(seqobj.generateFasta(seqtype = 'nuc', show_methods = True, methods = methods))
@@ -82,7 +88,7 @@ def formatTab(resultset, methods, filename):
     return formatCSV(resultset, methods, filename, '\t')
 
 def formatExcel(resultset, methods, filename):
-    response = HttpResponse(mimetype='application/ms-excel')
+    response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet("Islandviewer Results")
@@ -116,7 +122,8 @@ def formatExcel(resultset, methods, filename):
                    island.gene_start,
                    island.gene_end,
                    island.strand,
-                   island.product
+                   island.product,
+                   island.virulence
                    ]
             for col_num in xrange(len(row)):
                 ws.write(row_num, col_num, row[col_num], font_style)
@@ -138,7 +145,8 @@ def formatExcel(resultset, methods, filename):
                    island.gene_start,
                    island.gene_end,
                    island.strand,
-                   island.product
+                   island.product,
+                   island.virulence
                    ]
             for col_num in xrange(len(row)):
                 ws.write(row_num, col_num, row[col_num], font_style)
@@ -146,6 +154,25 @@ def formatExcel(resultset, methods, filename):
     wb.save(response)
     return response
 
+def makeAnnotationStr(ext_id, source):
+
+    if source == 'VFDB':
+        return 'http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=' + ext_id
+    elif source == 'PATRIC_VF':
+        return 'http://patricbrc.org/portal/portal/patric/Feature?cType=feature&cId=' + ext_id
+    elif source == 'Victors':
+        return 'http://www.phidias.us/victors/gene_detail.php?c_mc_victor_id=' + ext_id
+    elif source == 'CARD':
+        return 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + ext_id
+    elif source == 'RGI':
+        return 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + ext_id
+    elif source == 'PAG':
+        return 'Pathogen-associated genes analysis (2014)'
+    elif source == 'BLAST':
+        return 'Annotation transfer from ' + ext_id
+    else:
+        return "Unknown"
+    
     
 excel_columns = [
     (u'Island start', 3000),
@@ -158,7 +185,8 @@ excel_columns = [
     (u'Gene start', 3000),
     (u'Gene end', 3000),
     (u'Strand', 2000),
-    (u'Product', 10000)
+    (u'Product', 10000),
+    (u'Annotations', 10000)
                  
 ]    
 
