@@ -309,6 +309,10 @@ input[type=file] {
   max-width: 600px;
 }
 
+.gitable .highlightrow {
+    outline: thin solid black;
+}
+
 .gitable .odd.method0 {
 	background-color: #E8606A !important;	
 }

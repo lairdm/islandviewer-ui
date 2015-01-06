@@ -15,6 +15,7 @@
   	        {% for gi in gis %}
   	        	{
 			    "DT_RowId": "table_{{ gi.gi }}",
+			    "DT_RowClass": "method_row",
 					"gi": {{ gi.gi }},
 					"start": {{ gi.start }},
   	        		"end": {{ gi.end }},

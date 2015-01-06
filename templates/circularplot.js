@@ -237,8 +237,6 @@ function updateVirulence(cb, vir) {
 
 
 
-
-
 window.onload = function() {
 
   {{ plotName|default:"circular" }}TrackObj.hideBrush();

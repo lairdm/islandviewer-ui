@@ -55,7 +55,11 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid) {
 
 //        var view_start = Math.max(0, (d.start-500));
 //	var view_end = Math.min((d.end+500), this.genomesize);
+	$('.method_row').each(function() {
+	    $(this).removeClass('highlightrow')
+	});
 	$('html, body').animate({ scrollTop: $('#table_' + d.id).offset().top }, 'slow');
+	$("#table_" + d.id).addClass('highlightrow');
 
 //	var url = 'http://www.ncbi.nlm.nih.gov/projects/sviewer/?id=' + this.ext_id + '&v=' + view_start + '..' + view_end + '&m=' + d.start + ',' + d.end;
 //	window.open(url);
