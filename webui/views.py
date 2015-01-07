@@ -826,7 +826,7 @@ def downloadAnnotations(request):
     params = [analysis.ext_id]
     annotations = Genes.objects.raw("SELECT G.id, G.name, G.start, G.end, V.external_id, V.source FROM Genes AS G JOIN virulence AS V ON G.name = V.protein_accnum WHERE G.ext_id = %s ORDER BY V.source", params)
 
-    response = annotationformats[format](annotations, filename + '.' + extension)
+    response = annotationformats[format](annotations, filename + '_annotations' + '.' + extension)
 
     return response
 

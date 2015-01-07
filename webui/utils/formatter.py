@@ -32,7 +32,7 @@ def formatCSV(resultset, methods, filename, delimiter=False):
         for island in resultset:
             line = [island.island_start, island.island_end]
             line.append(int(island.island_end) - int(island.island_start))
-            line += ["Predicted by at least one method", island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product, island.virulence]
+            line += ["Predicted by at least one method", island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product, makeAnnotationGroupingStr(island.virulence)]
             writer.writerow(line)
 
     results_list = list(resultset)
@@ -150,7 +150,7 @@ def formatExcel(resultset, methods, filename):
                    island.gene_end,
                    island.strand,
                    island.product,
-                   island.virulence
+                   makeAnnotationGroupingStr(island.virulence)
                    ]
             for col_num in xrange(len(row)):
                 ws.write(row_num, col_num, row[col_num], font_style)
@@ -234,6 +234,34 @@ def makeAnnotationStr(ext_id, source):
     else:
         return "Unknown"
     
+def makeAnnotationGroupingStr(annotationstr):
+    
+    if not annotationstr:
+        return ''
+    
+    annotations = annotationstr.split(',')
+        
+    virulence = []
+    resistance = []
+    pathogen = []
+    for annotation in annotations:
+        if annotation in ['VFDB', 'Victors', 'PATRIC_VF', 'BLAST']:
+            virulence.append(annotation)
+        elif annotation in ['RGI', 'CARD']:
+            resistance.append(annotation)
+        elif annotation in ['PAG']:
+            pathogen.append(annotation)
+            
+    annotation_pieces = []
+    
+    if virulence:
+        annotation_pieces.append('Virulence gene(' + ','.join(virulence) + ')')
+    if resistance:
+        annotation_pieces.append('Resistance gene(' + ','.join(resistance) + ')')
+    if pathogen:
+        annotation_pieces.append('Pathogen-associated gene(' + ','.join(pathogen) + ')')
+        
+    return ','.join(annotation_pieces)
     
 excel_columns = [
     (u'Island start', 3000),

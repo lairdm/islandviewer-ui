@@ -69,7 +69,7 @@
 	function onChangeDownloadType() {
 		var downloadtype = $('#downloadtype').find(":selected").val();
 		$('#downloadformat').empty();
-		if(downloadtype == 'coordinates') {
+		if(downloadtype == 'coordinates' || downloadtype == 'annotations') {
 			for (format in coordinateformats) {
 				$('#downloadformat').append("<option value=\"" + format + "\">" + coordinateformats[format] + "</option>"); 
 			}
@@ -93,6 +93,10 @@
 //			console.log("{% url "downloadcoordinates" %}?"+params);
 			$("#downloadResultsButton").attr("href", "{% url "downloadcoordinates" %}?aid={{ aid }}&"+params);
 			$('#resultstypecontainer').toggleClass('hidden', false);
+			$('#imageformatcontainer').toggleClass('hidden', true);
+		} else if(downloadtype == 'annotations') {
+			$("#downloadResultsButton").attr("href", "{% url "downloadannotations" %}?aid={{ aid }}&"+params);						
+			$('#resultstypecontainer').toggleClass('hidden', true);
 			$('#imageformatcontainer').toggleClass('hidden', true);
 		} else if(downloadtype == 'sequence') {
 			$("#downloadResultsButton").attr("href", "{% url "downloadsequences" %}?aid={{ aid }}&"+params);						
