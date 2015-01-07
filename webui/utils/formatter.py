@@ -47,6 +47,30 @@ def formatCSV(resultset, methods, filename, delimiter=False):
             
     return response
 
+def formatAnnotationCSV(annotations, filename, delimiter=False):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    
+    if settings.DEBUG:
+        pprint.pprint(annotations)
+    
+    if delimiter:
+        writer = csv.writer(response, delimiter=delimiter)
+    else:
+        writer = csv.writer(response)
+    
+    line = ["Protein ID", "Source", "Ext ID", "Notes"]
+    writer.writerow(line)
+    
+    # Loop through again for integrated
+    for annotation in annotations:
+        line = [annotation.name, annotation.source, annotation.external_id]
+        line.append(makeAnnotationStr(annotation.external_id, annotation.source))
+        writer.writerow(line)
+            
+    return response
+
+
 def formatGenbank(resultset, seqobj, methods, filename):
     response = HttpResponse(content_type='plain/text')
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
@@ -86,6 +110,9 @@ def formatFasta(resultset, seqobj, methods, filename):
 
 def formatTab(resultset, methods, filename):
     return formatCSV(resultset, methods, filename, '\t')
+
+def formatAnnotationTab(annotations, filename):
+    return formatAnnotationCSV(annotations, filename, '\t')
 
 def formatExcel(resultset, methods, filename):
     response = HttpResponse(content_type='application/ms-excel')
@@ -154,6 +181,40 @@ def formatExcel(resultset, methods, filename):
     wb.save(response)
     return response
 
+def formatAnnotationExcel(annotations, filename):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet("Islandviewer Annotations")
+
+    row_num = 0
+    
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    
+    for col_num in xrange(len(excel_annotation_columns)):
+        ws.write(row_num, col_num, excel_annotation_columns[col_num][0], font_style)
+        # set column width
+        ws.col(col_num).width = excel_annotation_columns[col_num][1]
+        
+    font_style = xlwt.XFStyle()
+    font_style.alignment.wrap = 1
+    
+    for annotation in annotations:
+        row_num += 1
+        row = [
+            annotation.name,
+            annotation.source,
+            annotation.external_id
+        ]
+        row.append(makeAnnotationStr(annotation.external_id, annotation.source))
+        for col_num in xrange(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+            
+    wb.save(response)
+    return response
+
 def makeAnnotationStr(ext_id, source):
 
     if source == 'VFDB':
@@ -190,11 +251,23 @@ excel_columns = [
                  
 ]    
 
+excel_annotation_columns = [
+    (u'Name', 4000),
+    (u'Source', 3000),
+    (u'External ID', 4000),
+    (u'Notes', 15000)
+]
+
 downloadformats = {'genbank': formatGenbank,
                    'fasta': formatFasta,
                    'tab': formatTab,
                    'csv': formatCSV,
                    'excel': formatExcel
+}
+
+annotationformats = {'tab': formatAnnotationTab,
+                     'csv': formatAnnotationCSV,
+                     'excel': formatAnnotationExcel
 }
 
 downloadextensions = {'genbank': 'gbk',

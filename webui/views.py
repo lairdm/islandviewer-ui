@@ -796,6 +796,39 @@ def downloadCoordinates(request):
     response = downloadformats[format](islandset,methods, filename + "." + extension)
     
     return response
+def downloadAnnotations(request):
+
+    if request.GET.get('aid'):
+        aid = request.GET.get('aid')
+        if not aid.isdigit():
+            return HttpResponse(status=400)
+        analysis = Analysis.objects.get(pk=aid)
+
+
+        if(analysis.atype == Analysis.CUSTOM):
+            genome = CustomGenome.objects.get(pk=analysis.ext_id)
+            filename = genome.name
+            filename = ''.join(e for e in filename if e.isalnum())
+        elif(analysis.atype == Analysis.MICROBEDB):
+            filename = analysis.ext_id
+
+    else:
+        return HttpResponse(status=400)
+        
+    if request.GET.get('format'):
+        format = request.GET.get('format')
+        if format not in downloadformats:
+            return HttpResponse(status=400)
+        extension = downloadextensions[format]
+    else:
+        return HttpResponse(status=400)
+
+    params = [analysis.ext_id]
+    annotations = Genes.objects.raw("SELECT G.id, G.name, G.start, G.end, V.external_id, V.source FROM Genes AS G JOIN virulence AS V ON G.name = V.protein_accnum WHERE G.ext_id = %s ORDER BY V.source", params)
+
+    response = annotationformats[format](annotations, filename + '.' + extension)
+
+    return response
 
 def downloadSequences(request):
     
