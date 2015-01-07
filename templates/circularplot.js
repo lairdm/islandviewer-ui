@@ -382,7 +382,7 @@ function load_second() {
 //        secondoTable.fnDraw();
       } else {
 
-        window.secondoTable = create_gitable("rightgitable", url); 
+        window.secondoTable = create_gitable("rightgitable", url, 'window.secondLinearTrack'); 
       }
 
       update_legend();

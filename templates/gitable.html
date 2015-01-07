@@ -1,4 +1,5 @@
 {% url 'fetchislands' as fetchislands %}{% url 'fetchislandsfasta' as fetchislandsfasta %}
+{% load static %} 
 <div id="gitable_container" style="white-space: nowrap;">
   <div id="main_gitable" class="gitable_fullwidth" style="display:inline-block;">
     <table id="{{ gitablename|default:"maingitable" }}" class="gitable table table-condensed idb-table" style="font-size: 90%; width:100%; white-space: normal;">
@@ -9,7 +10,8 @@
       <th>End</th>
       <th>Size</th>
       <th>GI Prediction Method</th>
-      <th>Annotations</th>
+      <th>View</th>
+      <th>External Annotations</th>
       <th>Download</th>
       </tr>
       </thead>
@@ -26,7 +28,8 @@
   <th>End</th>
   <th>Size</th>
   <th>GI Prediction Method</th>
-  <th>Annotations</th>
+  <th>View</th>
+  <th>External Annotations</th>
   <th>Download</th>
   </tr>
   </thead>
@@ -45,6 +48,7 @@ var arrayColumns = [
                 {"mData": null, "bVisible": true, "sSortDataType": "dom-text", "sType": "formatted-num"},
                 {"mData": "method", "bVisible": true, "bSortable": false},
                 {"mData": null, "bVisible": true, "bSortable": false},
+                {"mData": "annotations", "bVisible": true, "bSortable": false},
                 {"mData": null, "bVisible": true, "bSortable": false}
             ]
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
@@ -68,7 +72,7 @@ $(window).resize( function () {
 
 $(window).ready(function() {
 	
-	window.oTable = create_gitable("{{ gitablename|default:"maingitable" }}", "{% url 'tablejson' aid=aid %}");
+	window.oTable = create_gitable("{{ gitablename|default:"maingitable" }}", "{% url 'tablejson' aid=aid %}", 'islandviewerObj');
 	
 	//create_gitable("rightgitable", "{% url 'tablejson' aid=aid %}");
 });
@@ -141,7 +145,7 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
     }, oSettings );
 };
 
-function create_gitable(elem, source_url) {
+function create_gitable(elem, source_url, localislandviewerObj) {
   return oTable = $('#' + elem).dataTable({
 					"iDisplayLength": displayLength,
                     //"sScrollX": "100%",
@@ -180,11 +184,11 @@ function create_gitable(elem, source_url) {
                             "aTargets": [5],
                             "mData": null,
                             "mRender": function(data, type, full) {
-                                return '<a href="{{ fetchislands }}?gi=' + full.gi + '">Genes</a>';
+                                return '<a href="javascript:' + localislandviewerObj + '.scrollandOpen({ start: ' + full.start + ', end:' + full.end + '})"><img src="{% static 'img/show-property-24.png' %}"></a>';
                             },
                         },
                         {
-                            "aTargets": [6],
+                            "aTargets": [7],
                             "mData": null,
                             "mRender": function(data, type, full) {
                                 return '<a href="{{ fetchislandsfasta }}?gi=' + full.gi + '&seq=island">Sequence</a>, <a href="{{ fetchislandsfasta }}?gi=' + full.gi + '&seq=nuc">Genes</a>, <a href="{{ fetchislandsfasta }}?gi=' + full.gi + '">Proteins</a>';

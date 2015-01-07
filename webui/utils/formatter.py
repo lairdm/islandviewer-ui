@@ -59,12 +59,12 @@ def formatAnnotationCSV(annotations, filename, delimiter=False):
     else:
         writer = csv.writer(response)
     
-    line = ["Protein ID", "Source", "Ext ID", "Notes"]
+    line = ["Protein ID", "Type", "Source"]
     writer.writerow(line)
     
     # Loop through again for integrated
     for annotation in annotations:
-        line = [annotation.name, annotation.source, annotation.external_id]
+        line = [annotation.name, annotation.source]
         line.append(makeAnnotationStr(annotation.external_id, annotation.source))
         writer.writerow(line)
             
@@ -204,8 +204,7 @@ def formatAnnotationExcel(annotations, filename):
         row_num += 1
         row = [
             annotation.name,
-            annotation.source,
-            annotation.external_id
+            annotation.source
         ]
         row.append(makeAnnotationStr(annotation.external_id, annotation.source))
         for col_num in xrange(len(row)):
@@ -281,9 +280,8 @@ excel_columns = [
 
 excel_annotation_columns = [
     (u'Name', 4000),
-    (u'Source', 3000),
-    (u'External ID', 4000),
-    (u'Notes', 15000)
+    (u'Type', 3000),
+    (u'Source', 15000)
 ]
 
 downloadformats = {'genbank': formatGenbank,

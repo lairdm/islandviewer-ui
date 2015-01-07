@@ -175,7 +175,11 @@ def tablejson(request, aid):
     context['cid'] = analysis.ext_id
     
     # Fill in the GIs
-    context['gis'] = GenomicIsland.objects.filter(aid_id=aid).all()
+#    context['gis'] = GenomicIsland.objects.filter(aid_id=aid).all()
+    params = [aid]
+    context['gis'] = GenomicIsland.objects.raw('SELECT DISTINCT gi.gi, gi.aid_id, gi.start, gi.end, gi.prediction_method,  GROUP_CONCAT( DISTINCT v.source ) AS annotations FROM GenomicIsland AS gi JOIN IslandGenes AS ig ON ig.gi = gi.gi JOIN Genes AS g ON ig.gene_id = g.id LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE gi.aid_id = %s GROUP BY gi.gi', params)
+    
+    context['gislength'] = sum(1 for result in context['gis'])
     
     return render(request, "table.json", context, content_type='application/json')
     

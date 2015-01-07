@@ -8,7 +8,8 @@
   	        		"end": {{ gi.end }},
   	        		"accnum": "{{ cid }}",
   	        		"method": "Predicted by at least one method",
-  	        		"group": 0
+  	        		"group": 0,
+  	        		"annotations": "{{ gi.annotations }}"
   	        	},
   	        {% endfor %}
 	        {% comment %}Loop again for the groups by method{% endcomment %}
@@ -20,6 +21,7 @@
 					"start": {{ gi.start }},
   	        		"end": {{ gi.end }},
   	        		"accnum": "{{ cid }}",
+  	        		"annotations": "{{ gi.annotations }}",  	        		
   	        		{% if gi.prediction_method == "Islandpick" %}
   	        		"method": "IslandPick",
   	        		"group": 1
@@ -33,7 +35,7 @@
   	        	}{% if not forloop.last %},{% endif %}
   	        {% endfor %}
             ],
-    "iTotalRecords": {{ gis|length }},
-    "iTotalDisplayRecords": {{ gis|length }},
+    "iTotalRecords": {{ gislength }},
+    "iTotalDisplayRecords": {{ gislength }},
     "sEcho": 1
 }

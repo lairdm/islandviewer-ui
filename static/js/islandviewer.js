@@ -227,6 +227,13 @@ Islandviewer.prototype.showHoverGenes = function(d, do_half_range) {
   this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
 }
 
+Islandviewer.prototype.scrollandOpen = function(d) {
+	var self = this;
+	$("html, body").animate({ scrollTop: 0 }, 'slow').promise().done( function() {
+	  self.showHoverGenes(d);
+	});
+}
+
 Islandviewer.prototype.findMethods = function() {
 
     if('undefined' === typeof this.types) {
