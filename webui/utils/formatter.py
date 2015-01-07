@@ -24,7 +24,7 @@ def formatCSV(resultset, methods, filename, delimiter=False):
     else:
         writer = csv.writer(response)
     
-    line = ["Island start", "Island end", "Length", "Method", "Gene name", "Gene ID", "Locus", "Gene start", "Gene end", "Strand", "Product", "Annotations"]
+    line = ["Island start", "Island end", "Length", "Method", "Gene name", "Gene ID", "Locus", "Gene start", "Gene end", "Strand", "Product", "External Annotations"]
     writer.writerow(line)
     
     # Loop through again for integrated
@@ -186,7 +186,7 @@ excel_columns = [
     (u'Gene end', 3000),
     (u'Strand', 2000),
     (u'Product', 10000),
-    (u'Annotations', 10000)
+    (u'External Annotations', 10000)
                  
 ]    
 
