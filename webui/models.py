@@ -615,6 +615,7 @@ class Virulence(models.Model):
     protein_accnum = models.CharField(max_length=18,primary_key=True)
     external_id = models.CharField(max_length=18)
     source = models.CharField(max_length=4, blank=True)
+    type = models.CharField(max_length=20, blank=False)
     class Meta:
         managed = False
         db_table = 'virulence'

@@ -48,7 +48,7 @@ var arrayColumns = [
                 {"mData": null, "bVisible": true, "sSortDataType": "dom-text", "sType": "formatted-num"},
                 {"mData": "method", "bVisible": true, "bSortable": false},
                 {"mData": null, "bVisible": true, "bSortable": false},
-                {"mData": "annotations", "bVisible": true, "bSortable": false},
+                {"mData": null, "bVisible": true, "bSortable": false},
                 {"mData": null, "bVisible": true, "bSortable": false}
             ]
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
@@ -185,6 +185,25 @@ function create_gitable(elem, source_url, localislandviewerObj) {
                             "mData": null,
                             "mRender": function(data, type, full) {
                                 return '<a href="javascript:' + localislandviewerObj + '.scrollandOpen({ start: ' + full.start + ', end:' + full.end + '})"><img src="{% static 'img/show-property-24.png' %}"></a>';
+                            },
+                        },
+                        {
+                            "aTargets": [6],
+                            "mData": null,
+                            "mRender": function(data, type, full) {
+								if(full.annotations) {
+								    displayStr = full.annotations;
+	                        		substitutions = {'resistance': 'Resistance gene',
+	                        						 'virulence': 'Virulence gene',
+	                        						 'pathogen-associated': 'Pathogen Associated gene'};
+	
+	                        		for(s in substitutions) {
+	                        			displayStr = displayStr.replace(s, substitutions[s]);
+	                        		}
+	                                return displayStr;
+								} else {
+									return '';
+								}
                             },
                         },
                         {
