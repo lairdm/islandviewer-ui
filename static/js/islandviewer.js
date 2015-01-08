@@ -19,7 +19,7 @@ Islandviewer.prototype.addLinearPlot = function(layout) {
     return this.linearplot;
 }
 
-Islandviewer.prototype.onclick = function(trackname, d, plotid) {
+Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range) {
 //    console.log("Got a callback " + d);
 //    console.log(trackname);
 //    console.log(d);
@@ -69,7 +69,8 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid) {
       if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
         clearTimeout(this.popup_timer);
 
-        var half_range = (d.end - d.start)/2;
+	var half_range = typeof skip_half_range !== 'undefined' ? 0 : (d.end - d.start)/2;
+        //var half_range = (d.end - d.start)/2;
         this.linearplot.update(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
 
         this.circularplot.moveBrushbyBP(Math.max(0,(d.start-half_range)), 
@@ -228,9 +229,11 @@ Islandviewer.prototype.showHoverGenes = function(d, do_half_range) {
 }
 
 Islandviewer.prototype.scrollandOpen = function(d) {
+	// We're going to simulate a mouse click in the circulate track to make this work
+
 	var self = this;
 	$("html, body").animate({ scrollTop: 0 }, 'slow').promise().done( function() {
-	  self.showHoverGenes(d);
+	  self.onclick('circularIntegrated', d, 'circularchart', true);
 	});
 }
 

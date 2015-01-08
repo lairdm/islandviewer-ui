@@ -184,6 +184,7 @@ function create_gitable(elem, source_url, localislandviewerObj) {
                             "aTargets": [5],
                             "mData": null,
                             "mRender": function(data, type, full) {
+                        	    // We're going to simulate a mouse click in the circulate track to make this work
                                 return '<a href="javascript:' + localislandviewerObj + '.scrollandOpen({ start: ' + full.start + ', end:' + full.end + '})"><img src="{% static 'img/show-property-24.png' %}"></a>';
                             },
                         },
