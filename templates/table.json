@@ -9,7 +9,7 @@
   	        		"accnum": "{{ cid }}",
   	        		"method": "Predicted by at least one method",
   	        		"group": 0,
-  	        		"annotations": "{{ gi.annotations }}"
+  	        		"annotations": "{{ gi.annotations|default:'' }}"
   	        	},
   	        {% endfor %}
 	        {% comment %}Loop again for the groups by method{% endcomment %}
@@ -21,7 +21,7 @@
 					"start": {{ gi.start }},
   	        		"end": {{ gi.end }},
   	        		"accnum": "{{ cid }}",
-  	        		"annotations": "{{ gi.annotations }}",  	        		
+  	        		"annotations": "{{ gi.annotations|default:'' }}",  	        		
   	        		{% if gi.prediction_method == "Islandpick" %}
   	        		"method": "IslandPick",
   	        		"group": 1
