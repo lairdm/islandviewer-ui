@@ -69,7 +69,14 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range)
       if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
         clearTimeout(this.popup_timer);
 
-	var half_range = typeof skip_half_range !== 'undefined' ? 0 : (d.end - d.start)/2;
+	if(typeof skip_half_range !== 'undefined') {
+	  var half_range = 0;
+	  var do_half_range = false;
+	} else {
+	  var half_range = (d.end - d.start)/2;
+	  var do_half_range = true;
+	}
+
         //var half_range = (d.end - d.start)/2;
         this.linearplot.update(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
 
@@ -78,7 +85,7 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range)
 
         this.circularplot.showBrush();
   
-        this.showHoverGenes(d, true);
+        this.showHoverGenes(d, do_half_range);
 
       }
     }
@@ -222,7 +229,7 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 
 Islandviewer.prototype.showHoverGenes = function(d, do_half_range) {
 
-  var half_range = typeof do_half_range !== 'undefined' ? (d.end - d.start)/2 : 0;
+  var half_range = (typeof do_half_range !== 'undefined' && do_half_range)  ? (d.end - d.start)/2 : 0;
 
   $('#gene_dialog').dialog("open");
   this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
