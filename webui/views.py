@@ -920,7 +920,7 @@ def fetchislandsfasta(request):
         else:
             return HttpResponse(status=400)
     else:
-        fasta = p.generateFasta(gi=gi, seqtype=seqtype)
+        fasta = p.generateFasta(gi=gi, seqtype=seqtype, show_methods = True)
     
     response = HttpResponse(content_type='text/plain')
     response['Content-Disposition'] = "attachment; filename=\"gi_{0}.txt\"".format(filename)

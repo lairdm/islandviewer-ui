@@ -49,8 +49,9 @@ class GenbankParser():
         
         for feature in records.features:
                 if feature.type == 'gene':
-                    gi = self.checkIslandRange(feature.location.start, feature.location.end)
-                    if gi:
+                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+#                    if gi:
+                    for gi in gis:
                         loc = str(feature.location.start) + ".." + str(feature.location.end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['dna'] = records.seq[feature.location.start:feature.location.end]
@@ -65,8 +66,9 @@ class GenbankParser():
                         if 'locus_tag' in qualifiers:
                             recs_in_islands[gi][loc]['locus'] = qualifiers['locus_tag'][0]
                 if feature.type == 'CDS':
-                    gi = self.checkIslandRange(feature.location.start, feature.location.end)
-                    if gi:
+                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+#                    if gi:
+                    for gi in gis:
                         loc = str(feature.location.start) + ".." + str(feature.location.end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
@@ -82,8 +84,9 @@ class GenbankParser():
                         if 'product' in qualifiers:
                             recs_in_islands[gi][loc]['product'] = qualifiers['product'][0]
                 if feature.type == 'tRNA':
-                    gi = self.checkIslandRange(feature.location.start, feature.location.end)
-                    if gi:
+                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+#                    if gi:
+                    for gi in gis:
                         loc = str(feature.location.start) + ".." + str(feature.location.end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
@@ -94,8 +97,9 @@ class GenbankParser():
                         if 'product' in qualifiers:
                             recs_in_islands[gi][loc]['product'] = qualifiers['product'][0]
                 if feature.type == 'ncRNA':
-                    gi = self.checkIslandRange(feature.location.start, feature.location.end)
-                    if gi:
+                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+#                    if gi:
+                    for gi in gis:
                         loc = str(feature.location.start) + ".." + str(feature.location.end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
@@ -140,16 +144,20 @@ class GenbankParser():
 
         fasta = ''
         for coord,values in sortedislands:
-            header = '>'
+            header = ''
             if(values['protein_id']):
-                header += 'ref|' + str(values['protein_id']) + '|'
+                header = '|'.join(filter(None, [header, 'ref|' + str(values['protein_id'])]))
+                #header += 'ref|' + str(values['protein_id']) + '|'
             if(values['locus']):
-                header += 'locus|' + str(values['locus']) + '|'
+                header = '|'.join(filter(None, [header, 'locus|' + str(values['locus'])]))
+                #header += 'locus|' + str(values['locus']) + '|'
             if show_methods:
 #                pprint.pprint(values['method'])
                 methods_found = self.generateMethods(values['start'], values['end'], methods)
                 if methods_found:
-                    header += 'prediction_method|' + ",".join(methods_found)
+                    methodsStr = 'prediction_method|' + ",".join(methods_found)
+                    header = '|'.join(filter(None, [header, methodsStr]))
+                    #header += 'prediction_method|' + ",".join(methods_found)
                 else:
                     continue
 
@@ -157,8 +165,13 @@ class GenbankParser():
                 annotations = self.findAnnotations(values['protein_id'])
                 if annotations:
                     unique_annotations = set(a[0] for a in annotations)
-                    header += '|annotations|' + ",".join(unique_annotations)
+                    annotations = 'annotations|' + ",".join(unique_annotations)
+                    header = '|'.join(filter(None, [header, annotations]))
+                    #header += '|annotations|' + ",".join(unique_annotations)
                 header += " {0} ({1})".format(values['product'], coord)
+
+            header = '>' + header
+            
             if seqtype == 'protein' and values['protein']:
                 fasta += "{0}\n{1}\n".format(header, "\n".join(textwrap.wrap(values['protein'])))
             elif seqtype == 'nuc' and values['dna']:
@@ -179,12 +192,14 @@ class GenbankParser():
 
                     
     def checkIslandRange(self,start,end):
+        islands = []
         
         for island in self.gis:
             if island.start <= start and end <= island.end:
-                return island.gi
+                islands.append(island.gi)
+                #return island.gi
             
-        return False        
+        return islands        
     
     def generateMethods(self, start, end, methods = ['integrated']):
         
@@ -202,7 +217,7 @@ class GenbankParser():
     '''
     def findMethods(self, start, end, methods):
         methods_found = []
-        
+
         for island in self.gis:
             if island.start <= start and end <= island.end and island.prediction_method.lower() in methods:
 #            if island.start <= start and end <= island.end:
