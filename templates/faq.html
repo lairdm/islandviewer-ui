@@ -6,18 +6,26 @@
 {% endblock sidebar %}
 
 {% block content %}
+<script>
+function scrolltoelem(elem) {
+	$('html, body').animate({ scrollTop: $('#' + elem).offset().top }, 'slow');
+	
+}
+</script>
+
 <p class="pageName">Frequently Asked Questions</p>
 
 <ul class="bodyText faq-q">
-  <li><a href="#a1">Which genomes are available through IslandViewer and how can I run IslandViewer on other genomes?</a>
-  <li><a href="#a2">Why does my input file fail to upload or run?</a>
-  <li><a href="#a3">Why is an expected genomic island missed from IslandViewer predictions?</a>
-  <li><a href="#a4">How do I change IslandPick analysis settings to compare against different genomes?</a>
-  <li><a href="#a5">What is the accuracy of IslandViewer GI predictions?</a>
-  <li><a href="#a6">What data is shown in the scatter plot track and how can I check if it with genomic island predictions? </a>
-  <li><a href="#a7">How can I compare GI predictions across two species?</a>
-  <li><a href="#a8">How do I cite IslandViewer?</a>
-  <li><a href="#a9">Where can I find more information about GI prediction using computational methods?</a> 
+  <li><a href="javascript:scrolltoelem('a1');">Which genomes are available through IslandViewer and how can I run IslandViewer on other genomes?</a></li>
+  <li><a href="javascript:scrolltoelem('a2');">Why does my input file fail to upload or run?</a></li>
+  <li><a href="javascript:scrolltoelem('a3');">Why is an expected genomic island missed from IslandViewer predictions?</a></li>
+  <li><a href="javascript:scrolltoelem('a4');">How do I change IslandPick analysis settings to compare against different genomes?</a></li>
+  <li><a href="javascript:scrolltoelem('a5');">What is the accuracy of IslandViewer GI predictions?</a></li>
+  <li><a href="javascript:scrolltoelem('a6');">What are the sources of external annotations in the scatter plot? How can I determine which resource to cite if I use any of these annotations?</a></li>
+  <li><a href="javascript:scrolltoelem('a7');">How can I check if a GI might be a pathogenicity or resistance island?</a></li>
+  <li><a href="javascript:scrolltoelem('a8');">How can I compare GI predictions across two species?</a></li>
+  <li><a href="javascript:scrolltoelem('a9');">How do I cite IslandViewer?</a></li>
+  <li><a href="javascript:scrolltoelem('a10');">Where can I find more information about GI prediction using computational methods?</a> </li>
 </ul>
 		
 <p class="bodyText">If you are still having problems or concerns, please <a href="{% url 'contactus' %}">contact us</a> for further assistance.</p>
@@ -53,22 +61,29 @@
 
 <div align="right"><a href="#">Top</a></div>
 
-<div id='a6' class="subHeader">What data is shown in the scatter plot track and how can I check if it with genomic island predictions?</div>
+<div id='a6' class="subHeader">What are the sources of external annotations in the scatter plot? How can I determine which resource to cite if I use any of these annotations?</div>
 &nbsp;<br />
-<p class="bodyText">The scatter plot currently shows the location of genes annotated as virulence factors from the Virulence Factor Database (VFDB), or antibiotic resistance genes as classified by the Antibiotic Resistance Gene Database (ARDB) or pathogen-associated genes calculated from a study by Ho Sui et al. (see <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0008094" target="_blank">Ho Sui et al. 2009</a>). For more information about these resources, see the <a href="{% url 'about' %}">About</a> section. If any genes from a predicted genomic island overlap with these classifications, a link will appear under the "product" annotation field, either when you hover over the island or click on the gene annotations link. These links will pull up the corresponding information for that gene in VFDB or ARDB. This feature will be useful in categorizing genomic islands as pathogenicity islands or antibiotic resistance islands. Please correctly cite these resources if you are using any of these data (see <a href="{% url 'acknowledgements' %}">Acknowledgments</a>).</p>
+<p class="bodyText"><font class="circularVirulence_VFDB">Curated virulence factors</font> have been collected from the <a href="http://www.mgc.ac.cn/VFs/">Virulence Factor Database, VFDB</a> (see <a href="http://nar.oxfordjournals.org/content/40/D1/D641.full">Chen et al., 2012</a>), <a href="http://www.patricbrc.org">PATRIC</a> (see <a href="http://nar.oxfordjournals.org/content/42/D1/D581.long">Wattam et al., 2014</a>) and <a href="http://www.phidias.us/victors/">Victors</a>. <font class="circularVirulence_BLAST">Homologs of virulence factors</font> were determined as reciprocal best blast hits (RBBH's) to curated virulence factors. <font class="circularVirulence_ARDB">Curated resistance genes</font> were collected from the <a href="http://arpcard.mcmaster.ca/">Comprehensive Antibiotic Resistance Database (CARD)</a> (see <a href="http://aac.asm.org/content/57/7/3348.long">McArthur et al., 2013</a>). <font class="circularVirulence_RGI">Homologs of resistance genes</font> were determined using the <a href="http://arpcard.mcmaster.ca/?q=CARD/tools/RGI">Resistance Gene Identifier</a>. <font class="circularVirulence_PAG">Pathogen-associated genes</font> were determined using an approach as outlined by <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0008094">Ho Sui et al., 2009</a>, with a more recent list of genomes. In order to determine the source of any curated annotations, there are two main approaches. Firstly, the scatter plot in the linear view provides direct links to the source database. Secondly, under the Downloads, a file of all "External Annotations" shows the source of each annotation that should be cited and also provides hard links to the corresponding entries in the source database. For more information about any of these resources, please refer to the <a href="{{ url 'about' %}">About</a> page and see our <a href="{{ url 'acknowledgements' %}">Acknowledgments</a> page to correctly cite these resources.</p>
 
 <div align="right"><a href="#">Top</a></div>
 
-<div id='a7' class="subHeader">How can I compare GI predictions across two species?</div>
+<div id='a7' class="subHeader">How can I check if a GI might be a pathogenicity or resistance island? </div>
 &nbsp;<br />
-<p class="bodyText">As a new feature, a new visualization page has been implemented to allow display of two genomes side-by-side. You can access this by clicking on "Visualize two genomes" under the figure legend and choosing a genome to compare against. This feature will be further improved in the future using sequence-similarity comparisons, but due to differences in criteria by users for matching up similar genomic regions, the simple visual comparison was strongly initially preferred.</p>
+<p class="bodyText">Within the summary table below the interactive display, any GIs containing annotated virulence genes, resistance genes or pathogen-associated genes will be indicated under the "External Annotations" column. You can alternatively determine overlap by manually checking annotations in the genome visualization when you click on a GI. Keep in mind that the annotations available here are by no means complete and are not available for every genome so if you do not see any annotated islands, there still may be a pathogenicity or resistance island in your genome of interest. Further investigation of the types of genes within the GI predictions will be crucial for classifying these types of GIs. </p>
 
 <div align="right"><a href="#">Top</a></div>
 
-<div id='a8' class="subHeader">How do I cite IslandViewer?</div>
+<div id='a8' class="subHeader">How can I compare GI predictions across two species?</div>
+&nbsp;<br />
+<p class="bodyText">You can compare two genomes on a single page by clicking on "Visualize two genomes" under the figure legend and choosing a genome to compare against. A pop up box should appear at the top of the page where you can select the second genome. This feature will be further improved in the future using sequence-similarity comparisons, but due to differences in criteria by users for matching up similar genomic regions, the simple visual comparison was strongly initially preferred.</p>
+
+<div align="right"><a href="#">Top</a></div>
+
+<div id='a9' class="subHeader">How do I cite IslandViewer?</div>
 &nbsp;<br />
 <p class="bodyText">We would appreciate anyone using IslandViewer to cite:</p>
-		<blockquote class="bodyText">Langille, M.G.I. and F.S.L. Brinkman (2009). &quot;IslandViewer: an integrated interface for computational identification and visualization of genomic islands&quot;, Bioinformatics, Jan. 16. <a href="http://www.ncbi.nlm.nih.gov/pubmed/19151094">PMID: 19151094</a></blockquote>
+		<blockquote class="bodyText" style="border-left: none;">Dhillon, B.K., Chiu, T.A., Laird, M.R., Langille, M.G.I., and Brinkman, F.S.L. (2013). “IslandViewer update: improved genomic island discovery and visualization“, Nucleic Acids Research, 41(Web server issue):W129-132. <a href="http://www.ncbi.nlm.nih.gov/pubmed/23677610">PMID: 23677610</a></blockquote>
+		<blockquote class="bodyText" style="border-left: none;">Langille, M.G.I. and F.S.L. Brinkman (2009). &quot;IslandViewer: an integrated interface for computational identification and visualization of genomic islands&quot;, Bioinformatics, Jan. 16. <a href="http://www.ncbi.nlm.nih.gov/pubmed/19151094">PMID: 19151094</a></blockquote>
 <p class="bodyText">In addition, depending on the resources used, we would encourage the acknowledgement of one or more of the following resources (add links as in the acknowledgments):</p>
 
 <ul class="bodyText">
@@ -76,12 +91,14 @@
   <li>IslandPath-DIMOB (<a href="http://bioinformatics.oxfordjournals.org/content/19/3/418.short">Langille et al., 2008</a>)</li>
   <li>IslandPick (<a href="http://www.biomedcentral.com/1471-2105/9/329">Langille et al., 2008</a>)</li>
   <li>Virulence Factor Database (<a href="http://nar.oxfordjournals.org/content/40/D1/D641.full" target="_blank">Chen et al., 2012</a>)</li>
-  <li>Antibiotic Resistance Gene Database (<a href="http://nar.oxfordjournals.org/content/37/suppl_1/D443.long" target="_blank">Liu et al., 2009</a>)</li>
+  <li>PATRIC (<a href="http://nar.oxfordjournals.org/content/42/D1/D581.long">Wattam et al., 2014</a>)</li>
+  <li>Comprehensive Antibiotic Resistance Database (<a href="McArthur et al., 2013">McArthur et al., 2013</a>)</li>
+  <li>Pathogen-associated genes - <a href="http://www.pathogenomics.sfu.ca/pathogen-associated/">Datasets (<a href="http://www.pathogenomics.sfu.ca/pathogen-associated/">Ho Sui et al., 2009</a>)</a></li>
 </ul>
 
 <div align="right"><a href="#">Top</a></div>
 
-<div id='a9' class="subHeader">Where can I find more information about GI prediction using computational methods?</div>
+<div id='a10' class="subHeader">Where can I find more information about GI prediction using computational methods?</div>
 &nbsp;<br />
 <p class="bodyText">If you are interested in learning more about the computational prediction of GIs, please see the review article by <a href="http://www.nature.com/nrmicro/journal/v8/n5/full/nrmicro2350.html" target="_blank">Langille et al., 2010</a> in Nature Reviews Microbiology.</p>
 
