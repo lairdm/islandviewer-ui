@@ -22,7 +22,7 @@ Use the search box to bring matching genomes to the top of the list.
 <span class="pageName">IslandViewer</span><br />
 &nbsp;<br />
 <p class="bodyText">IslandViewer is a computational tool that integrates three different genomic island prediction methods: IslandPick, IslandPath-DIMOB, and SIGI-HMM. <a href="{% url 'about' %}">More Information. See our FAQs</a></p>
-<select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select or start typing a genome name...">
+<select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select or start typing a species name, strain name or genome accession...">
 <option></option>
 {% for genome in analysis %}
 <option value="{{ genome.ext_id }}">{{ genome.name }} ({{ genome.ext_id }})</option>
