@@ -144,7 +144,7 @@ var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|
 
 update_legend();
 
-var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true };
+var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, dblclick: '{{ varName|default:'' }}islandviewerObj' };
 
 var {{ varName|default:"circular" }}containerid =  "{{ container }}".slice(1);
 $('{{ container }}').draggable({ handle: ".move_" +  {{ varName|default:"circular" }}containerid });
