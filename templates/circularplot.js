@@ -124,6 +124,7 @@ var {{ varName|default:"circular" }}data = [
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
 	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
           linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',
+	  showTooltip: true,
 	  items: [
 	     {% for vir in vir_factors %}
 	       {id: {{ forloop.counter }}, bp: {{ vir.start }}, type: '{{ vir.source }}', name: '{{ vir.external_id }}', gene: '{{ vir.name }}'}{% if not forloop.last %},{% endif %}
