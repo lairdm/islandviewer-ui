@@ -2,8 +2,10 @@
 {% load static %} 
 
 {% block headextras %}
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <!--<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />-->
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>-->
+    <script src="{% static 'js/jquery-ui.min.js' %>"></script>
     <script src="{% static 'js/jsphylosvg/jsphylosvg-min.js' %}"></script>
     <script src="{% static 'js/jsphylosvg/raphael-min.js' %}"></script>
 

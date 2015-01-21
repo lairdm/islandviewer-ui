@@ -49,11 +49,14 @@ function genomeTrack(layout,tracks) {
     this.y1 = d3.scale.linear()
 	.domain([0,this.numTracks])
 	.range([0,(this.layout.height_without_axis-this.layout.bottom_margin)]);
+    // We need x1 and y1 in the initialization's scope too
+    // to deal with passing it in to make the lollipops
 
     this.zoom = d3.behavior.zoom()
 	.x(this.x1)
+	.on("zoomstart", function () {d3.event.sourceEvent.preventDefault()} )
 	.on("zoom", this.rescale.bind(this))
-	.on("zoomend", this.callBrushFinished.bind(this));
+	.on("zoomend", this.callBrushFinished.bind(this) );
 
     this.layout.plotid = layout.container.slice(1);
 
@@ -65,7 +68,8 @@ function genomeTrack(layout,tracks) {
 	.attr("class", "mainTracks")
 	.call(this.zoom);
 
-    this.clipPath = this.chart.append("defs").append("clipPath")
+    this.defs = this.chart.append("defs");
+    this.clipPath = this.defs.append("clipPath")
 	.attr("id", "trackClip_" + this.layout.containerid)
 	.append("rect")
 	.attr("width", this.layout.width_without_margins)
@@ -74,6 +78,8 @@ function genomeTrack(layout,tracks) {
 	.attr("transform", "translate(0,0)");
     //	.attr("transform", "translate(" + this.layout.left_margin + ",0)");
     
+    this.drawFeatures();
+
     this.main = this.chart.append("g")
        	.attr("transform", "translate(" + this.layout.left_margin + ",0)")
 	.attr("width", this.layout.width_without_margins)
@@ -159,9 +165,68 @@ function genomeTrack(layout,tracks) {
 	// We're going to see what type of tracks we have
 	// and dispatch them appropriately
 
-	 if("undefined" !== this.tracks[i].skipLinear
+	 if("undefined" !== typeof this.tracks[i].skipLinear
 	    &&  this.tracks[i].skipLinear == true) {
 	     continue;
+	 }
+
+	 if("undefined" == typeof this.tracks[i].trackFeatures) {
+	     this.tracks[i].trackFeatures = "simple";
+	 } else if(this.tracks[i].trackFeatures == "complex") {
+	     // We need to pre-calculate the stacking order for
+	     // all arrow type features
+
+	     // 0.77 * 0.9
+	     if(this.tracks[i].trackType == "stranded") {
+		 this.tracks[i].baseheight = (this.y1(1) * 0.693);
+	     } else {
+		 this.tracks[i].baseheight = (this.y1(1) * 0.616);
+	     }
+	     var inframe = [];
+	     this.tracks[i].maxStackOrder = 1;
+	     for(var j = 0; j < this.tracks[i].items.length; j++) {
+		 // If it's the arrow type we're looking for
+		 if("undefined" !== typeof this.tracks[i].items[j].feature && this.tracks[i].items[j].feature == "arrow") {
+		     item = this.tracks[i].items[j];
+		     // Is there anything else still in frame we need to check?
+
+		     this.tracks[i].items[j].stackOrder = 1;
+		     // Next one we encoutner will be 2
+		     var curr_stackorder = 2;
+		     // Go backwards through the possible inframe elements
+		     // and increase their stack order if needed
+		     for(var k = inframe.length - 1; k >= 0; k--) {
+			 curr_k = inframe[k];
+			 if(this.tracks[i].items[curr_k].end >= item.start) {
+			     // If the current item in the possible stack
+			     // items is overlapping...
+			     if(this.tracks[i].items[curr_k].stackOrder <= curr_stackorder) {
+				 // If the examined item is below or
+				 // equal to the current stack order
+				 this.tracks[i].items[curr_k].stackOrder = curr_stackorder;
+				 curr_stackorder++;
+			     }
+			     // This takes care of ignoring items that
+			     // are already well above the current stack order
+			     
+			 } else {
+			     // Or if it no longer overlaps, remove it
+			     inframe.splice(k, 1);
+			 }
+		     }
+
+		     // Push ourselves on the inframe so the next
+		     // guy can check us out
+		     inframe.push(j);
+		     this.tracks[i].maxStackOrder = Math.max(this.tracks[i].maxStackOrder, curr_stackorder);
+		     // Save the maximum stackorder we've seen
+		 }
+	     }
+	     this.tracks[i].increment = this.y1(0.23) / this.tracks[i].maxStackOrder;
+	 }
+
+	 if("undefined" == typeof this.tracks[i].featureThreshold) {
+	     this.tracks[i].featureThreshold = this.genomesize;
 	 }
 
 	switch(this.tracks[i].trackType) {
@@ -214,6 +279,9 @@ function genomeTrack(layout,tracks) {
 	}
     }
 
+    //    this.main.append("g").attr("transform", "matrix(0.7, 0, 0, 0.7, 0, 0)").append("use").attr("xlink:href", "#lollipop");
+    //    this.main.append("g").attr("transform", "translate(100,137)").on("click", function() { console.log("click!");}).append("use").attr("xlink:href", "#lollipop_strand_pos");
+
 }
 
 // We can't display all track types, or some don't
@@ -251,6 +319,7 @@ genomeTrack.prototype.countTracks = function() {
 genomeTrack.prototype.displayStranded = function(track, i) {
     var visStart = this.visStart,
     visEnd = this.visEnd,
+    visRange = visEnd - visStart,
     x1 = this.x1,
     y1 = this.y1;
     var cfg = this.layout;
@@ -259,26 +328,39 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     // on or off here rather than in the .on() call, we'll redirect the calls to
     // a dummy do-nothing object if we're not showing tips in this context.
     var tip = {show: function() {}, hide: function() {} };
-    if(('undefined' !== typeof track.showTooltip) && typeof track.showTooltip) {
+    if(('undefined' !== typeof track.showTooltip) && track.showTooltip) {
 	tip = this.tip;
     }
 
     var stackNum = this.tracks[i].stackNum;
     //    console.log(visStart, visEnd);
-    var visItems = track.items.filter(function(d) {return d.start < visEnd && d.end > visStart;});
+    var visItems = track.items.filter(function(d) {
+	    if(typeof d.feature !== 'undefined' && d.feature !== 'gene') {
+		if(track.featureThreshold < visRange) {
+		    return false;
+		}
+	    }
+	    return d.start < visEnd && d.end > visStart;
+	});
 
     //    console.log(track.items);
 
     var rects = this.itemRects[i].selectAll("g")
     .data(visItems, function(d) { return d.id; })
-    .attr("transform", function(d,i) { return "translate(" + x1(d.start) + ',' +  (y1((d.strand == -1 ? stackNum : stackNum-1)) + 10) + ")"; });
+	.attr("transform", function(d,i) { 
+	    return "translate(" + x1(d.start) + ',' +  d.yshift + ")"; });
 
+    // Process the changed/moved rects
     rects.selectAll("rect")
-    .each(function (d) { d.width = x1(d.end) - x1(d.start); })
-    //    .attr("x", function(d) {return x1(d.start);})
+    .each(function (d) { d.width = x1(d.end + 1) - x1(d.start); })
     .attr("width", function(d) {return d.width;})
-    .attr("class", function(d) {return track.trackName + '_' + (d.strand == 1 ? 'pos' : 'neg') + ' ' + ((d.width > 5) ? (track.trackName + '_' + (d.strand == 1 ? 'pos_zoomed' : 'neg_zoomed')) : '' );});
+    // Yes we really don't need to set the class here again
+    // except to deal with the _zoom class when zooming
+    // in and out
+    .attr("class", function(d) {
+	return track.trackName + '_' + d.suffix + ' ' + ((d.width > 5) ? (track.trackName + '_' + d.suffix + '_zoomed') : '' ) + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');});
 
+    // Process the text for changed/moved rects
     rects.selectAll("text")
     .attr("dx", "2px")
     .attr("dy", "0.94em")
@@ -286,23 +368,81 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 	    var bb = this.getBBox();
 	    var slice_length = x1(d.end) - x1(d.start) - 2; // -2 to offset the dx above
 	    d.visible = (slice_length > bb.width);
-	    //	    console.log(d);
-	    //	    console.log(slice_length);
-	    //	    console.log(bb.width);
-	    //	    console.log(d.visible);
 	})
-    .attr("class", function(d) {return track.trackName + '_text ' + track.trackName + '_' + (d.strand == 1 ? 'pos' : 'neg') + '_text ' + (d.visible ? null : "linear_hidden" ); });
+    .attr("class", function(d) {
+	return track.trackName + '_text ' + track.trackName + '_' + d.suffix + '_text ' + (d.visible ? '' : "linear_hidden " ) + ('undefined' !== typeof d.extraclass ? d.extraclass : ''); });
+
+    this.itemRects[i].selectAll(".arrow")
+    .each(function(d) {
+	    d.width = x1(d.end + 1) - x1(d.start);
+
+	    if(d.strand == -1) {
+		headxtranslate = 0;
+		arrowline = "m " + d.width + ",0 " + "l 0," + (track.baseheight + d.height) + " -" + d.width + ",0";
+	    } else {
+		headxtranslate = d.width;
+		arrowline = "m 0," + track.baseheight + "l 0,-" + (track.baseheight + d.height) + " " + d.width + ",0";
+	    }
+
+	    d3.select(this).select("path")
+		.attr("d", function(d) { 
+			return arrowline;
+		    });
+
+	    d3.select(this).select("use")
+		.attr("transform", function(d) {
+			return "translate(" + headxtranslate + "," + d.headytranslate + ")";
+		    });
+
+	});
 
     var entering_rects = rects.enter().append("g")
-    .attr("transform", function(d,i) { return "translate(" + x1(d.start) + ',' +  (y1((d.strand == -1 ? stackNum : stackNum-1)) + 10) + ")"; })
-    .attr("class", function(d) {return track.trackName + '_' + (d.strand == 1 ? 'pos' : 'neg') + '_group'; });
-	    
-    entering_rects.append("rect")
-    .each(function (d) { d.width = x1(d.end) - x1(d.start); })
-    .attr("class", function(d) {return track.trackName + '_' + (d.strand == 1 ? 'pos' : 'neg') + ' ' + ((d.width > 5) ? (track.trackName + '_' + (d.strand == 1 ? 'pos_zoomed' : 'neg_zoomed')) : '' );})
-    .attr("width", function(d) {return d.width;})
-    .attr("height", function(d) {return .9 * y1(1);})
+    .attr("transform", function(d,i) {
+	    if(d.strand == -1) {
+		ystack = stackNum;
+		d.suffix = 'neg';
+	    } else if(d.strand == "1") {
+		ystack = stackNum -1;
+		d.suffix = 'pos';
+	    } else {
+		ystack = stackNum - 0.3;
+		d.suffix = 'none';
+	    }
+	    var shift_gene = 0;
+	    if(typeof d.feature !== 'undefined' && d.feature == "terminator") {
+		ystack = ystack - 0.5;
+	    } else if (track.trackFeatures == 'complex' && d.strand == "1") {
+		    var shift_gene = y1(1) * .2;
+
+	    }
+	    d.yshift = y1(ystack) + 10 + shift_gene;
+	    return "translate(" + x1(d.start) + ',' +  d.yshift + ")"; })
+    //	    return "translate(" + x1(d.start) + ',' +  (y1(ystack) + 10 + shift_gene) + ")"; })
+    .attr("id", function(d,i) { return track.trackName + '_' + d.id; })
+    .attr("class", function(d) {
+	    return track.trackName + '_' + d.suffix + '_group ' + (typeof d.feature === 'undefined' ? 'gene' : d.feature); })//;
+	   
+    //        entering_rects
+    .each(function(d) {
+	    d.width = x1(d.end) - x1(d.start);
+
+	    if (typeof d.feature === 'undefined' || d.feature == "gene") {
+		d3.select(this)
+		.append("rect")
+		.attr("class", function(d) {
+
+			return track.trackName + '_' + d.suffix + ' ' + ((d.width > 5) ? (track.trackName + '_' + d.suffix + '_zoomed') : '') + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');})
+		.attr("width", function(d) {return d.width;})
+		.attr("height", function(d) {
+			if(track.trackFeatures == 'complex') { 
+			    var scale_factor = 0.77;
+			} else {
+			    var scale_factor = 1;
+			}
+			return (d.strand == 0 ? .4 : .9) * scale_factor * y1(1);
+		    })
     .on("click", function(d,i) {
+	    if (d3.event.defaultPrevented) return; // click suppressed
 	    if('undefined' !== typeof track.linear_mouseclick) {
 		var fn = window[track.linear_mouseclick];
 		if('object' ==  typeof fn) {
@@ -337,21 +477,70 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 	    }	
 	});
 
+	    } else if(d.feature == "terminator") {
+		if(d.strand == 1) {
+		    lollipop = "#lollipop_strand_pos";
+		} else {
+		    lollipop = "#lollipop_strand_neg";
+		}
+		d3.select(this).append("use").attr("xlink:href", lollipop);
+
+	    } else if(d.feature == "arrow") {
+
+		if(d.strand == -1) {
+		    d.height = y1(0.23) - (d.stackOrder * track.increment);
+		    arrowhead = "#leftarrow";
+		    headxtranslate = 0;
+		    d.headytranslate = track.baseheight + d.height;
+		    console.log(track.increment);
+		    console.log(d.headytranslate);
+		    arrowline = "m " + d.width + ",0 " + "l 0," + (track.baseheight + d.height) + " -" + d.width + ",0";
+		    console.log(arrowline);
+		} else {
+		    d.height = d.stackOrder * track.increment;
+		    arrowhead = "#rightarrow";
+		    headxtranslate = d.width;
+		    d.headytranslate = d.height * -1;
+		    arrowline = "m 0," + track.baseheight + "l 0,-" + (track.baseheight + d.height) + " " + d.width + ",0";
+
+		}
+		arrowclass = track.trackName + '_arrow_' + d.suffix + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');
+		arrowbase = d3.select(this)
+		
+		arrowbase.append("path")
+		.attr("class", arrowclass)
+		.attr("d", function(d) { 
+			// 0.77 * 0.9
+			
+			return arrowline;
+		    })
+		.attr("fill-opacity", 0)
+		arrowbase.append("use").attr("xlink:href", arrowhead)
+		.attr("transform", function(d) {
+			return "translate(" + headxtranslate + "," + d.headytranslate + ")";
+		    })
+		.attr("class", arrowclass);
+
+
+	    } //else
+	});
+
     if(('undefined' !== typeof track.showLabels) && typeof track.showLabels) {
-	entering_rects.append("text")
-	    .text(function(d) {return d.name;})
-	    .attr("dx", "2px")
-	    .attr("dy", "1em")
-	    .each(function (d) {
-		    var bb = this.getBBox();
-		    var slice_length = x1(d.end - d.start);
-		    d.visible = (slice_length > bb.width);
-		    //		    console.log(d);
-		    //		    console.log(slice_length);
-		    //		    console.log(bb.width);
-		    //		    console.log(d.visible);
-		})
-	    .attr("class", function(d) {return track.trackName + '_text ' +  track.trackName + '_' + (d.strand == 1 ? 'pos' : 'neg') + '_text ' + (d.visible ? null : "linear_hidden"  ); });
+	entering_rects.each(function(d) {
+		if(typeof d.feature == 'undefined' || d.feature == 'gene') {
+		    d3.select(this).append("text")
+			.text(function(d) {return d.name;})
+			.attr("dx", "2px")
+			.attr("dy", "1em")
+			.each(function (d) {
+				var bb = this.getBBox();
+				var slice_length = x1(d.end - d.start);
+				d.visible = (slice_length > bb.width);
+			    })
+			.attr("class", function(d) {
+				return track.trackName + '_text ' +  track.trackName + '_' + d.suffix + '_text ' + (d.visible ? null : "linear_hidden"  ); });
+		}
+	    });
     }
 
     rects.exit().remove();
@@ -360,6 +549,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 genomeTrack.prototype.displayTrack = function(track, i) {
     var visStart = this.visStart,
     visEnd = this.visEnd,
+    visRange = visEnd - visStart,
     x1 = this.x1,
     y1 = this.y1;
     var cfg = this.layout;
@@ -368,26 +558,37 @@ genomeTrack.prototype.displayTrack = function(track, i) {
     // on or off here rather than in the .on() call, we'll redirect the calls to
     // a dummy do-nothing object if we're not showing tips in this context.
     var tip = {show: function() {}, hide: function() {} };
-    if(('undefined' !== typeof track.showTooltip) && typeof track.showTooltip) {
+    if(('undefined' !== typeof track.showTooltip) && track.showTooltip) {
 	tip = this.tip;
     }
 
     var stackNum = this.tracks[i].stackNum;
-    //    console.log(visStart, visEnd);
-    var visItems = track.items.filter(function(d) {return d.start < visEnd && d.end > visStart;});
+    //    console.log(visStart, visEnd, visRange);
+    var visItems = track.items.filter(function(d) {
+	    if(typeof d.feature !== 'undefined' && d.feature !== 'gene') {
+		if(track.featureThreshold < visRange) {
+		    return false;
+		}
+	    }
+	    return d.start < visEnd && d.end > visStart;}
+	);
 
     //    console.log(track.items);
 
     var rects = this.itemRects[i].selectAll("g")
     .data(visItems, function(d) { return d.id; })
-    .attr("transform", function(d,i) { return "translate(" + x1(d.start) + ',' + (y1(stackNum) + 10)  + ")"; });
+    .attr("transform", function(d,i) { 
+	    return "translate(" + x1(d.start) + ',' + d.yshift  + ")"; 
+	});
 
 
     this.itemRects[i].selectAll("rect")
     .each(function (d) { d.width = x1(d.end) - x1(d.start); })
-    //    .attr("x", function(d) {return x1(d.start);})
     .attr("width", function(d) {return d.width; })
-    .attr("class", function(d) {return track.trackName + ' ' + ((d.width > 5) ? (track.trackName + '_zoomed') : '' );});
+    // Yes we really don't need to set the class here again
+    // except to deal with the _zoom class when zooming
+    // in and out
+    .attr("class", function(d) {return track.trackName + ' ' + ((d.width > 5) ? (track.trackName + '_zoomed') : '' ) + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');});
 
     rects.selectAll("text")
     .attr("dx", "2px")
@@ -396,73 +597,138 @@ genomeTrack.prototype.displayTrack = function(track, i) {
 	    var bb = this.getBBox();
 	    var slice_length = x1(d.end) - x1(d.start) - 2; // -2 to offset the dx above
 	    d.visible = (slice_length > bb.width);
-	    //	    console.log(d);
-	    //	    console.log(slice_length);
-	    //	    console.log(bb.width);
-	    //	    console.log(d.visible);
 	})
     .attr("class", function(d) {return track.trackName + '_text ' + (d.visible ? null : "linear_hidden" ); });
 
-    var entering_rects = rects.enter().append("g")
-    .attr("transform", function(d,i) { return "translate(" + x1(d.start) + ',' + (y1(stackNum) + 10)  + ")"; })
-    .attr("class", function(d) {return track.trackName + '_group'; });
+    this.itemRects[i].selectAll(".arrow")
+    .each(function(d) {
+	console.log(d);
+	    d.width = x1(d.end + 1) - x1(d.start);
 
-    entering_rects.append("rect")
-    .each(function (d) { d.width = x1(d.end) - x1(d.start); })
-    .attr("class", function(d) {return track.trackName + ' ' + ((d.width > 5) ? (track.trackName + '_zoomed') : '' );})
-    .attr("width", function(d) {return d.width; })
-    .attr("height", function(d) {return .8 * y1(1);})
-    .on("click", function(d,i) {
-	    if('undefined' !== typeof track.linear_mouseclick) {
-		var fn = window[track.linear_mouseclick];
-		if('object' ==  typeof fn) {
-		    return fn.onclick(track.trackName, d, cfg.plotid);
-		} else if('function' == typeof fn) {
-		    return fn(track.trackName, d, cfg.plotid);
-		}
-	    } else {
-		null;
-	    }
-	})
-    .on('mouseover', function(d) { 
-	    tip.show(d);
-	    if('undefined' !== typeof track.linear_mouseover) {
-		var fn = window[track.linear_mouseover];
-		if('object' ==  typeof fn) {
-		    return fn.mouseover(track.trackName, d, cfg.plotid);
-		} else if('function' == typeof fn) {
-		    return fn(track.trackName, d, cfg.plotid);
-		}
-	    }	
-	})
-    .on('mouseout', function(d) { 
-	    tip.hide(d);
-	    if('undefined' !== typeof track.linear_mouseout) {
-		var fn = window[track.linear_mouseout];
-		if('object' ==  typeof fn) {
-		    return fn.mouseout(track.trackName, d, cfg.plotid);
-		} else if('function' == typeof fn) {
-		    return fn(track.trackName, d, cfg.plotid);
-		}
-	    }	
+	    d3.select(this).select("path")
+		.attr("d", function(d) { 
+			return "m 0," + track.baseheight + "l 0,-" + (track.baseheight + d.height) + " " + d.width + ",0";
+		    });
+
+	    d3.select(this).select("use")
+		.attr("transform", function(d) {
+			return "translate(" + d.width + ",-" + d.headytranslate + ")";
+		    });
+
 	});
 
-    if('undefined' !== typeof track.showLabels) {
-	entering_rects.append("text")
-	    .text(function(d) {return d.name;})
-	    .attr("dx", "2px")
-	    .attr("dy", "1em")
-	    .each(function (d) {
-		    var bb = this.getBBox();
-		    var slice_length = x1(d.end) - x1(d.start) -2 ; // -2 to offset the dx above
-		    d.visible = (slice_length > bb.width);
-		    //		    console.log(d);
-		    //		    console.log(slice_length);
-		    //		    console.log(bb.width);
-		    //		    console.log(d.visible);
-		})
-	    .attr("class", function(d) {return track.trackName + '_text ' + (d.visible ? null : "linear_hidden" ); });
-    }
+    var entering_rects = rects.enter().append("g")
+    .attr("transform", function(d,i) { 
+	    ystack = stackNum;
+	    shift_gene = 0;
+	    if(typeof d.feature !== 'undefined' && d.feature == "terminator") {
+		ystack = ystack - 0.6;
+	    } else if (track.trackFeatures == 'complex') {
+		    var shift_gene = y1(1) * .175;
+
+	    }
+
+	    d.yshift = y1(ystack) + 10 + shift_gene;
+	    return "translate(" + x1(d.start) + ',' + d.yshift  + ")"; 
+	})
+    .attr("id", function(d,i) { return track.trackName + '_' + d.id; })
+    .attr("class", function(d) {return track.trackName + '_group ' + (typeof d.feature === 'undefined' ? 'gene' : d.feature); })//;
+
+    //    entering_rects
+    .each(function (d) { 
+	    d.width = x1(d.end) - x1(d.start); 
+
+	    if (typeof d.feature === 'undefined' || d.feature == "gene") {
+
+		d3.select(this).append("rect")
+
+		    .attr("class", function(d) {return track.trackName + ' ' + ((d.width > 5) ? (track.trackName + '_zoomed') : '' ) + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');})
+		    .attr("width", function(d) {return d.width; })
+		    .attr("height", function(d) {
+			    if(track.trackFeatures == 'complex') {
+				var scale_factor = 0.77;
+			    } else {
+				var scale_factor = 1;
+			    }
+
+			    return .8 * scale_factor * y1(1);
+			})
+		    .on("click", function(d,i) {
+			    if (d3.event.defaultPrevented) return; // click suppressed
+			    if('undefined' !== typeof track.linear_mouseclick) {
+				var fn = window[track.linear_mouseclick];
+				if('object' ==  typeof fn) {
+				    return fn.onclick(track.trackName, d, cfg.plotid);
+				} else if('function' == typeof fn) {
+				    return fn(track.trackName, d, cfg.plotid);
+				}
+			    } else {
+				null;
+			    }
+			})
+		    .on('mouseover', function(d) { 
+			    tip.show(d);
+			    if('undefined' !== typeof track.linear_mouseover) {
+				var fn = window[track.linear_mouseover];
+				if('object' ==  typeof fn) {
+				    return fn.mouseover(track.trackName, d, cfg.plotid);
+				} else if('function' == typeof fn) {
+				    return fn(track.trackName, d, cfg.plotid);
+				}
+			    }	
+			})
+		    .on('mouseout', function(d) { 
+			    tip.hide(d);
+			    if('undefined' !== typeof track.linear_mouseout) {
+				var fn = window[track.linear_mouseout];
+				if('object' ==  typeof fn) {
+				    return fn.mouseout(track.trackName, d, cfg.plotid);
+				} else if('function' == typeof fn) {
+				    return fn(track.trackName, d, cfg.plotid);
+				}
+			    }	
+			})
+		    
+		    if('undefined' !== typeof track.showLabels) {
+			//		entering_rects
+			d3.select(this).append("text")
+			    .text(function(d) {return d.name;})
+			    .attr("dx", "2px")
+			    .attr("dy", "1em")
+			    .each(function (d) {
+				    var bb = this.getBBox();
+				    var slice_length = x1(d.end) - x1(d.start) -2 ; // -2 to offset the dx above
+				    d.visible = (slice_length > bb.width);
+				})
+			    .attr("class", function(d) {return track.trackName + '_text ' + (d.visible ? null : "linear_hidden" ); });
+		    }
+	    } else if(d.feature == "terminator") {
+		d3.select(this).append("use").attr("xlink:href", "#lollipop");
+	    } else if(d.feature == "arrow") {
+
+		d.height = d.stackOrder * track.increment;
+		d.headytranslate = d.height;
+
+		arrowclass = track.trackName + '_arrow' + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');
+		arrowbase = d3.select(this)
+		
+		arrowbase.append("path")
+		.attr("class", arrowclass)
+		.attr("d", function(d) { 
+			// 0.77 * 0.9
+			return "m 0," + track.baseheight + "l 0,-" + (track.baseheight + d.height) + " " + d.width + ",0";
+			
+		    })
+		.attr("fill-opacity", 0)
+		arrowbase.append("use").attr("xlink:href", "#rightarrow")
+		.attr("transform", function(d) {
+			return "translate(" + d.width + ",-" + d.headytranslate + ")";
+		    })
+		.attr("class", arrowclass);
+
+
+	    } //else
+	});
 
 
     rects.exit().remove();
@@ -516,6 +782,14 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
     	return;
     }
 
+    // Because of how the tooltip library binds to the SVG object we have to turn it
+    // on or off here rather than in the .on() call, we'll redirect the calls to
+    // a dummy do-nothing object if we're not showing tips in this context.
+    var tip = {show: function() {}, hide: function() {} };
+    if(('undefined' !== typeof track.showTooltip) && track.showTooltip) {
+	tip = this.tip;
+    }
+
     var items = track.items.filter(function(d) {return d.bp <= visEnd && d.bp >= visStart;});
 
     // When we move we need to recalculate the stacking order
@@ -565,6 +839,7 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
 	    }
 	})
     .on('mouseover', function(d) { 
+	tip.show(d);
 	    if('undefined' !== typeof track.linear_mouseover) {
 		var fn = window[track.linear_mouseover];
 		if('object' ==  typeof fn) {
@@ -575,6 +850,7 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
 	    }	
 	})
     .on('mouseout', function(d) { 
+	tip.hide(d);
 	    if('undefined' !== typeof track.linear_mouseout) {
 		var fn = window[track.linear_mouseout];
 		if('object' ==  typeof fn) {
@@ -641,7 +917,7 @@ genomeTrack.prototype.dragresize = function(d) {
     .attr("transform", "translate(" + (newWidth -
 				       this.layout.right_margin) + "," + (this.dragbar_y_mid-15) + ")")
 
-    console.log(this.layout.containerid);
+    //    console.log(this.layout.containerid);
     this.resize(newWidth);
     //    d3.event.preventDefault();
 
@@ -842,4 +1118,216 @@ genomeTrack.prototype.dataURLtoBlob = function(dataURL) {
   }
   // Return our Blob object
   return new Blob([new Uint8Array(array)], {type: 'image/png'});
+}
+
+genomeTrack.prototype.drawFeatures = function() {
+    var x1 = this.x1;
+    var y1 = this.y1;
+
+    // Quick debugging variable to show click rects
+    var opacity = 0;
+
+    // Lollipop for terminator glyph (stranded, positive)
+    var lollipop_strand_pos = this.defs.append("g").attr("id", "lollipop_strand_pos");
+    lollipop_strand_pos.append("path")
+	.attr("class", "lollipophead")
+	.attr("d", function() {
+		arc = "m 0,";
+		arc += y1(1) * 0.69;
+		arc += " a ";
+		arc += y1(1) * 0.13;
+		arc += ",";
+		arc += y1(1) * 0.13;
+		arc += " 0 1 1 ";
+		arc += y1(1) * 0.09;
+		arc += ",0";
+		//		console.log(arc);
+		return arc;
+		//		"m 0,60 a 12,12 0 1 1 8,0"
+	    });
+    lollipop_strand_pos.append("path")
+	.attr("class", "lollipopstemend")
+	.attr("d", function() {
+		line = "m " + (y1(1) * 0.09) + ",";
+		line += y1(1) * 0.69;
+		line += " l 0,";
+		line += y1(1) * 0.70;
+		//		console.log("line " + line);
+		return line;
+		//		"m 8,60 l 0,65"
+		    });
+    lollipop_strand_pos.append("path")
+	.attr("class", "lollipopstemstart")
+	.attr("d", function() {
+		line = "m 0,";
+		line += y1(1) * 0.69;
+		line += " l 0,";
+		line += y1(1) * 0.70;
+		//		console.log(line);
+		return line;
+		//		"m 0,60 l 0,65"
+	    });
+    lollipop_strand_pos.append("rect")
+	.attr("transform", function () {
+		return "translate(-" + (y1(1) * 0.1) + "," + (y1(1) * 0.43) + ")";
+	    })
+	.attr("width", function() { 
+		return y1(1) * 0.3;
+	    })
+	.attr("height", function() { 
+		return y1(1) * 0.26;
+	    })
+	.attr("fill-opacity", opacity);
+    lollipop_strand_pos.append("rect")
+        .attr("transform", function() {
+		return "translate(0, " + (y1(1) * 0.68) + ")";
+		//		"translate(0,60)"
+		    })
+	.attr("width", 8)
+	.attr("height", function() {
+		return  y1(1) * 0.72;
+	    })
+	.attr("fill-opacity", opacity);
+
+    // Lollipop for terminator glyph (stranded, negative)
+    var lollipop_strand_neg = this.defs.append("g").attr("id", "lollipop_strand_neg");
+    lollipop_strand_neg.append("path")
+	.attr("class", "lollipophead")
+	.attr("d", function() {
+		arc = "m 0,";
+		arc += y1(1) * 1.20;
+		arc += " a ";
+		arc += y1(1) * 0.13;
+		arc += ",";
+		arc += y1(1) * 0.13;
+		arc += " 0 1 0 ";
+		arc += y1(1) * 0.09;
+		arc += ",0";
+		//		console.log(arc);
+		return arc;
+		//		"m 0,60 a 12,12 0 1 1 8,0"
+	    });
+    lollipop_strand_neg.append("path")
+	.attr("class", "lollipopstemstart")
+	.attr("d", function() {
+		line = "m " + (y1(1) * 0.09) + ",";
+		line += y1(1) * 1.20;
+		line += " l 0,";
+		line += y1(1) * 0.71 * -1;
+		//		console.log(line);
+		return line;
+		//		"m 8,60 l 0,65"
+		    });
+    lollipop_strand_neg.append("path")
+	.attr("class", "lollipopstemend")
+	.attr("d", function() {
+		line = "m 0,";
+		line += y1(1) * 1.20;
+		line += " l 0,";
+		line += y1(1) * 0.71 * -1;
+		//		console.log(line);
+		return line;
+		//		"m 0,60 l 0,65"
+	    });
+    lollipop_strand_neg.append("rect")
+	.attr("transform", function () {
+		return "translate(-" + (y1(1) * 0.1) + "," + (y1(1) * 1.20) + ")";
+	    })
+	.attr("width", function() { 
+		return y1(1) * 0.3;
+	    })
+	.attr("height", function() { 
+		return y1(1) * 0.26;
+	    })
+	.attr("fill-opacity", opacity);
+    lollipop_strand_neg.append("rect")
+	.attr("transform", function() {
+		return "translate(0, " + (y1(1) * 0.50) + ")";
+		//		"translate(0,60)"
+		    })
+	.attr("width", 8)
+	.attr("height", function() {
+		return  y1(1) * 0.71;
+	    })
+	.attr("fill-opacity", opacity);
+
+    // Lollipop for terminator glyph (unstranded)
+    var lollipop = this.defs.append("g").attr("id", "lollipop");
+    lollipop.append("path")
+        .attr("class", "lollipophead")
+	.attr("d", function() {
+		arc = "m 0,";
+		arc += y1(1) * 0.77;
+		arc += " a ";
+		arc += y1(1) * 0.13;
+		arc += ",";
+		arc += y1(1) * 0.13;
+		arc += " 0 1 1 ";
+		arc += y1(1) * 0.09;
+		arc += ",0";
+		//		console.log(arc);
+		return arc;
+		//		"m 0,60 a 12,12 0 1 1 8,0"
+	    });
+    lollipop.append("path")
+	.attr("class", "lollipopstemend")
+	.attr("d", function() {
+		line = "m " + (y1(1) * 0.09) + ",";
+		line += y1(1) * 0.77;
+		line += " l 0,";
+		line += y1(1) * 0.62;
+		//		console.log(line);
+		return line;
+		//		"m 8,60 l 0,65"
+		    });
+    lollipop.append("path")
+	.attr("class", "lollipopstemstart")
+	.attr("d", function() {
+		line = "m 0,";
+		line += y1(1) * 0.77;
+		line += " l 0,";
+		line += y1(1) * 0.62;
+		//		console.log(line);
+		return line;
+		//		"m 0,60 l 0,65"
+	    });
+    lollipop.append("rect")
+	.attr("transform", function () {
+		return "translate(-" + (y1(1) * 0.1) + "," + (y1(1) * 0.51) + ")";
+	    })
+	.attr("width", function() { 
+		return y1(1) * 0.3;
+	    })
+	.attr("height", function() { 
+		return y1(1) * 0.26;
+	    })
+	.attr("fill-opacity", opacity);
+    lollipop.append("rect")
+        .attr("transform", function() {
+		return "translate(0, " + (y1(1) * 0.76) + ")";
+		//		"translate(0,60)"
+		    })
+	.attr("width", 8)
+	.attr("height", function() {
+		return  y1(1) * 0.64;
+	    })
+	.attr("fill-opacity", opacity);
+
+    // Right arrow
+    var rightarrow = this.defs.append("g").attr("id", "rightarrow");
+    rightarrow.append("path")
+        .attr("class", "rightarrow")
+        .attr("d", function() {
+		return "m 0,0 l -4,4 m 0,-8 l 4,4";
+	    });
+
+    // Left arrow
+    var leftarrow = this.defs.append("g").attr("id", "leftarrow");
+    leftarrow.append("path")
+        .attr("class", "rightarrow")
+        .attr("d", function() {
+		return "m 0,0 l 4,4 m 0,-8 l -4,4";
+		//		return "m 0," + y1(1) + " l 4,4 m 0,-8 l -4,4";
+	    });
+
 }

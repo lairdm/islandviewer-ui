@@ -91,6 +91,26 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range)
     }
 }
 
+Islandviewer.prototype.ondblclick = function(plotid, bp) {
+
+    if(plotid == 'circularchart') {
+	var halfBP = (this.circularplot.brushEndBP - this.circularplot.brushStartBP) /2;
+
+	var newStart = Math.max(0, (bp - halfBP));
+	var newEnd = Math.min(this.genomesize, (bp + halfBP));
+
+        this.linearplot.update(newStart, newEnd);
+
+        this.circularplot.moveBrushbyBP(newStart, 
+                                        newEnd);
+
+        this.circularplot.showBrush();
+  
+	// Make out d parameter manually
+        this.showHoverGenes({start: newStart, end: newEnd}, false);
+    }
+}
+
 Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
 //    console.log("Got a callback " + d);
 //    console.log(trackname);

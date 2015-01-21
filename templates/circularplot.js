@@ -124,6 +124,7 @@ var {{ varName|default:"circular" }}data = [
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
 	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
           linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',
+	  showTooltip: true,
 	  items: [
 	     {% for vir in vir_factors %}
 	       {id: {{ forloop.counter }}, bp: {{ vir.start }}, type: '{{ vir.source }}', name: '{{ vir.external_id }}', gene: '{{ vir.name }}'}{% if not forloop.last %},{% endif %}
@@ -144,7 +145,7 @@ var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|
 
 update_legend();
 
-var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true };
+var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, dblclick: '{{ varName|default:'' }}islandviewerObj' };
 
 var {{ varName|default:"circular" }}containerid =  "{{ container }}".slice(1);
 $('{{ container }}').draggable({ handle: ".move_" +  {{ varName|default:"circular" }}containerid });
