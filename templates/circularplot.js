@@ -497,7 +497,7 @@ function feature_tour() {
 	  steps: [
 	    {
 	      element: document.querySelector('{{ container }}'),
-	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer below to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can be dragged to refocus and zoom the linear viewer.<br />&nbsp;<br />The plot can be resized using the drag bar in the lower right corner.",
+	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer below to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can be dragged to refocus and zoom the linear viewer.<br />&nbsp;<br />Double clicking on the plot will recentre the region being viewed under the mouse pointer.<br />&nbsp;<br />The plot can be resized using the drag bar in the lower right corner.",
 	      position: 'right'
 	    },
 	    {
