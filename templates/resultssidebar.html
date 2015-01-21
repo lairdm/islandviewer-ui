@@ -12,7 +12,7 @@
   <span class="orange"><input id="showcircularSigi" class="methodcheckbox showcircularSigi" type="checkbox" name="showSigi" onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span><span id="nocircularSigi" class="nomethodtext nocircularSigi"> (No results found)</span><br />
   <span class="blue"><input id="showcircularDimob" class="methodcheckbox showcircularDimob" type="checkbox" name="showDimob" onchange="updateStrand(this, 'dimob'); return false;" checked>IslandPath-DIMOB</span><span id="nocircularDimob" class="nomethodtext nocircularDimob"> (No results found)</span><br />
 &nbsp;<br />
-<span class="sectionHeader">Annotations</span></br />
+<span class="sectionHeader">VF/AMR Annotations</span></br />
   <span class="{{ plotName|default:"circular" }}Virulence_VFDB"><input type="checkbox" class="methodcheckbox showVFDB showVictors showPATRIC_VF" id="showVFDB" name="showVFDB" onchange="updateVirulence(this, 'VFDB'); return false;" checked>Curated virulence factors</span><span id="noVFDB" class="nomethodtext noVFDB noVictors noPATRIC_VF"> (No results found)</span><br />
   <span class="{{ plotName|default:"circular" }}Virulence_BLAST"><input type="checkbox" class="methodcheckbox showBLAST" id="showBLAST" name="showBLAST" onchange="updateVirulence(this, 'BLAST'); return false;" checked>Homologs of virulence factors</span><span id="noBLAST" class="nomethodtext noBLAST"> (No results found)</span><br />
   <span class="{{ plotName|default:"circular" }}Virulence_ARDB"><input type="checkbox" class="methodcheckbox showARDB showCARD" id="showARDB" name="showARDB" onchange="updateVirulence(this, 'ARDB'); return false;" checked>Curated resistance genes</span><span id="noARDB" class="nomethodtext noCARD noARDB"> (No results found)</span><br />
@@ -25,7 +25,7 @@
 <div><a href="javascript:show_islandpick_genomes();" id="show_islandpick_genomes" >Show Islandpick Comparison Genomes</a></div>
 <p>&nbsp;</p>
 <p><span class="subHeader">Additional Tools (<a href="{% url 'about' %}#analysis">Help</a>)  </span></p>
-  <li><a href="reference_input.php?query_input=117174">IslandPick</a> can be run using manually selected comparison genomes instead of default genomes.</li>
+  <!--<li><a href="reference_input.php?query_input=117174">IslandPick</a> can be run using manually selected comparison genomes instead of default genomes.</li>-->
   <li><a href="http://www.sanger.ac.uk/Software/Artemis/">Artemis</a> (with  <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to conduct further analysis of GIs. Artemis can be easily run using the <a href="http://www.sanger.ac.uk/Software/Artemis/v11/u5.5/Artemis.jnlp">web start version</a>.</li>
   <li><a href="http://asap.ahabs.wisc.edu/mauve/">Mauve  </a> (using <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to produce whole genome alignments and view conserved regions surronding GIs. </li>	
 </span>

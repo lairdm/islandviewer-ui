@@ -501,12 +501,12 @@ function feature_tour() {
 	    },
 	    {
 	      element: '{{ container }}linear',
-	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively (or use two fingers on your touch pad depending on your device).<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.<br />&nbsp;<br />Clicking on a gene will take you to the NCBI gene card and clicking on an island will take you the the NCBI genome viewer for that bp range.<br />&nbsp;<br />The plot can be resized using the drag bar on the right side.",
+	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively (or use two fingers on your touch pad depending on your device).<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.<br />&nbsp;<br />Clicking on a gene will take you to the NCBI gene card, clicking on an island will take you the corresponding island entry in the table below, and clicking on a VF/AMR annotation will take you to the external reference for this annotation.<br />&nbsp;<br />The plot can be resized using the drag bar on the right side.",
 	      position: 'top'
 	    },
 	    {
 	      element: '#gene_dialog',
-	      intro: "<b>Gene list</b><br />The gene dialog will show all the genes in the range currently visible in the linear viewer, and bounded by the shaded region bounded by the black circles in the circular viewer. Islands, virulence factors, etc are marked with colour coded glyphs.<br />&nbsp;<br />The dialog may be resized and moved using your mouse.",
+	      intro: "<b>Vertical viewer</b><br />The gene dialog will show all the genes in the range currently visible in the linear viewer, and bounded by the shaded region bounded by the black circles in the circular viewer. Islands, virulence factors, etc are marked with colour coded glyphs.<br />&nbsp;<br />The dialog may be resized and moved using your mouse.",
 	      position: 'left'
 	    },
 	    {
