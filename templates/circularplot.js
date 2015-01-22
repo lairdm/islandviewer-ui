@@ -128,7 +128,7 @@ var {{ varName|default:"circular" }}data = [
 	  showTooltip: true,
 	  items: [
 	     {% for vir in vir_factors %}
-	     {id: {{ forloop.counter }}, bp: {{ vir.start }}, type: '{{ vir.source|vir_category }}', source: '{{ vir.source }}', name: '{{ vir.external_id }}', gene: '{{ vir.name }}'}{% if not forloop.last %},{% endif %}
+	     {id: {{ forloop.counter }}, bp: {{ vir.start }}, type: '{{ vir.source|vir_category }}', name: '{{ vir.source }}', ext_id: '{{ vir.external_id }}', gene: '{{ vir.name }}'}{% if not forloop.last %},{% endif %}
 	     {% endfor %}
 	         ]
 	}{% endif %}

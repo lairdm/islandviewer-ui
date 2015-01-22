@@ -30,17 +30,17 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range)
       if(trackname == 'circularVirulence') {
 	var url = false;
 
-        if(d.source == "VFDB") {
-          url = 'http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=' + d.name;
+        if(d.name == "VFDB") {
+          url = 'http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=' + d.ext_id;
 
-        } else if(d.source == 'PATRIC_VF') {
-          url = 'http://patricbrc.org/portal/portal/patric/Feature?cType=feature&cId=' + d.name;
-	} else if(d.source == 'Victors') {
-	  url = 'http://www.phidias.us/victors/gene_detail.php?c_mc_victor_id=' + d.name;
-	} else if(d.source == 'CARD') {
-	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.name
-	} else if(d.source == 'RGI') {
-	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.name
+        } else if(d.name == 'PATRIC_VF') {
+          url = 'http://patricbrc.org/portal/portal/patric/Feature?cType=feature&cId=' + d.ext_id;
+	} else if(d.name == 'Victors') {
+	  url = 'http://www.phidias.us/victors/gene_detail.php?c_mc_victor_id=' + d.ext_id;
+	} else if(d.name == 'CARD') {
+	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.ext_id
+	} else if(d.name == 'RGI') {
+	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.ext_id
 	}
 
 	// Open the link if we've found something
