@@ -1,5 +1,5 @@
 from django import template
-from webui.models import VIRULENCE_FACTORS
+from webui.models import VIRULENCE_FACTORS, VIRULENCE_FACTOR_CATEGORIES
 
 register = template.Library()
 
@@ -18,3 +18,10 @@ def no_virulence_factor_str(value):
             return  "No " + VIRULENCE_FACTORS[v].lower() + " found"
        
     return "Unknown"
+
+@register.filter
+def vir_category(value):
+    if value in VIRULENCE_FACTOR_CATEGORIES:
+        return VIRULENCE_FACTOR_CATEGORIES[value]
+    
+    return 'Unknown'

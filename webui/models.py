@@ -22,6 +22,17 @@ VIRULENCE_FACTORS = {
     'PAG': 'Pathogen-associated genes'
 }
 
+VIRULENCE_FACTOR_CATEGORIES = {
+    'VFDB': 'VFDB',
+    'Victors': 'VFDB',
+    'PATRIC_VF': 'VFDB',
+    'ARDB': 'ARDB',
+    'CARD': 'ARDB',
+    'BLAST': 'BLAST',
+    'RGI': 'RGI',
+    'PAG': 'PAG' 
+}
+
 MODULES = ['Distance', 'Sigi', 'Dimob', 'Islandpick', 'Virulence', 'Summary']
 
 class CustomGenome(models.Model):

@@ -1,3 +1,4 @@
+{% load virulencefactors %}
 var {{ varName|default:"circular" }}data = [
 {% comment %}Genes for linear view{% endcomment %}
 	{ trackName: "{{ plotName|default:"circular" }}Genes",
@@ -127,7 +128,7 @@ var {{ varName|default:"circular" }}data = [
 	  showTooltip: true,
 	  items: [
 	     {% for vir in vir_factors %}
-	       {id: {{ forloop.counter }}, bp: {{ vir.start }}, type: '{{ vir.source }}', name: '{{ vir.external_id }}', gene: '{{ vir.name }}'}{% if not forloop.last %},{% endif %}
+	     {id: {{ forloop.counter }}, bp: {{ vir.start }}, type: '{{ vir.source|vir_category }}', source: '{{ vir.source }}', name: '{{ vir.external_id }}', gene: '{{ vir.name }}'}{% if not forloop.last %},{% endif %}
 	     {% endfor %}
 	         ]
 	}{% endif %}
@@ -206,8 +207,8 @@ function updateStrand(cb, strand) {
   }
 }
 
-var virulenceMappings = { 'VFDB': ['VFDB', 'Victors', 'Patric_VF'],
-//var virulenceMappings = { 'VFDB': ['VFDB'],
+//var virulenceMappings = { 'VFDB': ['VFDB', 'Victors', 'Patric_VF'],
+var virulenceMappings = { 'VFDB': ['VFDB'],
 			  'ARDB': ['ARDB', 'CARD'],
 			  'BLAST': ['BLAST'],
 			  'RGI': ['RGI'],
@@ -216,9 +217,10 @@ var virulenceMappings = { 'VFDB': ['VFDB', 'Victors', 'Patric_VF'],
 
 function updateVirulence(cb, vir) {
 
-  var vir_factors =  virulenceMappings[vir];
-  for(var x = 0; x < vir_factors.length; x++) {
-      vir_factor = vir_factors[x];
+    var vir_factor = vir;
+    //  var vir_factors =  virulenceMappings[vir];
+    //  for(var x = 0; x < vir_factors.length; x++) {
+    //      vir_factor = vir_factors[x];
 //      console.log(vir_factor);
 
       if(cb.checked) {
@@ -233,7 +235,7 @@ function updateVirulence(cb, vir) {
 	      window.secondTrackObj.hideGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
 	  }
       }
-  }
+      //  }
 }
 
 

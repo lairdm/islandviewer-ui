@@ -30,16 +30,16 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range)
       if(trackname == 'circularVirulence') {
 	var url = false;
 
-        if(d.type == "VFDB") {
+        if(d.source == "VFDB") {
           url = 'http://www.mgc.ac.cn/cgi-bin/VFs/vfs.cgi?VFID=' + d.name;
 
-        } else if(d.type == 'PATRIC_VF') {
+        } else if(d.source == 'PATRIC_VF') {
           url = 'http://patricbrc.org/portal/portal/patric/Feature?cType=feature&cId=' + d.name;
-	} else if(d.type == 'Victors') {
+	} else if(d.source == 'Victors') {
 	  url = 'http://www.phidias.us/victors/gene_detail.php?c_mc_victor_id=' + d.name;
-	} else if(d.type == 'CARD') {
+	} else if(d.source == 'CARD') {
 	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.name
-	} else if(d.type == 'RGI') {
+	} else if(d.source == 'RGI') {
 	  url = 'http://arpcard.mcmaster.ca/?q=CARD/ontology/' + d.name
 	}
 
