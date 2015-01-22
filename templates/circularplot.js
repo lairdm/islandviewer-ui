@@ -224,7 +224,7 @@ function updateVirulence(cb, vir) {
 //      console.log(vir_factor);
 
       if(cb.checked) {
-	  console.log("showing: " + vir_factor);
+	  //	  console.log("showing: " + vir_factor);
 	  {{ plotName|default:"circular" }}TrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
 	  if('undefined' !== typeof window.secondTrackObj) {
 	      window.secondTrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
