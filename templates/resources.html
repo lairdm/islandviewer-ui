@@ -8,12 +8,18 @@
 {% endblock sidebar %}
 
 {% block content %}
+<script>
+function scrolltoelem(elem) {
+	$('html, body').animate({ scrollTop: $('#' + elem).offset().top }, 'slow');
+	
+}
+</script>
 <p class="pageName">Resources</p>
 
 <p class="subHeader">Web Applications - <span class="bodyText">tools that allow predictions of genomic islands through a web interface</span></p>
 <ul class="bodyText">
   <li><a href="{% url 'browse' %}">IslandViewer</a> - integrates three different methods: SIGI-HMM, IslandPath-DIMOB, IslandPick. Contains pre-computed results for all sequenced genomes and allows user submitted genomes.(<a href="{% url 'about' %}">More Information</a>)</li>
-  <li><a href="http://www.pathogenomics.sfu.ca/islandviewer/run_islandpick.php">IslandPick</a> - is an automated comparative genomics based method that is one of the methods integrated into <a href="{% url 'browse' %}">IslandViewer</a>. Also, users can choose to run manual comparisons with genomes of their choice. <a href="{% url 'about' %}#islandpick">(More Information)</a></li>
+  <li><font style='font-weight: bold'>IslandPick</font> - is an automated comparative genomics based method that is one of the methods integrated into <a href="{% url 'browse' %}">IslandViewer</a>. Also, users can choose to run manual comparisons with genomes of their choice. <a href="{% url 'about' %}#islandpick">(More Information)</a></li>
   <li><a href="http://db-mml.sjtu.edu.cn/MobilomeFINDER/" target="_blank">MobilomeFINDER</a> - comparative genomics method that identifies only those GIs that have inserted into tRNA sequences. Contains a few pre-computed results, but does allow for genome submission. </li>
 </ul>
 

@@ -17,9 +17,16 @@
 {% block content %}
 <script>
 function scrolltoelem(elem) {
-	$('html, body').animate({ scrollTop: $('#' + elem).offset().top }, 'slow');
+	$('html, body').animate({ scrollTop: $(elem).offset().top }, 'slow');
 	
 }
+
+$(document).ready(function() {
+  if(location.hash) {
+    console.log(location.hash);
+    scrolltoelem(location.hash);
+  }
+});
 </script>
 <p class="bodyText"><span class="pageName">About</span> (<a href="{% url 'faq' %}">Visit our FAQs</a>)</p>
 
@@ -65,7 +72,7 @@ function scrolltoelem(elem) {
 
 <p class="subHeader">Conducting Further Analysis<a name="analysis" id="analysis"></a> </p>
 
-<p class="bodyText">We strongly encourage researchers to conduct further analyses of any GIs displayed by IslandViewer. As outlined above, in <a href="javascript:scrolltoelem('considerations');">Analysis Considerations</a>, there are many factors that can lead to false prediction   by any GI prediction program. In addition, any GIs that are very close to each other in the genome may actually be one large GI insertion (or vice versa) and the exact boundaries or insertion sites should be inspected in more detail. We recommend the use of the following computational tools to aid in further analysis of genomic islands.</p>
+<p class="bodyText">We strongly encourage researchers to conduct further analyses of any GIs displayed by IslandViewer. As outlined above, in <a href="javascript:scrolltoelem('#considerations');">Analysis Considerations</a>, there are many factors that can lead to false prediction   by any GI prediction program. In addition, any GIs that are very close to each other in the genome may actually be one large GI insertion (or vice versa) and the exact boundaries or insertion sites should be inspected in more detail. We recommend the use of the following computational tools to aid in further analysis of genomic islands.</p>
 
 <p class="bodyText"><a href="http://www.sanger.ac.uk/Software/Artemis/">Artemis</a>, is a popular and well developed genome browser and annotation tool. IslandViewer allows users to download predicted GIs in a GenBank file format that can be opened directly in Artemis. The GIs will appear in Artemis  using  the same colour scheme used in IslandViewer (i.e. green for IslandPick, orange  for SIGI-HMM, etc.). An easy to view list of islands can be produced in Artemis by using the &quot;Feature Selector&quot; under the &quot;Select&quot; menu and filling in:</p>
 
