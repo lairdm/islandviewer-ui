@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from django import forms
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
@@ -184,6 +185,29 @@ def tablejson(request, aid):
     return render(request, "table.json", context, content_type='application/json')
     
 #    return HttpResponse(js_str, content_type=('application/json'))
+
+def search_genes(request, ext_id):
+#    if request.is_ajax():
+    if True:
+        q = request.GET.get('term', '')
+        print q
+        genes = Genes.objects.filter(Q(ext_id = ext_id), Q(product__icontains = q) | Q(name__icontains = q) | Q(locus__icontains = q))[:20]
+        results = []
+        for gene in genes:
+            gene_json = {}
+            gene_json['start'] = gene.start
+            gene_json['end'] = gene.end
+            gene_json['name'] = gene.name
+            gene_json['gene'] = gene.gene if gene.gene else gene.locus
+            gene_json['product'] = gene.product
+            gene_json['id'] = gene.id
+            results.append(gene_json)
+        data = json.dumps(results)
+    else:
+        print "failed?"
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 def uploadform(request):
     context = {}

@@ -269,8 +269,48 @@ window.onload = function() {
 
   $("#second_genome_select").chosen({width: "525px"});
 
+  initialize_gene_search();
+
 //  load_second();
 };
+
+function show_gene_search() {
+
+    if($('#gene_search_dialog').is(":visible")) {
+	$('#show_gene_search').html("Search Genes");
+	$('#gene_search_dialog').slideToggle('fast');
+	return;
+    }
+
+    $('#show_gene_search').html("Hide search");
+    $('#gene_search_dialog').slideToggle('fast');
+
+}
+
+function initialize_gene_search() {
+    url = '{% url 'searchgenes' 'abc' %}'.replace("abc", '{{ext_id}}');
+
+    $("#gene_search_input").autocomplete({
+	source: url,
+	minLength: 2,
+	select: function( event, ui ) {
+	    item = ui.item;
+	    var range = (item.end - item.start) * 10;
+	    // Forcus to a window 10x the gene size
+	    islandviewerObj.focus((item.start - range), (item.end + range), '#gene_overlay_' + item.id);
+	    $(this).val(item.name + ', ' + item.product + ' (' + item.gene + ') ' + '[' + item.start + '..' + item.end + ']');
+	    $(this).blur();
+	    return false;
+	},
+    }).focus(function() {
+	    $(this).val('');
+    }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+	return $( "<li>" )
+	    .append(item.name + ', ' + item.product + ' (' + item.gene + ') ' + '[' + item.start + '..' + item.end + ']')
+	    .appendTo( ul );
+	};
+    
+}
 
 function show_genome_dialog() {
   url = '{% url 'browsejson'  %}';

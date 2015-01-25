@@ -111,6 +111,22 @@ Islandviewer.prototype.ondblclick = function(plotid, bp) {
     }
 }
 
+Islandviewer.prototype.focus = function(startbp, endbp, highlight_sel) {
+    var newStart = Math.max(0, (startbp));
+    var newEnd = Math.min(this.genomesize, (endbp));
+
+    // Make out d parameter manually
+    this.showHoverGenes({start: newStart, end: newEnd}, false, highlight_sel);
+
+    this.linearplot.update(newStart, newEnd);
+
+    this.circularplot.moveBrushbyBP(newStart, 
+                                        newEnd);
+
+    this.circularplot.showBrush();
+  
+}
+
 Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
 //    console.log("Got a callback " + d);
 //    console.log(trackname);
@@ -166,7 +182,7 @@ Islandviewer.prototype.update = function(startBP, endBP) {
 
 }
 
-Islandviewer.prototype.update_finished = function(startBP, endBP) {
+Islandviewer.prototype.update_finished = function(startBP, endBP, highlight_sel) {
     url = '../../json/genes/?aid=' + this.aid + '&ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
     self = this;
 
@@ -243,16 +259,20 @@ Islandviewer.prototype.update_finished = function(startBP, endBP) {
 		$('#gene_dialog').html(html);
                 $('#gene_dialog').dialog('option', 'title', 'Genes (' + self.genomename + ')');
 
+		if('undefined' !== typeof highlight_sel) {
+		    $(highlight_sel).highlight();
+		}
+
 	    }
 	});
 }
 
-Islandviewer.prototype.showHoverGenes = function(d, do_half_range) {
+Islandviewer.prototype.showHoverGenes = function(d, do_half_range, highlight_sel) {
 
   var half_range = (typeof do_half_range !== 'undefined' && do_half_range)  ? (d.end - d.start)/2 : 0;
 
   $('#gene_dialog').dialog("open");
-  this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
+  this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)), highlight_sel);
 }
 
 Islandviewer.prototype.scrollandOpen = function(d) {
@@ -346,3 +366,19 @@ function objectSize(the_object) {
 	  return object_size;
 	}
 
+jQuery.fn.highlight = function () {
+    $(this).each(function () {
+        var el = $(this);
+        $("<div/>")
+        .width(el.outerWidth())
+        .height(el.outerHeight())
+        .css({
+            "position": "absolute",
+            "left": el.offset().left,
+            "top": el.offset().top,
+            "background-color": "#ffff99",
+            "opacity": ".7",
+            "z-index": "9999999"
+        }).appendTo('body').fadeOut(4000).queue(function () { $(this).remove(); });
+    });
+}
