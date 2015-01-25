@@ -191,7 +191,7 @@ def search_genes(request, ext_id):
     if True:
         q = request.GET.get('term', '')
         print q
-        genes = Genes.objects.filter(Q(ext_id = ext_id), Q(product__icontains = q) | Q(name__icontains = q) | Q(locus__icontains = q))[:20]
+        genes = Genes.objects.filter(Q(ext_id = ext_id), Q(product__icontains = q) | Q(name__icontains = q) | Q(locus__icontains = q) | Q(gene__icontains = q))[:20]
         results = []
         for gene in genes:
             gene_json = {}

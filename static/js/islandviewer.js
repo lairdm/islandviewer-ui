@@ -260,6 +260,8 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, highlight_sel)
                 $('#gene_dialog').dialog('option', 'title', 'Genes (' + self.genomename + ')');
 
 		if('undefined' !== typeof highlight_sel) {
+		    $('#gene_dialog').scrollTop($('#gene_dialog').scrollTop() + $(highlight_sel).position().top
+						- $('#gene_dialog').height()/2 + $(highlight_sel).height()/2);
 		    $(highlight_sel).highlight();
 		}
 
@@ -379,6 +381,6 @@ jQuery.fn.highlight = function () {
             "background-color": "#ffff99",
             "opacity": ".7",
             "z-index": "9999999"
-        }).appendTo('body').fadeOut(4000).queue(function () { $(this).remove(); });
+        }).appendTo('body').fadeOut(3000).queue(function () { $(this).remove(); });
     });
 }

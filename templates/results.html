@@ -64,7 +64,7 @@
     <div id="circularcontainer" style="width:550px; display:inline-block; ">
       <span class="pageName">{{ genomename }}</span><br />
       <div id="gene_search_dialog" style="display:none">Search for gene:<br />
-        <input id="gene_search_input" size="50">
+        <img id="close_gene_search" src="{% static 'img/close.svg' %}" height="25px">&nbsp;<input id="gene_search_input" size="50" placeholder="Type a gene name, refseq accession or product name...">
       </div>
       <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
       <select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">

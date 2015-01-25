@@ -277,8 +277,7 @@ window.onload = function() {
 function show_gene_search() {
 
     if($('#gene_search_dialog').is(":visible")) {
-	$('#show_gene_search').html("Search Genes");
-	$('#gene_search_dialog').slideToggle('fast');
+	hide_gene_search();
 	return;
     }
 
@@ -286,6 +285,17 @@ function show_gene_search() {
     $('#gene_search_dialog').slideToggle('fast');
 
 }
+
+function hide_gene_search() {
+    $('#show_gene_search').html("Search Genes");
+    $("#gene_search_input").val('');
+    $('#gene_search_dialog').slideToggle('fast');
+
+}
+
+$('#close_gene_search').on('click', function() {
+    hide_gene_search();
+});
 
 function initialize_gene_search() {
     url = '{% url 'searchgenes' 'abc' %}'.replace("abc", '{{ext_id}}');
