@@ -271,6 +271,7 @@ window.onload = function() {
 
   initialize_gene_search();
 
+//  reload();
 //  load_second();
 };
 
@@ -330,6 +331,27 @@ function initialize_gene_search() {
 	    .appendTo( ul );
 	};
     
+}
+
+function serialize() {
+
+    params = islandviewerObj.serialize();
+
+    console.log(params);
+
+    uri = encodeURIComponent(JSON.stringify(params));
+
+    console.log(uri);
+
+    decoded = decodeURIComponent(uri);
+
+    console.log(decoded);
+}
+
+function reload() {
+    features = {s: 912360, e: 1032732, c: 500, x: 15, y: 31, l: 800};
+
+    islandviewerObj.reload(features);
 }
 
 function show_genome_dialog() {

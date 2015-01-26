@@ -5,6 +5,10 @@ function Islandviewer(aid, ext_id, genomesize, genomename, trackdata) {
     this.genomename = genomename;
     this.trackdata = trackdata;
     console.log("Called constructor " + this.ext_id + ' ' + genomename);
+
+    this.startBP = 0;
+    this.endBP = genomesize;
+
 }
 
 Islandviewer.prototype.addCircularPlot = function(layout) {
@@ -115,6 +119,9 @@ Islandviewer.prototype.focus = function(startbp, endbp, highlight_sel) {
     var newStart = Math.max(0, (startbp));
     var newEnd = Math.min(this.genomesize, (endbp));
 
+    this.startBP = newStart;
+    this.endBP = newEnd;
+
     // Make out d parameter manually
     this.showHoverGenes({start: newStart, end: newEnd}, false, highlight_sel);
 
@@ -186,6 +193,8 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, highlight_sel)
     url = '../../json/genes/?aid=' + this.aid + '&ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
     self = this;
 
+    this.startBP = startBP;
+    this.endBP = endBP;
 //        console.log(url);
 
     $.ajax({
@@ -275,6 +284,60 @@ Islandviewer.prototype.showHoverGenes = function(d, do_half_range, highlight_sel
 
   $('#gene_dialog').dialog("open");
   this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)), highlight_sel);
+}
+
+Islandviewer.prototype.serialize = function() {
+    var features = {s: this.startBP, e: this.endBP };
+
+    if('undefined' !== typeof this.circularplot) {
+	features['c'] = Math.max(this.circularplot.layout.h, this.circularplot.layout.w);
+	console.log(this.circularplot.layout.radius);
+
+	var position = $(this.circularplot.layout.container).position();
+
+	console.log(position);
+	features['x'] = position.left;
+	features['y'] = position.top;
+	
+    }
+
+    if('undefined' !== typeof this.linearplot) {
+	features['l'] = this.linearplot.layout.width;
+    }
+
+    return features;
+}
+
+Islandviewer.prototype.reload = function(features) {
+    if('undefined' !== typeof features['s'] && 'undefined' !== typeof features['e']) {
+	this.focus(features['s'], features['e']);
+    }
+
+    if('undefined' !== typeof features['c'] && 'undefined' !== typeof this.circularplot) {
+	this.circularplot.resize(features['c']);
+
+	var container = $(this.circularplot.layout.container);
+	console.log(container);
+	console.log(this.circularplot.layout.h);
+	console.log(features['c']);
+	console.log(this.circularplot.layout.radius);
+	container.height(this.circularplot.layout.h + this.circularplot.layout.ExtraWidthY);
+	container.width(this.circularplot.layout.w + this.circularplot.layout.ExtraWidthX);
+//	container.css({width: this.circularplot.layout.w, height: this.circularplot.layout.h});
+
+	if('undefined' !== typeof features['x']) {
+	    container.css({left: features['x']});
+	}
+
+	if('undefined' !== typeof features['y']) {
+	    container.css({top: features['y']});
+	}
+    }
+
+    if('undefined' !== typeof features['l'] && 'undefined' !== typeof this.linearplot) {
+	this.linearplot.resize(features['l']);
+    }    
+
 }
 
 Islandviewer.prototype.scrollandOpen = function(d) {
