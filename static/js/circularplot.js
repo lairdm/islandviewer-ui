@@ -688,6 +688,13 @@ circularTrack.prototype.drawGlyphTrack = function(i) {
     .attr("transform", function(d,i) { return "translate(" + x(d,i) + ","
 		+ y(d,i) + ")" });    
 
+    trackPath.exit()
+    .transition()
+    .duration(1000)
+    .attr("transform", "translate(" + cfg.h/2 + "," + cfg.w/2 + ")")
+    .style("opacity", 0)
+    .remove();
+
     trackPath.enter()
     .append('path')
     .attr('id', function(d,i) { return track.trackName + "_glyph" + d.id; })
@@ -699,14 +706,8 @@ circularTrack.prototype.drawGlyphTrack = function(i) {
     .duration(1000)
     .attr("transform", function(d,i) { return "translate(" + x(d,i) + ","
 				       + y(d,i) + ")" })
-    .style("opacity", 1)
+    .style("opacity", 1);
 
-    trackPath.exit()
-    .transition()
-    .duration(1000)
-    .attr("transform", "translate(" + cfg.h/2 + "," + cfg.w/2 + ")")
-    .style("opacity", 0)
-    .remove()
 
 }
 
