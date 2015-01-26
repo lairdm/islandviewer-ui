@@ -189,9 +189,11 @@ def tablejson(request, aid):
 def search_genes(request, ext_id):
 #    if request.is_ajax():
     if True:
-        q = request.GET.get('term', '')
-        print q
-        genes = Genes.objects.filter(Q(ext_id = ext_id), Q(product__icontains = q) | Q(name__icontains = q) | Q(locus__icontains = q) | Q(gene__icontains = q))[:20]
+        t = request.GET.get('term', '')
+        q = Q(ext_id = ext_id)
+        if request.GET.get('second_ext_id'):
+            q |= Q(ext_id = request.GET.get('second_ext_id'))
+        genes = Genes.objects.filter(q, Q(product__icontains = t) | Q(name__icontains = t) | Q(locus__icontains = t) | Q(gene__icontains = t))[:30]
         results = []
         for gene in genes:
             gene_json = {}
@@ -201,6 +203,7 @@ def search_genes(request, ext_id):
             gene_json['gene'] = gene.gene if gene.gene else gene.locus
             gene_json['product'] = gene.product
             gene_json['id'] = gene.id
+            gene_json['extid'] = gene.ext_id
             results.append(gene_json)
         data = json.dumps(results)
     else:

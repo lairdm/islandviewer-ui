@@ -298,16 +298,26 @@ $('#close_gene_search').on('click', function() {
 });
 
 function initialize_gene_search() {
-    url = '{% url 'searchgenes' 'abc' %}'.replace("abc", '{{ext_id}}');
 
     $("#gene_search_input").autocomplete({
-	source: url,
-	minLength: 2,
+	source: function(request, response) {
+	    params = { term: request.term };
+	    if('undefined' !== typeof window.secondislandviewerObj) {
+		params['second_ext_id'] = window.secondislandviewerObj.ext_id;
+	    }
+	    $.getJSON('{% url 'searchgenes' ext_id %}', params, 
+		      response);
+	},
+	minLength: 3,
 	select: function( event, ui ) {
 	    item = ui.item;
 	    var range = (item.end - item.start) * 10;
 	    // Forcus to a window 10x the gene size
-	    islandviewerObj.focus((item.start - range), (item.end + range), '#gene_overlay_' + item.id);
+	    if(item.extid == '{{ ext_id }}') {
+		islandviewerObj.focus((item.start - range), (item.end + range), '#gene_overlay_' + item.id);
+	    } else if(('undefined' !== typeof window.secondislandviewerObj) && item.extid == window.secondislandviewerObj.ext_id) {
+		window.secondislandviewerObj.focus((item.start - range), (item.end + range), '#gene_overlay_' + item.id);
+	    }
 	    $(this).val(item.name + ', ' + item.product + ' (' + item.gene + ') ' + '[' + item.start + '..' + item.end + ']');
 	    $(this).blur();
 	    return false;
@@ -491,7 +501,7 @@ function update_legend() {
     methods = secondmethods;
   }
 
-console.log(methods);
+//console.log(methods);
   // Now update the legend
   var allmethods = ['circularIslandpick', 'circularSigi', 'circularDimob', 'PAG', 'VFDB', 'ARDB', 'CARD', 'RGI', 'Victors', 'PATRIC_VF', 'BLAST'];
   // First disable all checkboxes and say nothing is run
