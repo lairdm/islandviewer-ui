@@ -1333,8 +1333,6 @@ circularTrack.prototype.dragresize_end = function() {
 
     this.resize(newSize);
 
-    this.redrawBrush(this.currentStart, this.currentEnd);
-
 }
 
 circularTrack.prototype.resize = function(newWidth) {
@@ -1386,6 +1384,11 @@ circularTrack.prototype.resize = function(newWidth) {
     this.container
 	.attr("width", newWidth+this.layout.ExtraWidthX)
 	.attr("height", newWidth+this.layout.ExtraWidthY)
+
+    this.redrawBrush(this.currentStart, this.currentEnd);
+
+    this.dragbar
+	.attr("transform", "translate(" + (newWidth+this.layout.ExtraWidthX-25) + "," +  (newWidth+this.layout.ExtraWidthY-25) + ")")
 
 }
 

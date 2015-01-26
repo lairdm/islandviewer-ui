@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from django import forms
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
@@ -184,6 +185,32 @@ def tablejson(request, aid):
     return render(request, "table.json", context, content_type='application/json')
     
 #    return HttpResponse(js_str, content_type=('application/json'))
+
+def search_genes(request, ext_id):
+#    if request.is_ajax():
+    if True:
+        t = request.GET.get('term', '')
+        q = Q(ext_id = ext_id)
+        if request.GET.get('second_ext_id'):
+            q |= Q(ext_id = request.GET.get('second_ext_id'))
+        genes = Genes.objects.filter(q, Q(product__icontains = t) | Q(name__icontains = t) | Q(locus__icontains = t) | Q(gene__icontains = t))[:30]
+        results = []
+        for gene in genes:
+            gene_json = {}
+            gene_json['start'] = gene.start
+            gene_json['end'] = gene.end
+            gene_json['name'] = gene.name
+            gene_json['gene'] = gene.gene if gene.gene else gene.locus
+            gene_json['product'] = gene.product
+            gene_json['id'] = gene.id
+            gene_json['extid'] = gene.ext_id
+            results.append(gene_json)
+        data = json.dumps(results)
+    else:
+        print "failed?"
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 def uploadform(request):
     context = {}

@@ -20,9 +20,15 @@
   <span class="{{ plotName|default:"circular" }}Virulence_PAG"><input type="checkbox" class="methodcheckbox showPAG" id="showPAG" name="showPAG" onchange="updateVirulence(this, 'PAG'); return false;" checked>Pathogen-associated genes</span><span id="noPAG" class="nomethodtext noPAG"> (No results found)</span><br />
 </div>
 <p>&nbsp;</p>
+<div id="legend" class="outline">
 <div><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a></div>
 <p>&nbsp;</p>
 <div><a href="javascript:show_islandpick_genomes();" id="show_islandpick_genomes" >Show Islandpick Comparison Genomes</a></div>
+<p>&nbsp;</p>
+<div><a href="javascript:show_gene_search();" id="show_gene_search" >Search Genes</a></div>
+<p>&nbsp;</p>
+<div><a href="javascript:serialize();" id="save_view" >Save view</a></div>
+</div>
 <p>&nbsp;</p>
 <p><span class="subHeader">Additional Tools (<a href="{% url 'about' %}#analysis">Help</a>)  </span></p>
   <!--<li><a href="reference_input.php?query_input=117174">IslandPick</a> can be run using manually selected comparison genomes instead of default genomes.</li>-->
