@@ -690,7 +690,8 @@ circularTrack.prototype.drawGlyphTrack = function(i) {
     trackPath.transition()
     .duration(1000)
     .attr("transform", function(d,i) { return "translate(" + x(d,i) + ","
-		+ y(d,i) + ")" });    
+		+ y(d,i) + ")" })
+    .style("opacity", 1);    
 
     trackPath.exit()
     .transition()
