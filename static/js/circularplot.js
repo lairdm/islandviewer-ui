@@ -167,6 +167,10 @@ function circularTrack(layout,tracks) {
 	    break;
 	case "glyph":
 	    this.findGlyphTypes(i);
+
+	    if('undefined' !== typeof this.tracks[i].hideTypes) {
+		this.maskGlyphTypes(i, this.tracks[i].hideTypes)
+	    }
 	    //	    this.tracks[i].container = 
 	    //	this.g.append("g")
 	    //	.attr("class", this.tracks[i].trackName + "_glyph_container")
@@ -1213,7 +1217,7 @@ circularTrack.prototype.hideTrack = function(name) {
 	return;
     }
 
-    // Is it already visible? Do nothing
+    // Is it already not visible? Do nothing
     if(! this.tracks[i].visible) {
 	return;
     }
@@ -1251,6 +1255,11 @@ circularTrack.prototype.hideGlyphTrackType = function(name, type) {
 	return;
     }
 
+    // Don't try to show if already visible
+    if(! this.isvisibleGlyphTrackType(name, type)) {
+	return;
+    }
+
     for(var j = 0; j < this.tracks[i].visTypes.length; j++) {
 	if(this.tracks[i].visTypes[j] == type) {
 	    this.tracks[i].visTypes.splice(j, 1);
@@ -1275,12 +1284,39 @@ circularTrack.prototype.showGlyphTrackType = function(name, type) {
 	return;
     }
 
+    // Don't try to show if already visible
+    if(this.isvisibleGlyphTrackType(name, type)) {
+	return;
+    }
+
     if(! this.tracks[i].visTypes.contains(type) ) {
 	this.tracks[i].visTypes.push(type);
     }
 
     this.drawGlyphTrack(i);
 
+}
+
+circularTrack.prototype.isvisibleGlyphTrackType = function(name, type) {
+    var i = this.findTrackbyName(name);
+
+    // We didn't find the track by that name
+    if(i < 0) {
+	return;
+    }
+
+    if(this.tracks[i].trackType !== "glyph") {
+	// Wrong track type, bail
+	return;
+    }
+
+    for(var j = 0; j < this.tracks[i].visTypes.length; j++) {
+	if(this.tracks[i].visTypes[j] == type) {
+	    return true;
+	}
+    }
+
+    return false;
 }
 
 circularTrack.prototype.dragresize = function() {
@@ -1427,6 +1463,16 @@ circularTrack.prototype.findGlyphTypes = function(i) {
     }
 
     this.tracks[i].visClasses = classes.join(' ');
+
+}
+
+circularTrack.prototype.maskGlyphTypes = function(i, types) {
+
+    for(var j = this.tracks[i].visTypes.length - 1; j >= 0; j--) {
+	if(types.contains(this.tracks[i].visTypes[j])) {
+	    this.tracks[i].visTypes.splice(j, 1);
+	}
+    }
 
 }
 

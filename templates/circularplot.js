@@ -165,7 +165,7 @@ var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot
 {{ plotName|default:"circular" }}TrackObj.attachBrush(islandviewerObj);
 {{ plotName|default:"circular" }}LinearTrack.addBrushCallback(islandviewerObj);
 
-$('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{ container }}_svg" },
+$('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{ container }}" },
 	                    height: 550, width: 450,
 			    title: "Genes",
 			    autoOpen: false } );
@@ -238,7 +238,26 @@ function updateVirulence(cb, vir) {
       //  }
 }
 
+function updateTracks(ivObj) {
+       $('input:checkbox.islandmethod:not(:checked)').each(function () {
+	    var track = $(this).attr('id').replace(/^show/,'');
+	    if($(this).prop('disabled')) {
+		return;
+	    }
 
+	    ivObj.maskTrackType(track);
+	});
+
+       $('input:checkbox.virulencemethod:not(:checked)').each(function () {
+	    var vir_factor = $(this).attr('id').replace(/^show/,'');
+	    if($(this).prop('disabled')) {
+		return;
+	    }
+
+	    ivObj.maskGlyphType(vir_factor);
+	});
+ 
+}
 
 window.onload = function() {
 
@@ -271,7 +290,11 @@ window.onload = function() {
 
   initialize_gene_search();
 
-//  reload();
+  if('undefined' !== typeof reloadStr) {
+      //      console.log(reloadStr);
+      reload(reloadStr);
+  }
+  //  reload();
 //  load_second();
 };
 
@@ -296,6 +319,12 @@ function hide_gene_search() {
 
 $('#close_gene_search').on('click', function() {
     hide_gene_search();
+});
+
+$('#close_url').on('click', function() {
+    if($('#url_dialog').is(":visible")) {
+	$('#url_dialog').slideToggle('fast');
+    }
 });
 
 function initialize_gene_search() {
@@ -335,23 +364,119 @@ function initialize_gene_search() {
 
 function serialize() {
 
-    params = islandviewerObj.serialize();
+    var params = {};
+    params['m'] = islandviewerObj.serialize();
+
+    var unchecked = [];
+    $('input:checkbox.islandmethod:not(:checked)').each(function () {
+	    unchecked.push(this.id);
+	});
+    $('input:checkbox.virulencemethod:not(:checked)').each(function () {
+	    unchecked.push(this.id);
+	});
+    params['un'] = unchecked;
+
+    if('undefined' !== typeof window.secondislandviewerObj) {
+	params['s'] = window.secondislandviewerObj.serialize();
+	//	params['s']['id'] = window.secondislandviewerObj.aid;
+    }
+
+    if($('#gene_dialog').dialog( "isOpen" ) === false) {
+	params['d'] = {v: false};
+    } else {
+	params['d'] = {v: true};
+
+	var o = $('#gene_dialog').dialog( "open" ).offset();
+	//	params['d']['p'] = $('#gene_dialog').dialog('option', 'position');
+	params['d']['t'] = o.top;
+	params['d']['l'] = o.left;
+
+    }
 
     console.log(params);
 
     uri = encodeURIComponent(JSON.stringify(params));
 
-    console.log(uri);
+    //    decoded = decodeURIComponent(uri);
 
-    decoded = decodeURIComponent(uri);
+    //    console.log(decoded);
 
-    console.log(decoded);
+    url = insertParam('load', uri);
+
+    console.log(url);
+
+    if($('#url_dialog').is(":hidden")) {
+	$('#url_dialog').slideToggle('fast');
+    }
+
+    $('#url_input').val(url);
+    $('#url_input').select();
+}
+ 
+function insertParam(key, value)
+{
+    key = encodeURI(key); value = encodeURI(value);
+
+    var kvp = document.location.search.substr(1).split('&');
+
+    var i=kvp.length; var x; while(i--) 
+    {
+        x = kvp[i].split('=');
+
+        if (x[0]==key)
+        {
+            x[1] = value;
+            kvp[i] = x.join('=');
+            break;
+        }
+    }
+
+    if(i<0) {kvp[kvp.length] = [key,value].join('=');}
+
+    //this will reload the page, it's likely better to store this until finished
+    //    document.location.search = kvp.join('&'); 
+    return document.location.href + '?' + kvp.join('&'); 
 }
 
-function reload() {
-    features = {s: 912360, e: 1032732, c: 500, x: 15, y: 31, l: 800};
+function reload(paramsStr) {
+    features = {s: 912360, e: 1032732, c: 600, x: 'auto', y: 'auto', l: 800};
 
-    islandviewerObj.reload(features);
+    try {
+	params = $.parseJSON(decodeURIComponent(paramsStr));
+    } catch(err) {
+	alert("Error decoding url.");
+    }
+    //    console.log(params);
+
+    if('undefined' !== typeof params['m']) {
+	islandviewerObj.reload(params['m']);
+    }
+
+    if('undefined' !== typeof params['un']) {
+	for(var i = 0; i < params['un'].length; i++) {
+	    var method = params['un'][i];
+	    $('#' + method).click();
+	}
+    }
+
+    if('undefined' !== typeof params['d']) {
+    	if(params['d']['v'] == true) {
+	    if('undefined' !== typeof params['d']['t'] && 'undefined' !== typeof params['d']['l']) {
+		$('#gene_dialog').dialog( 'widget' ).offset({ top: params['d']['t'], left: params['d']['l'] });
+	    }
+	} else {
+	    $('#gene_dialog').dialog( 'close' );
+	    if('undefined' !== typeof params['s']) {
+		params['s']['d'] = false;
+	    }
+	}
+    }
+
+    if('undefined' !== typeof params['s'] && 'undefined' !== typeof params['s']['id']) {
+	obj = load_second(params['s']['id'], params['s']);
+	//	obj.reload(params['s']);
+    }
+
 }
 
 function show_genome_dialog() {
@@ -394,17 +519,22 @@ function show_genome_dialog() {
   });
 }
 
-function load_second() {
+function load_second(aidParam, reloadParams) {
   aid = $("#second_genome_select").val();
+
+  if('undefined' !== typeof aidParam) {
+      aid = aidParam;
+  }
 
 //  console.log("loading " + aid);
 
-  $('#genome_selector_dialog').slideToggle();
+  if($('#genome_selector_dialog').is(":visible")) {
+      $('#genome_selector_dialog').slideToggle();
+  }
 
   $('#show_second_link').html("Visualize two genomes");
   var title = $("#second_genome_select").find(":selected").text();
 
-  $('#second_genome_title').html(title);
   $('#second_genome_title_wrapper').show();
 
   var url = "{% url 'circularplotjs' '9999' %}".replace("9999", aid);
@@ -413,11 +543,20 @@ function load_second() {
 
 //  console.log(url);
 
+  $("#loadingspinner").show("fast");
+
   $.getScript( url, function() {
 //    console.log("loaded");
 //    console.log(second_genomesize);
 
     window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
+    $('#second_genome_title').html(second_genomename);
+
+    // We can update hte legend here because it only depends on the dataset
+    update_legend();
+
+    // Update the tracks if any are turned off
+    updateTracks(window.secondislandviewerObj);
 
     var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart' };
 //    var secondTrackObj = new circularTrack(secondlayout, seconddata);
@@ -434,6 +573,7 @@ function load_second() {
     secondTrackObj.attachBrush(secondislandviewerObj);
     secondLinearTrack.addBrushCallback(secondislandviewerObj);
 
+    // Move the brush to the first island
     for(var i=0; i < seconddata.length; i++) {
       if(seconddata[i].trackName == "{{ plotName|default:"circular" }}Integrated") {
         if(seconddata[i].items.length > 0) {
@@ -470,15 +610,22 @@ function load_second() {
         window.secondoTable = create_gitable("rightgitable", url, 'window.secondislandviewerObj'); 
       }
 
-      update_legend();
-
       $('#linearname').html({{ varName|default:"circular" }}_genomename);
       $('#secondlinearname').html(second_genomename);
     });
     
 
 
-  }); // end getScript()
+      }).done(function() {
+	      if('undefined' !== typeof reloadParams) {
+		  window.secondislandviewerObj.reload(reloadParams);
+	      }
+
+	      $("#loadingspinner").hide("fast");
+
+      }); // end getScript()
+
+  return window.secondislandviewerObj;
 }
 
 function hide_second() {
@@ -525,12 +672,11 @@ function update_legend() {
 
 //console.log(methods);
   // Now update the legend
-  var allmethods = ['circularIslandpick', 'circularSigi', 'circularDimob', 'PAG', 'VFDB', 'ARDB', 'CARD', 'RGI', 'Victors', 'PATRIC_VF', 'BLAST'];
+  var allmethods = ['circularIntegrated', 'circularIslandpick', 'circularSigi', 'circularDimob', 'PAG', 'VFDB', 'ARDB', 'CARD', 'RGI', 'Victors', 'PATRIC_VF', 'BLAST'];
   // First disable all checkboxes and say nothing is run
   $('.methodcheckbox').each( function() {
       $(this).attr("disabled", true);
   });
-
   for(var i = 0; i < allmethods.length; i++ ) {
     method = allmethods[i];
     if(methods[method]) {

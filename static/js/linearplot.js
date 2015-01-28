@@ -889,6 +889,10 @@ genomeTrack.prototype.update_finished = function(startbp, endbp) {
 genomeTrack.prototype.resize = function(newWidth) {
     this.layout.width = newWidth;
 
+    this.dragbar
+    .attr("transform", "translate(" + (newWidth -
+				       this.layout.right_margin) + "," + (this.dragbar_y_mid-15) + ")")
+
     this.layout.width_without_margins =
 	this.layout.width - this.layout.left_margin -
 	this.layout.right_margin;
@@ -913,9 +917,6 @@ genomeTrack.prototype.resize = function(newWidth) {
 
 genomeTrack.prototype.dragresize = function(d) {
     var newWidth = d3.event.x;
-    this.dragbar
-    .attr("transform", "translate(" + (newWidth -
-				       this.layout.right_margin) + "," + (this.dragbar_y_mid-15) + ")")
 
     //    console.log(this.layout.containerid);
     this.resize(newWidth);

@@ -287,15 +287,15 @@ Islandviewer.prototype.showHoverGenes = function(d, do_half_range, highlight_sel
 }
 
 Islandviewer.prototype.serialize = function() {
-    var features = {s: this.startBP, e: this.endBP };
+    var features = {s: this.startBP, e: this.endBP, id: this.aid };
 
     if('undefined' !== typeof this.circularplot) {
 	features['c'] = Math.max(this.circularplot.layout.h, this.circularplot.layout.w);
-	console.log(this.circularplot.layout.radius);
+	//	console.log(this.circularplot.layout.radius);
 
-	var position = $(this.circularplot.layout.container).position();
+	var container = $(this.circularplot.layout.container);
 
-	console.log(position);
+	var position = container.css(['left', 'top']);
 	features['x'] = position.left;
 	features['y'] = position.top;
 	
@@ -311,17 +311,17 @@ Islandviewer.prototype.serialize = function() {
 Islandviewer.prototype.reload = function(features) {
     if('undefined' !== typeof features['s'] && 'undefined' !== typeof features['e']) {
 	this.focus(features['s'], features['e']);
+
+	if('undefined' !== typeof features['d'] && ! features['d'] ) {
+	    $('#gene_dialog').dialog( 'close' );
+	}
     }
 
     if('undefined' !== typeof features['c'] && 'undefined' !== typeof this.circularplot) {
 	this.circularplot.resize(features['c']);
 
 	var container = $(this.circularplot.layout.container);
-	console.log(container);
-	console.log(this.circularplot.layout.h);
-	console.log(features['c']);
-	console.log(this.circularplot.layout.radius);
-	container.height(this.circularplot.layout.h + this.circularplot.layout.ExtraWidthY);
+	container.height(this.circularplot.layout.h + this.circularplot.layout.ExtraWidthY + 5);
 	container.width(this.circularplot.layout.w + this.circularplot.layout.ExtraWidthX);
 //	container.css({width: this.circularplot.layout.w, height: this.circularplot.layout.h});
 
@@ -362,6 +362,9 @@ Islandviewer.prototype.findMethods = function() {
 
            if(this.trackdata[i].items.length > 0) {
              types[ this.trackdata[i].trackName] = true;
+
+	     // There's at least one method, so we have integrated...
+	     types['circularIntegrated'] = true;
            }
         } else if(this.trackdata[i].trackName == "circularVirulence") {
           items = this.trackdata[i].items;
@@ -377,6 +380,32 @@ Islandviewer.prototype.findMethods = function() {
     }
 
     return this.types;
+}
+
+// To be called before a circular plot is drawn to hide
+// a track type from being drawn
+
+Islandviewer.prototype.maskTrackType = function(track) {
+    for(var i = 0; i < this.trackdata.length; i++) {
+	if(this.trackdata[i].trackName == track) {
+	    this.trackdata[i].visible = false;
+	    return;
+	}
+    }
+}
+
+Islandviewer.prototype.maskGlyphType = function(glyphtype) {
+    for(var i = 0; i < this.trackdata.length; i++) {
+	if(this.trackdata[i].trackName == "circularVirulence") {
+	    if('undefined' == typeof this.trackdata[i].hideTypes) {
+		this.trackdata[i].hideTypes = [glyphtype];
+	    } else {
+		this.trackdata[i].hideTypes.push(glyphtype);
+	    }
+
+	    return;
+	}
+    }
 }
 
 Islandviewer.prototype.showIslandpickGenomes = function(aid) {

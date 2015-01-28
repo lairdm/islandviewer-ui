@@ -84,7 +84,10 @@ def results(request, aid):
 
         CHOICES = dict(STATUS_CHOICES)
         context['status'] = CHOICES[analysis.status]
-    
+
+    if request.GET.get('load'):
+        context['reload'] = request.GET.get('load')
+
         context['showtour'] = True
     
     return render(request, 'results.html', context)
@@ -162,6 +165,7 @@ def circularplotjs(request, aid):
 #    pprint.pprint(context['vir_factors']) 
     
 #    return render(request, "iv4/circularplot.js", context)
+
     return render(request, "circularplot.js", context, content_type='text/javascript')
     
 
