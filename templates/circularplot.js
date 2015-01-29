@@ -329,13 +329,6 @@ $('#close_url').on('click', function() {
 
 function initialize_gene_search() {
 
-    $("#gene_search_dialog").on("mouseover", 'li', function() {
-	
-	console.log("in!");
-	console.log(this);
-    });
-
-
     $("#gene_search_input").autocomplete({
 	source: function(request, response) {
 	    params = { term: request.term };
@@ -361,10 +354,12 @@ function initialize_gene_search() {
 	    return false;
 	},
 	focus: function( event, ui ) {
+	    if('undefined' == typeof window.secondislandviewerObj) {
+		return true;
+	    }
 	    $('.circularcontainer').removeClass('highlight_plot');
 	    item = ui.item;
 	    $('.' + item.extid.replace('.','')).addClass('highlight_plot');
-	    console.log(ui);
 	    return true;
 	},
 	close: function( event, ui ) {
