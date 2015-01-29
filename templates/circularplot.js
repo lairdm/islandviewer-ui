@@ -329,6 +329,13 @@ $('#close_url').on('click', function() {
 
 function initialize_gene_search() {
 
+    $("#gene_search_dialog").on("mouseover", 'li', function() {
+	
+	console.log("in!");
+	console.log(this);
+    });
+
+
     $("#gene_search_input").autocomplete({
 	source: function(request, response) {
 	    params = { term: request.term };
@@ -340,6 +347,7 @@ function initialize_gene_search() {
 	},
 	minLength: 3,
 	select: function( event, ui ) {
+	    $('.circularcontainer').removeClass('highlight_plot');
 	    item = ui.item;
 	    var range = (item.end - item.start) * 10;
 	    // Forcus to a window 10x the gene size
@@ -352,14 +360,28 @@ function initialize_gene_search() {
 	    $(this).blur();
 	    return false;
 	},
+	focus: function( event, ui ) {
+	    $('.circularcontainer').removeClass('highlight_plot');
+	    item = ui.item;
+	    $('.' + item.extid.replace('.','')).addClass('highlight_plot');
+	    console.log(ui);
+	    return true;
+	},
+	close: function( event, ui ) {
+	    $('.circularcontainer').removeClass('highlight_plot');
+	},
     }).focus(function() {
 	    $(this).val('');
     }).autocomplete( "instance" )._renderItem = function( ul, item ) {
-	return $( "<li>" )
+	return $( "<li class=\"searchItem\">" )
 	    .append(item.name + ', ' + item.product + ' (' + item.gene + ') ' + '[' + item.start + '..' + item.end + ']')
 	    .appendTo( ul );
 	};
     
+}
+
+function addSearchHighlight(elem) {
+    $(elem).addClass("highlight_row");
 }
 
 function serialize() {

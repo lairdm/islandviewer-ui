@@ -14,6 +14,8 @@ function Islandviewer(aid, ext_id, genomesize, genomename, trackdata) {
 Islandviewer.prototype.addCircularPlot = function(layout) {
     this.circularplot = new circularTrack(layout, this.trackdata);
 
+    $(layout.container).addClass(this.ext_id.replace('.', ''));
+
     return this.circularplot;
 }
 

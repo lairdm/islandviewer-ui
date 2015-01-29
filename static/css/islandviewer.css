@@ -300,6 +300,10 @@ input[type=file] {
 	background-color: #cccccc;
 }
 
+.highlight_plot {
+	background-color: #ffff99;
+}
+
 /* Section for GI tables */
 .gitable_fullwidth {
   max-width: 100%;
