@@ -77,12 +77,14 @@
       &nbsp;<br />
    	</div>
    	  {% if default_analysis == False %}<span class="errortext">Note: This analysis was run using non-default parameters.  <a href="javascript:show_islandpick_genomes();">See here</a> for more details.</span><br />{% endif %}
-      <div id="circularchart" class="circularcontainer" draggable="true"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
+      <div id="circularchart" class="circularcontainer" draggable="true" style="display:inline-block"><img id="loadingimg" class="loadingimg" src="{% static 'img/loading.gif' %}"></div>
     </div>
 
     <div id="secondcircularcontainer" style="display:inline-block; vertical-align: top;">
       <span id="second_genome_title_wrapper" style="display:none;"><img onclick="javascript:hide_second();" src="{% static 'img/close.svg' %}" height="20px" style="vertical-align:top;">&nbsp;<span class="pageName" id="second_genome_title"></span></span><br />
-      <div id="rightplot" class="circularcontainer" ></div>
+      <div id="rightplotcontainer" >
+      <div id="rightplot" class="circularcontainer" style="display: inline-block" ></div>
+      </div>
     </div>
     </div>
 	<div id="circularchartlinearwrapper" class="visible">
