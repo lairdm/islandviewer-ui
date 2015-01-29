@@ -302,6 +302,7 @@ input[type=file] {
 
 .highlight_plot {
 	background-color: #ffff99;
+	opacity: 0.5;
 }
 
 /* Section for GI tables */

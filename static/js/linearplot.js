@@ -60,6 +60,8 @@ function genomeTrack(layout,tracks) {
 
     this.layout.plotid = layout.container.slice(1);
 
+    d3.select(layout.container).select("svg").remove();
+
     this.chart = d3.select(layout.container)
 	.append("svg")
 	.attr("id", function() { return layout.container.slice(1) + "_svg"; })
