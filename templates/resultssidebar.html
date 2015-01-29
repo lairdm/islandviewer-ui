@@ -1,7 +1,6 @@
 {% load virulencefactors %}
 <span class="smalltext">
-<p>Predicted genomic islands are coloured within the circular image based on the tools below. (<a href="javascript:feature_tour();">Take a Tour</a>)</p>
-<p>Hovering over islands within the image will show gene annotations while clicking on them will show the corresponding island and nearby genes in the linear viewer.</p>
+<p>Predicted genomic islands and virulence/resistance gene annotations (when available) are coloured within the images based on the legend.  Individual items for display can be selected below. (<a href="javascript:feature_tour();">Take a tour</a> for a description of how to navigate this page)</p>
 <p><strong>Individual prediction methods can be selected below. Note, not all results are available for some genomes.</strong></p>
 <div id="legend" class="outline">
 <span class="subHeader">Legend</span><strong> </strong><span id="legend_help" class="subHeader">(<a href="{% url 'about' %}">Help</a>)</span><br />
@@ -20,14 +19,13 @@
   <span class="{{ plotName|default:"circular" }}Virulence_PAG"><input type="checkbox" class="methodcheckbox virulencemethod showPAG" id="showPAG" name="showPAG" onchange="updateVirulence(this, 'PAG'); return false;" checked>Pathogen-associated genes</span><span id="noPAG" class="nomethodtext noPAG"> (No results found)</span><br />
 </div>
 <p>&nbsp;</p>
-<div id="legend" class="outline">
-<div><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a></div>
-<p>&nbsp;</p>
-<div><a href="javascript:show_islandpick_genomes();" id="show_islandpick_genomes" >Show Islandpick Comparison Genomes</a></div>
-<p>&nbsp;</p>
-<div><a href="javascript:show_gene_search();" id="show_gene_search" >Search Genes</a></div>
-<p>&nbsp;</p>
-<div><a href="javascript:serialize();" id="save_view" >Save view</a></div>
+<div id="toolbox" class="outline">
+<span class="subHeader">Toolbox</span>
+<div class="toolbox_item"><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a></div>
+<div class="toolbox_item"><a href="javascript:show_islandpick_genomes();" id="show_islandpick_genomes" >Show Islandpick Comparison Genomes</a></div>
+<div class="toolbox_item"><a href="javascript:show_gene_search();" id="show_gene_search" >Search Genes</a></div>
+<div class="toolbox_item"><a href="javascript:show_download();" id="show_download_link" >Download</a></div>
+<div class="toolbox_item"><a href="javascript:serialize();" id="save_view" >Save view</a></div>
 </div>
 <p>&nbsp;</p>
 <p><span class="subHeader">Additional Tools (<a href="{% url 'about' %}#analysis">Help</a>)  </span></p>

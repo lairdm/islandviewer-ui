@@ -321,6 +321,10 @@ $('#close_gene_search').on('click', function() {
     hide_gene_search();
 });
 
+$('#close_select_genome').on('click', function() {
+    close_genome_dialog();
+});
+
 $('#close_url').on('click', function() {
     if($('#url_dialog').is(":visible")) {
 	$('#url_dialog').slideToggle('fast');
@@ -496,13 +500,19 @@ function reload(paramsStr) {
 
 }
 
+function close_genome_dialog() {
+
+    $('#show_second_link').html("Visualize two genomes");
+    $('#genome_selector_dialog').slideToggle('fast');
+
+}
+
 function show_genome_dialog() {
   url = '{% url 'browsejson'  %}';
 
   if($('#genome_selector_dialog').is(":visible")) {
-    $('#show_second_link').html("Visualize two genomes");
-    $('#genome_selector_dialog').slideToggle('fast');
-    return;
+      close_genome_dialog();
+      return;
   }
 
   $.ajax({
@@ -749,7 +759,7 @@ function feature_tour() {
 	    },
 	    {
 	      element: '{{ container }}linear',
-	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively (or use two fingers on your touch pad depending on your device).<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the gene dialog.<br />&nbsp;<br />Clicking on a gene will take you to the NCBI gene card, clicking on an island will take you the corresponding island entry in the table below, and clicking on a VF/AMR annotation will take you to the external reference for this annotation.<br />&nbsp;<br />The plot can be resized using the drag bar on the right side.",
+	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively (or use two fingers on your touch pad depending on your device).<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the vertical viewer.<br />&nbsp;<br />Clicking on a gene will take you to the NCBI gene card, clicking on an island will take you the corresponding island entry in the table below, and clicking on a VF/AMR annotation will take you to the external reference for this annotation.<br />&nbsp;<br />The plot can be resized using the drag bar on the right side.",
 	      position: 'top'
 	    },
 	    {

@@ -144,6 +144,17 @@ body {
 	letter-spacing:0.1em;
 }
 
+.toolbox_item {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.closeimg {
+    vertical-align: top !important;
+    margin-top: 2px;
+    margin-right: 5px;
+}
+
 .loadingimg {
 		margin-left: 250px;
 		margin-top: 250px; 
@@ -363,6 +374,10 @@ input[type=file] {
 
 /* Section for download expand/collapse */
 
+#download_container {
+  border: 1px solid #808080;
+  padding: 5px;
+}
 .toggle {
     padding-left: 25px;
     background-position: left top;

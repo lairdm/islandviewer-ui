@@ -67,13 +67,13 @@
         <img id="close_url" src="{% static 'img/close.svg' %}" height="25px">&nbsp;<input id="url_input" size="100" readonly>
       </div>
       <div id="gene_search_dialog" style="display:none">Search for gene:<br />
-        <img id="close_gene_search" src="{% static 'img/close.svg' %}" height="25px">&nbsp;<input id="gene_search_input" size="62" placeholder="Type a gene name, refseq accession or product name...">
+        <img id="close_gene_search" class="closeimg" src="{% static 'img/close.svg' %}" height="22px">&nbsp;<input id="gene_search_input" size="66" placeholder="Type a gene name, refseq accession, locus tag or product name...">
       </div>
       <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
-      <select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
+       <img id="close_select_genome" class="closeimg" src="{% static 'img/close.svg' %}" height="22px"><div style="display: inline-block;"><select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
       		<option></option>
       </select><br />
-      <span ><a href="javascript:load_second();">Display genome</a></span><br />
+      <span ><a href="javascript:load_second();">Display genome</a></span></div><br />
       &nbsp;<br />
    	</div>
    	  {% if default_analysis == False %}<span class="errortext">Note: This analysis was run using non-default parameters.  <a href="javascript:show_islandpick_genomes();">See here</a> for more details.</span><br />{% endif %}

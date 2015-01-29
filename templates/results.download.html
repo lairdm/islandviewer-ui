@@ -1,8 +1,9 @@
 {% load charfilter %}
+{% load static %} 
 
-<div id="download_container" style="width: 600px;">
-<div class="toggle ">Download</div>
-<div id="download_dialog" class="expanded_content hidden">
+<div id="download_container" style="width: 600px; display: none;">
+<div id="download_inner"><img id="close_download" class="closeimg" src="{% static 'img/close.svg' %}" height="17px">Download</div>
+<div id="download_dialog" class="expanded_content">
 &nbsp;<br />
 <span>&nbsp;Please select the formatting of the download:</span><br />
 <table>
@@ -52,6 +53,28 @@
 </div>
 
 <script type="text/javascript">
+  function show_download() {
+
+      if($('#download_inner').is(':visible')) {
+        hide_download();
+        return;
+      }
+
+      $('#download_container').slideToggle('fast');
+      $('#show_download_link').html("Close downloads");
+  }
+
+  function hide_download() {
+      $('#download_container').slideToggle('fast');
+      $('#show_download_link').html("Download");
+  }
+
+  $('#close_download').on('click', function() {
+    hide_download();
+  });
+
+
+
 	$(".toggle").on("click", function(e){
 	  $(this).toggleClass("expanded");
 	  $(this).next().toggleClass("hidden");
