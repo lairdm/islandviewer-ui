@@ -117,7 +117,7 @@ Islandviewer.prototype.ondblclick = function(plotid, bp) {
     }
 }
 
-Islandviewer.prototype.focus = function(startbp, endbp, highlight_sel) {
+Islandviewer.prototype.focus = function(startbp, endbp, params) {
     var newStart = Math.max(0, (startbp));
     var newEnd = Math.min(this.genomesize, (endbp));
 
@@ -125,7 +125,7 @@ Islandviewer.prototype.focus = function(startbp, endbp, highlight_sel) {
     this.endBP = newEnd;
 
     // Make out d parameter manually
-    this.showHoverGenes({start: newStart, end: newEnd}, false, highlight_sel);
+    this.showHoverGenes({start: newStart, end: newEnd}, false, params);
 
     this.linearplot.update(newStart, newEnd);
 
@@ -187,11 +187,11 @@ Islandviewer.prototype.mouseout = function(trackname, d, plotid) {
 // Called by the brush update functions in the visualization
 // objects (linear, circular)
 
-Islandviewer.prototype.update = function(startBP, endBP) {
+    Islandviewer.prototype.update = function(startBP, endBP, params) {
 
 }
 
-Islandviewer.prototype.update_finished = function(startBP, endBP, highlight_sel) {
+Islandviewer.prototype.update_finished = function(startBP, endBP, params) {
     url = '../../json/genes/?aid=' + this.aid + '&ext_id=' + this.ext_id + '&start=' + parseInt(startBP) + '&end=' + parseInt(endBP);
     self = this;
 
@@ -270,7 +270,8 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, highlight_sel)
 		$('#gene_dialog').html(html);
                 $('#gene_dialog').dialog('option', 'title', 'Genes (' + self.genomename + ')');
 
-		if('undefined' !== typeof highlight_sel) {
+		if('undefined' !== typeof params && 'undefined' !== typeof params['highlight_sel']) {
+		    highlight_sel = params['highlight_sel'];
 		    $('#gene_dialog').scrollTop($('#gene_dialog').scrollTop() + $(highlight_sel).position().top
 						- $('#gene_dialog').height()/2 + $(highlight_sel).height()/2);
 		    $(highlight_sel).highlight();
@@ -280,12 +281,13 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, highlight_sel)
 	});
 }
 
-Islandviewer.prototype.showHoverGenes = function(d, do_half_range, highlight_sel) {
+Islandviewer.prototype.showHoverGenes = function(d, do_half_range, params) {
 
   var half_range = (typeof do_half_range !== 'undefined' && do_half_range)  ? (d.end - d.start)/2 : 0;
 
   $('#gene_dialog').dialog("open");
-  this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)), highlight_sel);
+
+  this.update_finished(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)), params);
 }
 
 Islandviewer.prototype.serialize = function() {

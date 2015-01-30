@@ -307,6 +307,7 @@ function show_gene_search() {
 
     $('#show_gene_search').html("Hide search");
     $('#gene_search_dialog').slideToggle('fast');
+    $("#gene_search_input").focus();
 
 }
 
@@ -349,9 +350,9 @@ function initialize_gene_search() {
 	    var range = (item.end - item.start) * 10;
 	    // Forcus to a window 10x the gene size
 	    if(item.extid == '{{ ext_id }}') {
-		islandviewerObj.focus((item.start - range), (item.end + range), '#gene_overlay_' + item.id);
+		islandviewerObj.focus((item.start - range), (item.end + range), { highlight_sel: '#gene_overlay_' + item.id });
 	    } else if(('undefined' !== typeof window.secondislandviewerObj) && item.extid == window.secondislandviewerObj.ext_id) {
-		window.secondislandviewerObj.focus((item.start - range), (item.end + range), '#gene_overlay_' + item.id);
+		window.secondislandviewerObj.focus((item.start - range), (item.end + range), { highlight_sel: '#gene_overlay_' + item.id });
 	    }
 	    $(this).val(item.name + ', ' + item.product + ' (' + item.gene + ') ' + '[' + item.start + '..' + item.end + ']');
 	    $(this).blur();
