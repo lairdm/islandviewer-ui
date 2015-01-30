@@ -14,7 +14,7 @@ function Islandviewer(aid, ext_id, genomesize, genomename, trackdata) {
 Islandviewer.prototype.addCircularPlot = function(layout) {
     this.circularplot = new circularTrack(layout, this.trackdata);
 
-    $(layout.container).addClass(this.ext_id.replace('.', ''));
+    $(layout.container).addClass('plot_' + this.ext_id.replace('.', ''));
 
     return this.circularplot;
 }
@@ -270,11 +270,20 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, params) {
 		$('#gene_dialog').html(html);
                 $('#gene_dialog').dialog('option', 'title', 'Genes (' + self.genomename + ')');
 
+		// Highlight the row(s) in the table if we've been asked to
 		if('undefined' !== typeof params && 'undefined' !== typeof params['highlight_sel']) {
 		    highlight_sel = params['highlight_sel'];
 		    $('#gene_dialog').scrollTop($('#gene_dialog').scrollTop() + $(highlight_sel).position().top
 						- $('#gene_dialog').height()/2 + $(highlight_sel).height()/2);
 		    $(highlight_sel).highlight();
+		}
+
+		// Slightly hackish, if there are two plots, border outline this circular plot
+		if('undefined' !== typeof window.secondislandviewerObj) {
+		    $('.circularcontainer').removeClass('outline_plot');
+		    if($('#gene_dialog').dialog( "isOpen" )) {
+			$('.plot_' + self.ext_id.replace('.','')).addClass('outline_plot');
+		    }
 		}
 
 	    }

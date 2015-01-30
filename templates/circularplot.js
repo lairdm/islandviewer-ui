@@ -168,7 +168,11 @@ var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot
 $('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{ container }}" },
 	                    height: 550, width: 450,
 			    title: "Genes",
-			    autoOpen: false } );
+	                    autoOpen: false,
+          	            close: function() {
+	    $('.circularcontainer').removeClass('outline_plot');
+	}
+	    } );
 
 //$('#genome_selector_dialog').dialog( { position: { my: "center", at: "center", of: window },
 //                                       height: 300, width: 600,
@@ -364,7 +368,7 @@ function initialize_gene_search() {
 	    }
 	    $('.circularcontainer').removeClass('highlight_plot');
 	    item = ui.item;
-	    $('.' + item.extid.replace('.','')).addClass('highlight_plot');
+	    $('.plot_' + item.extid.replace('.','')).addClass('highlight_plot');
 	    return true;
 	},
 	close: function( event, ui ) {
@@ -661,6 +665,8 @@ function hide_second() {
 
   $('#rightplot').html('');
   $('#secondchartlinear').html('');
+
+  $('.circularcontainer').removeClass('outline_plot');
 
   window.secondislandviewerObj = undefined;
   secondTrackObj = undefined;

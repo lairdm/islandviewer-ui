@@ -316,6 +316,10 @@ input[type=file] {
 	opacity: 0.5;
 }
 
+.outline_plot {
+    border: 1px solid #808080;
+}
+
 /* Section for GI tables */
 .gitable_fullwidth {
   max-width: 100%;
