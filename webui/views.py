@@ -99,10 +99,21 @@ def resultsbyaccnum(request, accnum):
         return results(request, analysis.aid)
         
     except Exception as e:
-        print e
+        if settings.DEBUG:
+            print e
         return HttpResponse(status = 403)
-        
-        
+
+def resultsbyrootaccnum(request, accnum):
+    
+    try:
+        analysis = Analysis.objects.filter(ext_id__startswith = accnum).order_by('-ext_id').all()[0]
+        return results(request, analysis.aid)    
+
+    except Exception as e:
+        if settings.DEBUG:
+            print e
+        return HttpResponse(status = 403)
+       
 def circularplotjs(request, aid):
     context = {}
     context['plotName'] = 'circular'
