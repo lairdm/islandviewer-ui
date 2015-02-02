@@ -27,16 +27,16 @@ function submitGenome() {
 <form action="{% url 'uploadform' %}" method="POST" enctype="multipart/form-data" name="genome_upload" id="genome_upload">
 {% csrf_token %}
 {% if error %}{{ error|safe }}{% endif %}
-<p>{{ form.genome_file }}{{ form.format_type }}</p>
+<p>{{ form.format_type }}&nbsp;&nbsp;&nbsp;{{ form.genome_file }}</p>
               
 	                  
 
 <p>
-   {{ form.genome_name.label_tag }} {{ form.genome_name }}
+   {{ form.genome_name.label_tag }}<br /> {{ form.genome_name }}
 </p>
 
 <p>
-   {{ form.email_addr.label_tag }} {{ form.email_addr }}
+   {{ form.email_addr.label_tag }}<br /> {{ form.email_addr }}
 </p>
 
 <p><div id="submitted" style="display: none;"><img  src="{% static 'img/spinning_wheel.gif' %}" /></div>

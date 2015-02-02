@@ -200,10 +200,15 @@ div.outline {
 	color: #1F1A80;
 }
 
+/* Upload page */
+
 input[type=file] {
 	display: inline;
 }
 
+#id_format_type {
+    height: 22px;
+}
 /* Tool tip for linear plot */
 
 .d3-tip {
