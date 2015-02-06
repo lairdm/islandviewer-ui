@@ -1,5 +1,5 @@
 var graph = {{ json_str|safe }};
-var g = new dagreD3.Digraph();
+var g = new dagreD3.graphlib.Graph().setGraph({});
 
 var name_substitutions = {Virulence: 'Annotating Genes',
 						  Summary: 'Validating Pipeline'};
@@ -10,24 +10,31 @@ for(node in nodes) {
 	if('undefined' !== typeof(name_substitutions[nodelabel])) {
 		nodelabel = name_substitutions[nodelabel];
 	}
-	g.addNode(nodes[node]['name'], {label: nodelabel, nodeclass: nodes[node]['status']});
+	g.setNode(nodes[node]['name'], {label: nodelabel, class: nodes[node]['status']});
 }
 var edges = graph['edges'];
 for(edge in edges) {
 	var tasks = edges[edge]['nexttask'].split(',');
 	for(e in tasks) {
-		g.addEdge(null, edges[edge]['name'], tasks[e], {edgeclass: edges[edge]['status']});
+	    params = {class: edges[edge]['status'], lineInterpolate: 'basis'};
+	    if('undefined' !== edges[edge]['status'] && edges[edge]['status'] == 'FAILED') {
+		params['style'] = 'stroke: red; fill: none; stroke-dasharray: 5, 5;';
+		params['arrowheadStyle'] = 'fill: red; stroke: none;';
+	    }
+	    g.setEdge(edges[edge]['name'], tasks[e], params);
+	    //	    g.setEdge(edges[edge]['name'], tasks[e], {class: edges[edge]['status'], lineInterpolate: 'basis'});
 	}
 }
 
-var renderer = new dagreD3.Renderer();
-var oldDrawNodes = renderer.drawNodes();
-renderer.drawNodes(function(graph, root) {
-    var svgNodes = oldDrawNodes(graph, root);
-    svgNodes.each(function(u) { d3.select(this).classed(graph.node(u).nodeclass, true); });
-    return svgNodes;
-  });
-  var layout = renderer.run(g, d3.select("svg g"));
+var render = new dagreD3.render();
+//var oldDrawNodes = renderer.drawNodes();
+//renderer.drawNodes(function(graph, root) {
+//   var svgNodes = oldDrawNodes(graph, root);
+//    svgNodes.each(function(u) { d3.select(this).classed(graph.node(u).nodeclass, true); });
+//    return svgNodes;
+//  });
+
+var layout = render(d3.select("svg g"), g);
   d3.select("svg")
     .attr("width", layout.graph().width + 40)
     .attr("height", layout.graph().height + 40);

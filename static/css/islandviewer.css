@@ -209,6 +209,12 @@ input[type=file] {
 #id_format_type {
     height: 22px;
 }
+
+.upload_input_span {
+    display: inline-block;
+    margin-right: 25px;
+}
+
 /* Tool tip for linear plot */
 
 .d3-tip {
@@ -489,7 +495,7 @@ input[type=file] {
 .edgePath path {
   stroke: #333;
   stroke-width: 1.5px;
-  fill: none;
+/*  fill: none;*/
 }
 
 /* Spinner for loading ranking page*/

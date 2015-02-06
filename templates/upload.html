@@ -31,13 +31,14 @@ function submitGenome() {
               
 	                  
 
-<p>
+<div>
+<span class="upload_input_span">
    {{ form.genome_name.label_tag }}<br /> {{ form.genome_name }}
-</p>
-
-<p>
+</span>
+<span class="upload_input_span">
    {{ form.email_addr.label_tag }}<br /> {{ form.email_addr }}
-</p>
+</span>
+</div>
 
 <p><div id="submitted" style="display: none;"><img  src="{% static 'img/spinning_wheel.gif' %}" /></div>
 <input name="Upload" type="submit" id="Upload" value="Upload" onClick="submitGenome();" />
