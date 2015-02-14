@@ -33,7 +33,7 @@ VIRULENCE_FACTOR_CATEGORIES = {
     'PAG': 'PAG' 
 }
 
-MODULES = ['Distance', 'Sigi', 'Dimob', 'Islandpick', 'Virulence', 'Summary']
+MODULES = ['Prepare', 'Distance', 'Sigi', 'Dimob', 'Islandpick', 'Virulence', 'Summary']
 
 class CustomGenome(models.Model):
     cid = models.AutoField(primary_key=True)

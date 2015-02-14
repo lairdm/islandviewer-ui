@@ -15,6 +15,7 @@
 <th>aid</th>
 <th>ext_id</th>
 <th>Status</th>
+<th>Prepare</th>
 <th>Distance</th>
 <th>Sigi</th>
 <th>Dimob</th>
@@ -36,6 +37,7 @@ var arrayColumns = [
                     {"mData": "aid", "bVisible": true, "sSortDataType": "dom-text"},
                     {"mData": "ext_id", "bVisible": true},
                     {"mData": "status", "bVisible": true},                    
+                    {"mData": "Prepare", "bVisible": true},
                     {"mData": "Distance", "bVisible": true},
                     {"mData": "Sigi", "bVisible": true},
                     {"mData": "Dimob", "bVisible": true},
@@ -116,41 +118,55 @@ var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
 					{
 	    				"aTargets": [4],
 	    				"mData": null,
+	    				"defaultContent": "Unknown",
 	    				"mRender": function(data, type, full) {
-	        				return '<span class="' + full.Distance + '">' + full.Distance + '</span>';
+	        				return '<span class="' + full.Prepare + '">' + full.Prepare + '</span>';
 	    					},
-						},
+					},
 					{
 	    				"aTargets": [5],
 	    				"mData": null,
+	    				"defaultContent": "Unknown",
+	    				"mRender": function(data, type, full) {
+	        				return '<span class="' + full.Distance + '">' + full.Distance + '</span>';
+	    					},
+					},
+					{
+	    				"aTargets": [6],
+	    				"mData": null,
+	    				"defaultContent": "Unknown",
 	    				"mRender": function(data, type, full) {
 	        				return '<span class="' + full.Sigi + '">' + full.Sigi + '</span>';
 	    					},
 					},
 					{
-		    			"aTargets": [6],
+		    			"aTargets": [7],
 		    			"mData": null,
+	    				"defaultContent": "Unknown",
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Dimob + '">' + full.Dimob + '</span>';
 		    				},
 					},
 					{
-		    			"aTargets": [7],
+		    			"aTargets": [8],
 		    			"mData": null,
+	    				"defaultContent": "Unknown",
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Islandpick + '">' + full.Islandpick + '</span>';
 		    				},
 					},
 					{
-		    			"aTargets": [8],
+		    			"aTargets": [9],
 		    			"mData": null,
+	    				"defaultContent": "Unknown",
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Virulence + '">' + full.Virulence + '</span>';
 		    				},
 					},
 					{
-		    			"aTargets": [9],
+		    			"aTargets": [10],
 		    			"mData": null,
+	    				"defaultContent": "Unknown",
 		    			"mRender": function(data, type, full) {
 		        			return '<span class="' + full.Summary + '">' + full.Summary + '</span>';
 		    				},
