@@ -511,7 +511,8 @@ def graphanalysisjs(request, aid):
 
     # Fetch the pipeline's structure
     pipeline_reader = pipeline.Parser()
-    pipeline_data = pipeline_reader.read('islandviewer')
+#    pipeline_data = pipeline_reader.read('islandviewer')
+    pipeline_data = pipeline_reader.read(settings.PIPELINE)
 
     context['json_str'] = grapher.makeGraph(aid, pipeline_data);
     
