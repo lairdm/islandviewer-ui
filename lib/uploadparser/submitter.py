@@ -159,7 +159,7 @@ def send_message(s, message):
     #Now receive data
 #    reply = s.recv(4096)
     try:
-        reply = recv_timeout(s,30)
+        reply = recv_timeout(s,60)
     except Exception as e:
         if settings.DEBUG:
             print e
