@@ -275,6 +275,8 @@ def uploadform(request):
                     if settings.DEBUG:
                         context['error'] += "<pre>Return code: " + str(ret['code']) + "</pre>\n"
                         context['error'] += "<pre>" + ret['msg'] + "</pre>\n"
+                        if 'data' in ret and 'code' in ret['data']:
+                            context['error'] += "<pre>Error code: " + ret['data']['code'] + "</pre>\n"
                         print "Error str: {0}".format(ret['msg'])
                     
     return render_to_response(
@@ -282,6 +284,97 @@ def uploadform(request):
         {'form': form},
         context_instance=RequestContext(request, context)
     )
+
+@csrf_exempt
+def uploadcustomajax(request):
+    context = {}
+    
+    pprint.pprint(request.POST)
+    
+    if request.method == 'POST':
+        form = UploadGenomeForm(request.POST, request.FILES)
+        if form.is_valid():
+            print "valid"
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[-1].strip()
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+            uploadparser = uploader.GenomeParser()
+            
+            try:
+                ret = uploadparser.submitCustom(form.cleaned_data, ip)
+            except (ValueError, Exception) as e:
+                context['error'] = "Unknown error"
+                if settings.DEBUG:
+                    print "Unknown error {0}".format(e)
+                    for arg in e.args:
+                        context['error'] += "<pre>" + "{0}".format(arg) + "</pre>\n"
+                        
+                    context['status'] = 500
+            else:
+                # We received a result from the backend
+                if settings.DEBUG:
+                    print "Successful upload, redirect here to analysis"
+                # Will be in aid?
+                if ret['code'] == 200:
+                    m = re.search("\[(\d+)\]", ret['msg'])
+                    if m:
+                        aid = m.group(1)
+                        if settings.DEBUG:
+                            print "Found aid: {0}".format(aid)
+
+                        context['status'] = 200
+                        context['aid'] = aid
+#                        return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
+                    else:
+                        context['error'] = "Error parsing results from the server"
+                        if settings.DEBUG:
+                            context['error'] += "<pre>" + ret['msg'] + "</pre>\n"
+                            print "Error str: {0}".format(ret['msg'])
+
+                        context['status'] = 500
+                        
+                else:
+                    # Just because we received a 500 doesn't mean this is fatal,
+                    # it just means something went wrong in processing and perhaps
+                    # there's corrective action the user can take
+                    if 'user_error_msg' in ret:
+                        context['error'] = ret['user_error_msg']
+                    else:
+                        # Something really bad happened...
+                        context['error'] = "Error submitting genome, we're not even sure what went wrong"
+
+                    if settings.DEBUG:
+                        context['error'] += "<pre>Return code: " + str(ret['code']) + "</pre>\n"
+                        context['error'] += "<pre>" + ret['msg'] + "</pre>\n"
+                        if 'data' in ret and 'code' in ret['data']:
+                            context['error'] += "<pre>Error code: " + ret['data']['code'] + "</pre>\n"
+                        print "Error str: {0}".format(ret['msg'])
+
+                    # It might not be an error, see if there's a cid and code
+                    if 'data' in ret:
+                        context.update( ret['data'] )
+
+                    if 'code' in ret:
+                        context['status'] = ret['code']
+                    else:
+                        context['status'] = 500
+        else:
+            # If we've gotten here, someone is doing something naughty, screw'em
+            if settings.DEBUG:
+                print form.errors, 'here1'
+                print form.non_field_errors(), 'here2'
+                field_errors = [(field.label, field.errors) for field in form]
+                print field_errors, 'here3' 
+ 
+    else:
+        return HttpResponse(status=400)
+ 
+    data = json.dumps(context, indent=4, sort_keys=False)
+    
+    return HttpResponse(data, content_type="application/json")
+
 
 def uploadredirect(request, upload_id):
     context = {}

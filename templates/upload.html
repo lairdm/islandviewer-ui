@@ -14,7 +14,27 @@
 function submitGenome() {
 		document.getElementById('Upload').style.display = 'none';
 		document.getElementById('submitted').style.display = '';
-	}
+		
+}
+
+
+function prepareSubmit() {
+	// Hide the submit button and show the spinner
+	console.log("Preparing to submit");
+	
+	$('#error_message').hide();
+	$('#Upload').hide();
+	$('#submitted').show();
+
+}
+
+function postSubmit() {
+	console.log("Finished submitting");
+	
+	$('#Upload').show();
+	$('#submitted').hide();
+
+}
 </script>
 <span class="pageName">Genome Upload</span>
 <span class="bodyText">
@@ -24,10 +44,11 @@ function submitGenome() {
 			<a href="http://www.pseudomonas.com/downloads/pseudomonas/embl/NC_002516.embl">EMBL</a>.
 </p>
 
-<form action="{% url 'uploadform' %}" method="POST" enctype="multipart/form-data" name="genome_upload" id="genome_upload">
+<div id="error_message" class="errortext" style="display: none;"></div>
+<form action="" method="POST" enctype="multipart/form-data" name="genome_upload" id="genome_upload">
 {% csrf_token %}
 {% if error %}{{ error|safe }}{% endif %}
-<p>{{ form.format_type }}&nbsp;&nbsp;&nbsp;{{ form.genome_file }}</p>
+<p>{{ form.format_type }}<span id="fileselect_msg" style="display: none;">Please provide an fna file with the missing sequence information:<br /></span><span id="fileselect_spacer">&nbsp;&nbsp;&nbsp;</span>{{ form.genome_file }}</p>
               
 	                  
 
@@ -39,9 +60,9 @@ function submitGenome() {
    {{ form.email_addr.label_tag }}<br /> {{ form.email_addr }}
 </span>
 </div>
-
+{{ form.cid }}{{ form.ref_accnum }}
 <p><div id="submitted" style="display: none;"><img  src="{% static 'img/spinning_wheel.gif' %}" /></div>
-<input name="Upload" type="submit" id="Upload" value="Upload" onClick="submitGenome();" />
+<input name="Upload" type="submit" id="Upload" value="Upload" form="genome_upload" />
 		    (this may take several minutes) </p>
 </form>	
 
@@ -50,8 +71,186 @@ function submitGenome() {
 <hr>
 
 <script type="text/javascript">
-	window.onload=function() { initPage(); };
+//	window.onload=function() { 
+$(document).ready( function() {	
+	//initPage(); 
 
+	$("#genome_upload").submit( function(e) {
+		e.preventDefault();
+		
+		// Fetch the form elements
+//		var data = new FormData($('#genome_upload')[0]);
+		var data = new FormData(this);
+
+//		var genome_file = $('#id_genome_file')[0];
+//		data.append(genome_file.name, genome_file.files[0]);
+		//		var file_data = $('input[type="file"]')[0].files;
+//		for(var i = 0;i<file_data.length;i++){
+//			console.log(i);
+//			console.log(file_data[i]);
+//	        data.append("genome_file", file_data[i]);
+//	    }
+//		var other_data = $('form').serializeArray();
+//		$.each(other_data,function(key,input){
+//			console.log(input);
+//			data.append(input.name,input.value);
+//	    });
+//		$("form#genome_upload :input").each(function() {
+//			console.log($(this));
+//			console.log($(this).attr("name"));
+//			console.log($(this).val());
+//			data.append($(this).attr("name"), $(this).val())
+//		});
+
+		var url = '{% url 'uploadcustomajax' %}';
+		
+		$.ajax({
+			url: url,
+			type: 'POST',
+			data: data,
+			cache: false,
+			beforeSend: prepareSubmit,
+			complete: postSubmit,
+			processData: false,
+		    contentType: false,
+			success: function(data) {
+				console.log(data);
+				processResponse(data);
+				
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				
+			}
+		});
+
+		return false;
+	});	
+	
+	}); // document ready
+
+
+	function processResponse(data) {
+		if('undefined' !== typeof data['status']) {
+		// We have a valid status code
+			if(data['status'] == 200) {
+				if('undefined' !== typeof data['aid']) {
+					// We have an aid, redirect!
+					url = '{% url 'results' '9999' %}'.replace(9999, data['aid']);
+					
+					window.location = url;
+				}
+				$('#error_message').hide();
+
+			} else if(data['status'] == 500) {
+				// Now we're in to the various error types...
+				
+				if('undefined' !== typeof data['code']) {
+					// If we've reached this far we're going to do something, so we can return
+					// at the end of it, all other cases fall through to
+					// the default error message
+
+					if(data['code'] == 'FILEFORMATERROR') {
+						showError("The file you uploaded doesn't appear to be valid, please check the file or contact us for more assistance.");
+					} else if(data['code'] == 'NOSEQFNA') {
+						// This is thrown when we've uploaded a second FNA file but still
+						// don't have any sequence information, a complete, non-recoverable failure
+						showError("Sorry, we still can't seem to find sequence information for one or more contigs. Please check your files try your submission again, or contact us for more assistance.");
+						// Hide all file form elements here
+						$('#id_genome_file').hide();
+						$('#fileselect_msg').hide();
+						$('#genome_upload').hide();
+					} else if(data['code'] == 'NOSEQNOFNA') {
+						// This is thrown if we seem to have a valid embl or genbank file, but no sequence information,
+						// give the user the opportunity to upload an fna file
+						showFNAUpload(data);
+						
+					} else if(data['code'] == 'NOCDSRECORDS') {
+						// This is if the embl or genbank files don't have any CDS records, this
+						// is a non recoverable error.
+						showError("The file you uploaded doesn't appear to be valid (missing CDS records), please check the file or contact us for more assistance.");
+					} else if(data['code'] == 'NOREFSEQUENCE') {
+						// This is if we have multiple contigs but no genome to align them against, show the genome picker
+						showIncompletePicker(data);
+					} else {
+						showError("Sorry, there was an unknown error submitting genome, please try again later.");
+					}
+					
+					return;
+				}
+				
+			}
+			
+		} 
+			
+		if('undefined' !== typeof data['error']) {
+			showError(data['error']);
+		} else {
+			// An unknown error, why didn't we receive a status code?
+			showError("Sorry, there was an unknown error submitting genome, please try again later");
+		}
+	
+	}
+	
+	function showFNAUpload(data) {
+		// First we need to set the cid element to the one we were given
+		if('undefined' !== data['cid']) {
+			$('#id_cid').val( data['cid'] );
+
+			// We need to hide the file type picker
+			$('#id_format_type').hide();
+			$('#fileselect_msg').show();
+			$('#fileselect_spacer').hide();
+			
+			// And because of IE 8.0-10.0 security issues we
+			// have to clone and replace the file selector element
+			// in order to clear it.
+			var file = $('#id_genome_file');
+			file.replaceWith(file.val('').clone(true));
+			
+			replaceGenomeName();
+			
+			showError("The file you uploaded doesn't appear to have any sequence information, please select an fna file with the corresponding sequence for all contigs to upload.")
+			
+		} else {
+			// We didn't get a cid? This isn't good!
+			showError("We couldn't find any sequence information in the file you uploaded, however something worse and unknown also occured. Please try again later or contact us for more assistance.")
+		}
+	}
+		
+	function showIncompletePicker(data) {
+		// First we need to set the cid element to the one we were given
+		if('undefined' !== data['cid']) {
+			$('#id_cid').val( data['cid'] );
+
+			$('#id_format_type').hide();
+			$('#id_genome_file').hide();
+			$('#fileselect_msg').hide();
+
+			showError("Sorry, we don't quite allow incomplete genomes yet, but soon!");
+			
+		} else {
+			// We didn't get a cid? This isn't good!
+			showError("We couldn't find any sequence information in the file you uploaded, however something worse and unknown also occured. Please try again later or contact us for more assistance.")			
+		}
+	}
+	
+	function replaceGenomeName() {
+		// We've successfully saved an initial genome, we won't allow editing of the genome any longer
+		if(! $('#id_genome_name').val()) {
+			$('#id_genome_name').val('User Genome');
+		}
+		
+		$('#id_genome_name').prop("readonly", true);
+		
+	}
+	
+	function showError(errmsg) {
+		$('#error_message').html(errmsg);
+		
+		$('#error_message').show();
+
+	}
+	
 	function initPage() {
 		document.getElementById('hint').style.display = 'none';
 		document.getElementById('hideHint').style.display = 'none';

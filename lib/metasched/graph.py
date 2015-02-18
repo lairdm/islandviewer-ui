@@ -38,7 +38,7 @@ class Grapher():
         graph_set = {'nodes': nodes, 'edges': pairs}
 
         json_str = json.dumps(graph_set, sort_keys=True, indent=4)
-        print json_str
+#        print json_str
 
         return json_str
 
@@ -71,7 +71,7 @@ class Grapher():
         graph_set = {'nodes': nodes, 'edges': pairs}
 
         json_str = json.dumps(graph_set, sort_keys=True, indent=4)
-        print json_str
+#        print json_str
 
         return json_str
     

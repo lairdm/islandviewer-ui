@@ -15,6 +15,41 @@ import pprint
 default_host = settings.ISLANDVIEWER_HOST
 default_port = settings.ISLANDVIEWER_PORT
 
+'''
+This is the generic handler, we're passed a structure we'll
+encode in to json and send to the backend
+'''
+def send_action(message, host=default_host, port=default_port):
+    try:
+        s = connect_to_server(host, port)
+    except Exception as e:
+        if settings.DEBUG:
+            print "Socket error: " +  str(e) + " to " + host + ":" + str(port)
+            raise Exception("Socket error: " +  str(e) + " to " + host + ":" + str(port))
+        raise Exception("Failure to submit file")
+
+    # One little sanity check to ensure we have an action for the
+    # backend
+    if 'action' in message:
+        json_str = json.dumps(message)
+        json_str += "\nEOF\n"
+        
+        ret = send_message(s, json_str)
+        
+        decoded_json = json.loads(ret)
+        
+        if settings.DEBUG:
+            print decoded_json
+        
+        return decoded_json
+    
+    else:
+        if settings.DEBUG:
+            print "Error, no action given for: " + json_str
+            
+        raise Exception("Failure to send message, no action")
+         
+
 def send_job(genome_data, genome_format, genome_name, email, ip_addr, host=default_host, port=default_port):
     try:
         s = connect_to_server(host, port)
