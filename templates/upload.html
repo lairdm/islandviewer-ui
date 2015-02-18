@@ -245,7 +245,7 @@ $(document).ready( function() {
 	}
 	
 	function showError(errmsg) {
-		$('#error_message').html(errmsg);
+		$('#error_message').html('<pre>' + errmsg + '</pre>');
 		
 		$('#error_message').show();
 
