@@ -93,7 +93,7 @@ var {{ varName|default:"circular" }}data = [
         { trackName: "{{ plotName|default:"circular" }}Contig_Gap",
 	  trackType: "track",
 	  inner_radius: {{ dimob_inner_radius|default:50 }},
-	  outer_radius: {{ dimob_outer_radius|default:300 }},
+	  outer_radius: {{ dimob_outer_radius|default:250 }},
 	  min_slice: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
 	  items: [
