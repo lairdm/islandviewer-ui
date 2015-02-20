@@ -32,9 +32,9 @@ var {{ varName|default:"circular" }}data = [
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
 	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
-	    {% for gi in gis %}
-	       {% if gi.prediction_method == "Islandpick" %}{id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}{% endif %}
-	    {% endfor %}
+	    {% for gi in gis %}{% if gi.prediction_method == "Islandpick" %}
+	        {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
+            {% endif %}{% endfor %}
 	         ]
 	 },
 {% comment %}SIGI track data{% endcomment %}
@@ -50,11 +50,9 @@ var {{ varName|default:"circular" }}data = [
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
 	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
-	    {% for gi in gis %}
-	       {% if gi.prediction_method == "Sigi" %}
-	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
-	       {% endif %}
-	    {% endfor %}
+	    {% for gi in gis %}{% if gi.prediction_method == "Sigi" %}
+	        {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
+	    {% endif %}{% endfor %}
 	         ]
 	 },
 {% comment %}Dimob track data{% endcomment %}
@@ -71,11 +69,9 @@ var {{ varName|default:"circular" }}data = [
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
 	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
-	    {% for gi in gis %}
-	       {% if gi.prediction_method == "Dimob" %}
+	    {% for gi in gis %}{% if gi.prediction_method == "Dimob" %}
 	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
-	       {% endif %}
-	    {% endfor %}
+	    {% endif %}{% endfor %}
 	         ]
 	 },
 {% comment %}Integrated track data{% endcomment %}
@@ -88,9 +84,22 @@ var {{ varName|default:"circular" }}data = [
 	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
 	  skipLinear: true,
 	  items: [
-	    {% for gi in gis %}
+	    {% for gi in gis %}{% if gi.prediction_method == "Islandpick" or gi.prediction_method == "Sigi" or gi.prediction_method == "Dimob" %}
 	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
-	    {% endfor %}
+	    {% endif %}{% endfor %}
+	         ]
+	 },
+{% comment %}Contig Gap track data{% endcomment %}
+        { trackName: "{{ plotName|default:"circular" }}Contig_Gap",
+	  trackType: "track",
+	  inner_radius: {{ dimob_inner_radius|default:50 }},
+	  outer_radius: {{ dimob_outer_radius|default:300 }},
+	  min_slice: true,
+	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
+	  items: [
+	    {% for gi in gis %}{% if gi.prediction_method == "Contig_Gap" %}
+	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
+	    {% endif %}{% endfor %}
 	         ]
 	 },
 {% comment %}GC Plot track data{% endcomment %}
