@@ -38,7 +38,7 @@ class Grapher():
         # A bit of a hack to slip in the ContigAligner sub-module to the
         # graph, TODO fix this somehow in the future
         if 'ContigAligner' in components:
-            nodes.append({'name': 'ContigAligner', 'status': components['ContigAligner']})
+            nodes.append({'name': 'ContigAligner', 'status': CHOICES[components['ContigAligner']]})
             pairs.append({'name': 'ContigAligner', 'nexttask': 'Prepare', 'status': 'PENDING'});
             pairs.append({'name': 'Prepare', 'nexttask': 'ContigAligner', 'status': 'PENDING'});
 
