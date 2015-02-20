@@ -264,6 +264,7 @@ $(document).ready( function() {
 					}
 					$('#genomeselector_div').show();
 					$("#genomeselector").chosen({disable_search_threshold: 10, no_results_text: "Oops, no genomes matching that name!", search_contains: true});
+					$('#Upload').val('Start Analysis');
 					showError("Please select a reference genome to align your genome against.");
 				},
 				error: function(jqXHR, textStatus, errorThrown) {

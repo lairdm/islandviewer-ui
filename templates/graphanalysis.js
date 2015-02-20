@@ -3,6 +3,8 @@ var g = new dagreD3.graphlib.Graph().setGraph({});
 
 var name_substitutions = {Virulence: 'Annotating Genes',
 			  Summary: 'Validating Pipeline',
+                          Sigi: 'SIGI-HMM',
+                          Dimob: 'IslandPath-DIMOB',
 	                  ContigAligner: 'Contig Rearranger'};
 
 var nodes = graph['nodes'];
