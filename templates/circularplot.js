@@ -18,6 +18,20 @@ var {{ varName|default:"circular" }}data = [
 		{% endfor %}
 		]
 	},
+{% comment %}Contig Gap track data{% endcomment %}
+        { trackName: "{{ plotName|default:"circular" }}Contig_Gap",
+	  trackType: "track",
+	  inner_radius: {{ dimob_inner_radius|default:50 }},
+	  outer_radius: {{ dimob_outer_radius|default:250 }},
+	  min_slice: true,
+	  skipLinear: true,
+	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
+	  items: [
+	    {% for gi in gis %}{% if gi.prediction_method == "Contig_Gap" %}
+	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
+	    {% endif %}{% endfor %}
+	         ]
+	 },
 {% comment %}Islandpick track data{% endcomment %}
         { trackName: "{{ plotName|default:"circular" }}Islandpick",
 	  trackType: "track",
@@ -85,19 +99,6 @@ var {{ varName|default:"circular" }}data = [
 	  skipLinear: true,
 	  items: [
 	    {% for gi in gis %}{% if gi.prediction_method == "Islandpick" or gi.prediction_method == "Sigi" or gi.prediction_method == "Dimob" %}
-	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
-	    {% endif %}{% endfor %}
-	         ]
-	 },
-{% comment %}Contig Gap track data{% endcomment %}
-        { trackName: "{{ plotName|default:"circular" }}Contig_Gap",
-	  trackType: "track",
-	  inner_radius: {{ dimob_inner_radius|default:50 }},
-	  outer_radius: {{ dimob_outer_radius|default:250 }},
-	  min_slice: true,
-	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
-	  items: [
-	    {% for gi in gis %}{% if gi.prediction_method == "Contig_Gap" %}
 	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
 	    {% endif %}{% endfor %}
 	         ]
