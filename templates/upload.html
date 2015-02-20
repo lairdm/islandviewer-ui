@@ -3,6 +3,8 @@
 
 {% block headextras %}
 
+<link href="{% static 'js/chosen/chosen.min.css' %}" rel="stylesheet">
+<script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
 {% endblock headextras %}
 
 {% block sidebar %}
@@ -48,11 +50,15 @@ function postSubmit() {
 <form action="" method="POST" enctype="multipart/form-data" name="genome_upload" id="genome_upload">
 {% csrf_token %}
 {% if error %}{{ error|safe }}{% endif %}
+<div id="genomeselector_div" style="display: none;">
+  <select id="genomeselector" name="genomeselector" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select or start typing a species name, strain name or genome accession...">
+  <option></option>
+  </select>
+</div>
 <p>{{ form.format_type }}<span id="fileselect_msg" style="display: none;">Please provide an fna file with the missing sequence information:<br /></span><span id="fileselect_spacer">&nbsp;&nbsp;&nbsp;</span>{{ form.genome_file }}</p>
               
 	                  
-
-<div>
+<div id="inputfield_div">
 <span class="upload_input_span">
    {{ form.genome_name.label_tag }}<br /> {{ form.genome_name }}
 </span>
@@ -119,12 +125,16 @@ $(document).ready( function() {
 				
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				
+				showError("We have a communication error with the server, sorry for the inconvenience, please try again later or contact us if the problem persists");
 			}
 		});
 
 		return false;
 	});	
+	
+	$('#genomeselector').on('change', function() {
+		$('#id_ref_accnum').val( this.value );
+	});
 	
 	}); // document ready
 
@@ -143,6 +153,9 @@ $(document).ready( function() {
 
 			} else if(data['status'] == 500) {
 				// Now we're in to the various error types...
+				if('undefined' !== data['cid']) {
+					$('#id_cid').val( data['cid'] );
+				}
 				
 				if('undefined' !== typeof data['code']) {
 					// If we've reached this far we're going to do something, so we can return
@@ -220,13 +233,45 @@ $(document).ready( function() {
 	function showIncompletePicker(data) {
 		// First we need to set the cid element to the one we were given
 		if('undefined' !== data['cid']) {
+			var url = '{% url 'fetchgenomesjson' %}';
 			$('#id_cid').val( data['cid'] );
 
 			$('#id_format_type').hide();
 			$('#id_genome_file').hide();
 			$('#fileselect_msg').hide();
 
-			showError("Sorry, we don't quite allow incomplete genomes yet, but soon!");
+			$.ajax({
+				url: url,
+				type: 'GET',
+				cache: false,
+				beforeSend: function() {
+				    $('#submitted').show();
+			},
+				complete: function () {
+				    $('#submitted').hide();
+			},
+				success: function(data) {
+					console.log(data);
+
+					for(var i = 0; i < data.length; i++) {
+						entry = data[i];
+						$('#genomeselector')
+							.append($('<option></option>')
+									.attr('value', entry['cid'])
+									.text(entry['name'])
+									);
+						
+					}
+					$('#genomeselector_div').show();
+					$("#genomeselector").chosen({disable_search_threshold: 10, no_results_text: "Oops, no genomes matching that name!", search_contains: true});
+					showError("Please select a reference genome to align your genome against.");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					showError("We have a communication error with the server, sorry for the inconvenience, please try again later or contact us if the problem persists");
+				}
+			});
+
+			//showError("Sorry, we don't quite allow incomplete genomes yet, but soon!");
 			
 		} else {
 			// We didn't get a cid? This isn't good!

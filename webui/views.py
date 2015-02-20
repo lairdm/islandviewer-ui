@@ -41,6 +41,14 @@ def showgenomesjson(request):
     
     return render(request, "selectgenome.json", context, content_type='text/javascript')
 
+def fetchgenomesjson(request):
+        
+    genomes = list(NameCache.objects.values('cid', 'name').all())
+    
+    data = json.dumps(genomes, indent=4, sort_keys=False)
+    
+    return HttpResponse(data, content_type="application/json")
+
 def results(request, aid):
     # Create the context we're going to add
     # our variables for rending to
@@ -475,6 +483,7 @@ def runstatusdetailsjson(request, aid):
     data = json.dumps(context, indent=4, sort_keys=False)
     
     return HttpResponse(data, content_type="application/json")
+
 
 @csrf_exempt
 def add_notify(request, aid):

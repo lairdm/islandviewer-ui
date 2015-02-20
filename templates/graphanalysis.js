@@ -2,7 +2,8 @@ var graph = {{ json_str|safe }};
 var g = new dagreD3.graphlib.Graph().setGraph({});
 
 var name_substitutions = {Virulence: 'Annotating Genes',
-						  Summary: 'Validating Pipeline'};
+			  Summary: 'Validating Pipeline',
+	                  ContigAligner: 'Contig Rearranger'};
 
 var nodes = graph['nodes'];
 for(node in nodes) {
@@ -35,7 +36,7 @@ var render = new dagreD3.render();
 //  });
 
 var layout = render(d3.select("svg g"), g);
-  d3.select("svg")
-    .attr("width", layout.graph().width + 40)
-    .attr("height", layout.graph().height + 40);
+//  d3.select("svg")
+//    .attr("width", layout.graph().width + 40)
+//    .attr("height", layout.graph().height + 40);
 

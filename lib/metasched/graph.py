@@ -17,7 +17,7 @@ class Grapher():
         for task in tasks:
             components[task.prediction_method] = task.status
         
-#        pprint.pprint(components)
+        pprint.pprint(components)
 #        pprint.pprint(pipeline)
         
         nodes = []
@@ -34,6 +34,13 @@ class Grapher():
                 pairs.append({'name': c['name'], 'nexttask': c['on_success'], 'status':'SUCCESS'})
             else:
                 pairs.append({'name': c['name'], 'nexttask': c['on_success'], 'status':'PENDING'})
+
+        # A bit of a hack to slip in the ContigAligner sub-module to the
+        # graph, TODO fix this somehow in the future
+        if 'ContigAligner' in components:
+            nodes.append({'name': 'ContigAligner', 'status': components['ContigAligner']})
+            pairs.append({'name': 'ContigAligner', 'nexttask': 'Prepare', 'status': 'PENDING'});
+            pairs.append({'name': 'Prepare', 'nexttask': 'ContigAligner', 'status': 'PENDING'});
 
         graph_set = {'nodes': nodes, 'edges': pairs}
 
