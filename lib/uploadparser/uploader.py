@@ -70,7 +70,7 @@ class GenomeParser():
             
             # Case one, sending a reference genome
             message = {'action': 'submit', 'cid': form_data['cid']}
-            if 'email' in form_data:
+            if 'email_addr' in form_data:
                 if settings.DEBUG:
                     print "Received email for notificaion: " + form_data['email']
                 message['email'] = form_data['email_addr']
