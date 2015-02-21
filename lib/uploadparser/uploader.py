@@ -72,7 +72,7 @@ class GenomeParser():
             message = {'action': 'submit', 'cid': form_data['cid']}
             if 'email_addr' in form_data:
                 if settings.DEBUG:
-                    print "Received email for notificaion: " + form_data['email']
+                    print "Received email for notificaion: " + form_data['email_addr']
                 message['email'] = form_data['email_addr']
             
             if 'ref_accnum' in form_data and form_data['ref_accnum'] != 'False':
