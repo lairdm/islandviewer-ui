@@ -19,6 +19,10 @@ var edges = graph['edges'];
 for(edge in edges) {
 	var tasks = edges[edge]['nexttask'].split(',');
 	for(e in tasks) {
+            // If the next task doesn't actually exist in the graph, don't try to add it
+	    if('undefined' === typeof nodes[tasks[e]]) {
+	      continue;
+            }
 	    params = {class: edges[edge]['status'], lineInterpolate: 'basis'};
 	    if('undefined' !== edges[edge]['status'] && edges[edge]['status'] == 'FAILED') {
 		params['style'] = 'stroke: red; fill: none; stroke-dasharray: 5, 5;';
