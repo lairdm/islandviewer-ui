@@ -14,7 +14,7 @@ var {{ varName|default:"circular" }}data = [
 	  linear_mouseout: '{{ varName|default:'' }}islandviewerObj',
 	  items: [
 		{% for gene in genes %}
-		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{% if gene.gene %}{{ gene.gene }}{% else %}{{ gene.locus }}{% endif %}", accnum: "{{ gene.name }}" },
+		  {id: {{ gene.id }}, start: {{ gene.start }}, end: {{ gene.end }}, strand: {{ gene.strand }}, name: "{% if gene.gene == None %}{{ gene.locus }}{% else %}{{ gene.gene }}{% endif %}", accnum: "{{ gene.name }}" },
 		{% endfor %}
 		]
 	},
