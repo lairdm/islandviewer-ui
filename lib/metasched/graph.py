@@ -24,6 +24,8 @@ class Grapher():
         pairs = []
         
         for c in pipeline['components']:
+            if c['name'] not in components:
+                continue
             status = components[c['name']]
             nodes.append({'name': c['name'], 'status': CHOICES[status]})
             if(('on_failure' not in c) and ('on_success' not in c)):
