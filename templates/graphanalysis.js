@@ -8,19 +8,21 @@ var name_substitutions = {Virulence: 'Annotating Genes',
 	                  ContigAligner: 'Contig Rearranger'};
 
 var nodes = graph['nodes'];
+var node_labels = {};
 for(node in nodes) {
 	var nodelabel = nodes[node]['name'];
 	if('undefined' !== typeof(name_substitutions[nodelabel])) {
 		nodelabel = name_substitutions[nodelabel];
 	}
 	g.setNode(nodes[node]['name'], {label: nodelabel, class: nodes[node]['status']});
+	node_labels[nodelabel] = true;
 }
 var edges = graph['edges'];
 for(edge in edges) {
 	var tasks = edges[edge]['nexttask'].split(',');
 	for(e in tasks) {
             // If the next task doesn't actually exist in the graph, don't try to add it
-	    if('undefined' === typeof nodes[tasks[e]]) {
+	    if('undefined' === typeof node_labels[tasks[e]]) {
 	      continue;
             }
 	    params = {class: edges[edge]['status'], lineInterpolate: 'basis'};
