@@ -828,6 +828,10 @@ def islandpick_genomes(request, aid):
 
         # We need the genomes to display in order
         for g,dist in sorted(genomes, key=lambda genome: genome[1]):
+            # We don't want custom genomes, so skip anything without
+            # a namecache entry for now
+            if g not in cache_names:
+                continue
             genome_list.update({g: {'dist': "%0.3f" % dist,
                                     'used': (True if g in selected else False),
                                     'picked' : (True if g in selected and 'reselect' not in request.GET else False),
