@@ -67,6 +67,13 @@ def results(request, aid):
         if(analysis.atype == Analysis.CUSTOM):
             genome = CustomGenome.objects.get(pk=analysis.ext_id)
             context['genomename'] = genome.name
+            
+            if genome.contigs > 1:
+                ref_accnum = analysis.find_reference_genome()
+                ref_genome = Analysis.lookup_genome(ref_accnum)
+                
+                context['ref_genome'] = ref_genome.name
+                
         elif(analysis.atype == Analysis.MICROBEDB):
 #            gpv_id = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].gpv_id
 #            context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name

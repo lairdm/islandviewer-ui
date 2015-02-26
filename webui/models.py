@@ -42,6 +42,8 @@ class CustomGenome(models.Model):
     rep_size = models.IntegerField(default=0)
     filename = models.CharField(max_length=60)
     formats = models.CharField(max_length=50)
+    contigs = models.IntegerField(default=1)
+    genome_status = models.IntegerField()
     submit_date = models.DateTimeField('date submitted')
 
     class Meta:
@@ -131,6 +133,41 @@ class Analysis(models.Model):
         # a match, return None
         return None 
 
+    def find_reference_genome(self):
+        
+        a_parameters_json = None
+        for task in self.tasks.all():
+            if task.prediction_method == 'Prepare':
+                a_parameters_json = task.parameters
+                break
+            
+        # We found a Prepare task, let's see if it has a ref_accnum
+        if a_parameters_json:
+            a_parameters = json.loads(a_parameters_json)
+            
+            if settings.DEBUG:
+                print "Found parameters:"
+                pprint.pprint(a_parameters)
+            
+            if 'ref_accnum' in a_parameters:
+                return a_parameters['ref_accnum']
+            
+        return None
+    
+    @classmethod
+    def lookup_genome(cls, accnum):
+        
+        try:
+            float(accnum)
+        except ValueError:
+            # It's not a custom genome...
+            genome = NameCache.objects.get(cid=accnum)
+            return genome
+        
+        # It's a custom genome
+        genome = CustomGenome.objects.get(cid=accnum)
+        return genome
+
     class Meta:
         db_table = "Analysis"
 
@@ -143,6 +180,30 @@ class GIAnalysisTask(models.Model):
     parameters = models.CharField(max_length=15)
     start_date = models.DateTimeField('date started')
     complete_date = models.DateTimeField('date completed')
+
+    @classmethod
+    def fetch_parameters(cls, aid, method):
+            
+        try:
+            if settings.DEBUG:
+                print "Checking method {} in analysis {}".format(method,aid)
+
+            task = GIAnalysisTask.objects.filter(aid=aid, prediction_method=method)
+            a_parameters_json = task.parameters
+            
+            a_parameters = json.loads(a_parameters_json)
+
+            if settings.DEBUG:
+                print "Found parameters:"
+                pprint.pprint(a_parameters)
+
+        except Exception as e:
+            if settings.DEBUG:
+                print e
+                
+            raise e
+        
+        return a_parameters
         
     class Meta:
         db_table = "GIAnalysisTask"

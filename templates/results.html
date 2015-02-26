@@ -63,6 +63,7 @@
     <div id="outer_circular" style="white-space: nowrap;">
     <div id="circularcontainer" style="width:555px; display:inline-block; ">
       <span class="pageName">{{ genomename }}</span><br />
+      {% if ref_genome %}<span>Aligned against reference genome {{ ref_genome }}</span><br />{% endif %}
       <div id="url_dialog" style="display:none">Copy this link to save the view:<br />
         <img id="close_url" src="{% static 'img/close.svg' %}" height="25px">&nbsp;<input id="url_input" size="100" readonly>
       </div>
@@ -116,6 +117,7 @@
   There was an error processing your genome, please contact us to assist in investigating this issue.
   {% else %}
    <div class="pageName">{{ genomename }}</div>
+   {% if ref_genome %}<span>Aligned against reference genome {{ ref_genome }}</span><br />{% endif %}
    <script src="{% static 'js/dagre-d3.min.js' %}"></script>
   
    <svg id="pipelinegraph" width=400 height=425>

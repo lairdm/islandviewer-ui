@@ -745,7 +745,8 @@ function feature_tour() {
 
 	var intro = introJs();
 	var dialog_was_open = false;
-        $('#download_dialog').removeClass("hidden");
+//        $('#download_dialog').removeClass("hidden");
+	show_download();
         if($('#gene_dialog').dialog( "isOpen" ) === false) {
           $('#gene_dialog').dialog("open");
           dialog_was_open = false;
@@ -756,14 +757,16 @@ function feature_tour() {
           if(dialog_was_open === false) {
 	    $('#gene_dialog').dialog( "close" );
           }
-          $('#download_dialog').addClass("hidden");
+	  hide_download();
+//          $('#download_dialog').addClass("hidden");
         });
 
         intro.oncomplete(function() {
           if(dialog_was_open === false) {
 	    $('#gene_dialog').dialog( "close" );
           }
-          $('#download_dialog').addClass("hidden");
+	  hide_download();
+//          $('#download_dialog').addClass("hidden");
         });
 
 	intro.setOptions({
@@ -771,17 +774,17 @@ function feature_tour() {
 	  steps: [
 	    {
 	      element: document.querySelector('{{ container }}'),
-	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the linear viewer below to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can be dragged to refocus and zoom the linear viewer.<br />&nbsp;<br />Double clicking on the plot will recentre the region being viewed under the mouse pointer.<br />&nbsp;<br />The plot can be resized using the drag bar in the lower right corner.",
+	      intro: "<b>Circular viewer</b><br />In the circular viewer you can click on islands to zoom the horizontal viewer below to a location and pop up a context list of genes and islands.<br />&nbsp;<br />The black circular markers can be dragged to refocus and zoom the linear viewer.<br />&nbsp;<br />Double clicking on the plot will recentre the region being viewed under the mouse pointer.<br />&nbsp;<br />The plot can be resized using the drag bar in the lower right corner.",
 	      position: 'right'
 	    },
 	    {
 	      element: '{{ container }}linear',
-	      intro: "<b>Linear viewer</b><br />In the linear viewer you can zoom and scroll using your mouse and mousewheel respectively (or use two fingers on your touch pad depending on your device).<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the vertical viewer.<br />&nbsp;<br />Clicking on a gene will take you to the NCBI gene card, clicking on an island will take you the corresponding island entry in the table below, and clicking on a VF/AMR annotation will take you to the external reference for this annotation.<br />&nbsp;<br />The plot can be resized using the drag bar on the right side.",
+	      intro: "<b>Horizontal viewer</b><br />In the horizontal viewer you can zoom and scroll using your mouse and mousewheel respectively (or use two fingers on your touch pad depending on your device).<br />&nbsp;<br />Hovering over elements will highlight the corresponding gene(s) in the vertical viewer.<br />&nbsp;<br />Clicking on a gene will take you to the NCBI gene card, clicking on an island will take you the corresponding island entry in the table below, and clicking on a VF/AMR annotation will take you to the external reference for this annotation.<br />&nbsp;<br />The plot can be resized using the drag bar on the right side.",
 	      position: 'top'
 	    },
 	    {
 	      element: '#gene_dialog',
-	      intro: "<b>Vertical viewer</b><br />The gene dialog will show all the genes in the range currently visible in the linear viewer, and bounded by the shaded region bounded by the black circles in the circular viewer. Islands, virulence factors, etc are marked with colour coded glyphs.<br />&nbsp;<br />The dialog may be resized and moved using your mouse.",
+	      intro: "<b>Vertical viewer</b><br />The gene dialog will show all the genes in the range currently visible in the horizontal viewer, and bounded by the shaded region bounded by the black circles in the circular viewer. Islands, virulence factors, etc are marked with colour coded glyphs.<br />&nbsp;<br />The dialog may be resized and moved using your mouse.",
 	      position: 'left'
 	    },
 	    {

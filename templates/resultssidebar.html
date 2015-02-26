@@ -1,6 +1,7 @@
 {% load virulencefactors %}
 <span class="smalltext">
 <p>Predicted genomic islands and virulence/resistance gene annotations (when available) are coloured within the images based on the legend.  Individual items for display can be selected below. (<a href="javascript:feature_tour();">Take a tour</a> for a description of how to navigate this page)</p>
+{% if ref_genome %}Use caution when interpreting GI predictions for incomplete genomes. Gaps are indicated as grey bars in the circular plot, and any unaligned contigs are displayed at the end of the genome plot (after the triangle glyph) and should be evaluated accordingly.{% endif %}
 <div id="legend" class="outline">
 <span class="subHeader">Legend</span><strong> </strong><span id="legend_help" class="subHeader">(<a href="{% url 'about' %}">Help</a>)</span><br />
 &nbsp;<br />
