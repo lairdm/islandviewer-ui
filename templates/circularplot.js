@@ -25,10 +25,11 @@ var {{ varName|default:"circular" }}data = [
 	  outer_radius: {{ contig_outer_radius|default:245 }},
 	  min_slice: true,
 	  skipLinear: true,
+	  showTooltip: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
 	  items: [
 	    {% for gi in gis %}{% if gi.prediction_method == "Contig_Gap" %}
-	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
+	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "Contig boundary" }{% if not forloop.last %},{% endif %}
 	    {% endif %}{% endfor %}
 	         ]
 	 },
