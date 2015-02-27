@@ -107,7 +107,7 @@ var {{ varName|default:"circular" }}data = [
         { trackName: "{{ plotName|default:"circular" }}Integrated",
 	  trackType: "track",
 	  inner_radius: {{ int_inner_radius|default:215 }},
-	  outer_radius: {{ int_outer_radius|default:250 }},
+	  outer_radius: {{ int_outer_radius|default:245 }},
 	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
