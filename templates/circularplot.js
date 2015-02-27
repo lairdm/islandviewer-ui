@@ -21,14 +21,29 @@ var {{ varName|default:"circular" }}data = [
 {% comment %}Contig Gap track data{% endcomment %}
         { trackName: "{{ plotName|default:"circular" }}Contig_Gap",
 	  trackType: "track",
-	  inner_radius: {{ dimob_inner_radius|default:50 }},
-	  outer_radius: {{ dimob_outer_radius|default:250 }},
+	  inner_radius: {{ contig_inner_radius|default:50 }},
+	  outer_radius: {{ contig_outer_radius|default:250 }},
 	  min_slice: true,
 	  skipLinear: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
 	  items: [
 	    {% for gi in gis %}{% if gi.prediction_method == "Contig_Gap" %}
 	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{{ gi.gi }}" }{% if not forloop.last %},{% endif %}
+	    {% endif %}{% endfor %}
+	         ]
+	 },
+{% comment %}Contig Alignment track data{% endcomment %}
+        { trackName: "{{ plotName|default:"circular" }}Alignment",
+	  trackType: "track",
+	  inner_radius: {{ alignment_inner_radius|default:245 }},
+	  outer_radius: {{ alignment_outer_radius|default:250 }},
+	  min_slice: true,
+	  skipLinear: true,
+	  showTooltip: true,
+	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
+	  items: [
+	    {% for gi in gis %}{% if gi.prediction_method == "Alignments" %}
+	       {id: {{ gi.gi }}, start: {{ gi.start }}, end: {{ gi.end }}, name: "{% if gi.details == 'aligned' %}Aligned Contigs{% else %}Unaligned Contigs{% endif %}", extraclass: "{{ gi.details|default:'' }}"}{% if not forloop.last %},{% endif %}
 	    {% endif %}{% endfor %}
 	         ]
 	 },

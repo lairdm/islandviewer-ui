@@ -27,6 +27,16 @@
     opacity: 0.5;
 }
 
+.circularAlignment.aligned {
+    fill: yellow;
+    opacity: 0.5;
+}
+
+.circularAlignment.unaligned {
+    fill: gray;
+    opacity: 0.5;
+}
+
 .circularGCPlot {
 	stroke: black;
 }

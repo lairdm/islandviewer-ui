@@ -214,6 +214,7 @@ class GenomicIsland(models.Model):
     start = models.IntegerField(default=0)
     end = models.IntegerField(default=0)
     prediction_method = models.CharField(max_length=15)
+    details = models.CharField(max_length=20)
 
     @classmethod
     def sqltodict(cls, query,param):
