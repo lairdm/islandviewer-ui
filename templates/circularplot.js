@@ -616,7 +616,7 @@ function load_second(aidParam, reloadParams) {
     // Update the tracks if any are turned off
     updateTracks(window.secondislandviewerObj);
 
-    var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart', dblclick: 'window.secondislandviewerObj' };
+    var secondlayout = {genomesize: second_genomesize, container: "#rightplot", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, plotid: 'circularchart', dblclick: 'secondislandviewerObj' };
 //    var secondTrackObj = new circularTrack(secondlayout, seconddata);
     window.secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout);    
     $('#rightplot').draggable({ handle: ".move_rightplot" });
