@@ -30,6 +30,8 @@ def formatCSV(resultset, methods, filename, delimiter=False):
     # Loop through again for integrated
     if 'integrated' in methods:
         for island in resultset:
+            if island.prediction_method.lower() not in allowedmethods:
+                continue
             line = [island.island_start, island.island_end]
             line.append(int(island.island_end) - int(island.island_start))
             line += ["Predicted by at least one method", island.name, island.gene, island.locus, island.gene_start, island.gene_end, island.strand, island.product, makeAnnotationGroupingStr(island.virulence)]
@@ -79,6 +81,8 @@ def formatGenbank(resultset, seqobj, methods, filename):
     # Loop through again for integrated
     if 'integrated' in methods:
         for island in resultset:
+            if island.prediction_method.lower() not in allowedmethods:
+                continue
             seqobj.insertFeature(SeqFeature(FeatureLocation(island.start,island.end),
                                             type = "Misc", qualifiers={'note': 'Genomic Island: Predicted by at least one method'}), feature_offset)
             feature_offset += 1
@@ -136,6 +140,9 @@ def formatExcel(resultset, methods, filename):
     # Loop through again for integrated
     if 'integrated' in methods:
         for island in resultset:
+            if island.prediction_method.lower() not in allowedmethods:
+                continue
+
             row_num += 1
             island_size = int(island.island_end) - int(island.island_start)
             row = [
@@ -283,6 +290,8 @@ excel_annotation_columns = [
     (u'Type', 3000),
     (u'Source', 15000)
 ]
+
+allowedmethods = ['sigi', 'islandpick', 'dimob']
 
 downloadformats = {'genbank': formatGenbank,
                    'fasta': formatFasta,
