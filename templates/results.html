@@ -16,6 +16,10 @@
     <link rel="stylesheet" href="{% static 'js/intro.js-0.7.1/introjs.css' %}" />
     <script src="{% static 'js/intro.js-0.7.1/intro.js' %}"></script>
 
+{% if not noanalysis and status == "Running" %}
+<meta http-equiv="refresh" content="300" />
+{% endif %}
+
 {% endblock %}
 
 {% block sidebar %}
