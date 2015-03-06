@@ -362,6 +362,10 @@ $('#close_url').on('click', function() {
     }
 });
 
+$('#url_input').on('click', function() {
+    $(this).select();
+});
+
 function initialize_gene_search() {
 
     $("#gene_search_input").autocomplete({
@@ -821,6 +825,11 @@ function feature_tour() {
 	    {
 	      element: document.querySelector('#gitableheader'),
 	      intro: "<b>Genomic Islands table</b><br />Below is a summary of results grouped by detection method.",
+	      position: 'top'
+	    },
+	    {
+	      element: document.querySelector('#save_view'),
+	      intro: "<b>Save view</b><br />A link can be created to save your current view (zoom level and focus) in order to come back later or share.",
 	      position: 'top'
 	    },
 	    {

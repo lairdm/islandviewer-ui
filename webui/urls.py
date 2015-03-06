@@ -1,10 +1,12 @@
 from django.conf.urls import patterns, url
+from django.views.generic.base import RedirectView
 
 from webui import views
 
 urlpatterns = patterns('',
 #    url(r'^$', views.index, name='index'),
     url(r'^$', views.showgenomes, name='browse'),
+    url(r'^demo/$', RedirectView.as_view(url="../accession/NC_004631.1/?&load=%%257B%%2522m%%2522%%253A%%257B%%2522s%%2522%%253A4493092.18200115%%252C%%2522e%%2522%%253A4526150.469091758%%252C%%2522id%%2522%%253A%%25222210%%2522%%252C%%2522c%%2522%%253A500%%252C%%2522x%%2522%%253A%%2522auto%%2522%%252C%%2522y%%2522%%253A%%2522auto%%2522%%252C%%2522l%%2522%%253A600%%257D%%252C%%2522un%%2522%%253A%%255B%%255D%%252C%%2522d%%2522%%253A%%257B%%2522v%%2522%%253Atrue%%252C%%2522t%%2522%%253A152.046875%%252C%%2522l%%2522%%253A836.234375%%257D%%257D?&load=%%257B%%2522m%%2522%%253A%%257B%%2522s%%2522%%253A4493298.565905276%%252C%%2522e%%2522%%253A4513493%%252C%%2522id%%2522%%253A%%25222210%%2522%%252C%%2522c%%2522%%253A500%%252C%%2522x%%2522%%253A%%2522auto%%2522%%252C%%2522y%%2522%%253A%%2522auto%%2522%%252C%%2522l%%2522%%253A600%%257D%%252C%%2522un%%2522%%253A%%255B%%255D%%252C%%2522d%%2522%%253A%%257B%%2522v%%2522%%253Atrue%%252C%%2522t%%2522%%253A185.09375%%252C%%2522l%%2522%%253A840.3125%%257D%%257D", permanent=False), name='demo'),
     url(r'^results/(?P<aid>\d+)/$', views.results, name='results'),
     url(r'^accession/(?P<accnum>\w+)/$', views.resultsbyrootaccnum, name='resultsbyrootaccnum'),
     url(r'^accession/(?P<accnum>\w+\.\d+)/$', views.resultsbyaccnum, name='resultsbyaccnum'),
