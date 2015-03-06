@@ -288,6 +288,9 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, params) {
 
 	    }
 	});
+
+	// A hack but close the Save View dialog if it's open
+	close_url_dialog();
 }
 
 Islandviewer.prototype.showHoverGenes = function(d, do_half_range, params) {

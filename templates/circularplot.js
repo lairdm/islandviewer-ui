@@ -357,10 +357,14 @@ $('#close_select_genome').on('click', function() {
 });
 
 $('#close_url').on('click', function() {
+    close_url_dialog();
+});
+
+function close_url_dialog() {
     if($('#url_dialog').is(":visible")) {
 	$('#url_dialog').slideToggle('fast');
     }
-});
+}
 
 $('#url_input').on('click', function() {
     $(this).select();
