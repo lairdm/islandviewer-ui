@@ -20,11 +20,10 @@ var {{ varName|default:"circular" }}data = [
 	},
 {% comment %}Contig Gap track data{% endcomment %}
         { trackName: "{{ plotName|default:"circular" }}Contig_Gap",
-	  trackType: "track",
-	  inner_radius: {{ contig_inner_radius|default:50 }},
+	  trackType: "gap",
+	  inner_radius: {{ contig_inner_radius|default:20 }},
 	  outer_radius: {{ contig_outer_radius|default:245 }},
 	  min_slice: true,
-	  skipLinear: true,
 	  showTooltip: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',{% endif %}
 	  items: [

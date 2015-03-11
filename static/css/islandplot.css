@@ -23,8 +23,13 @@
 	fill: blue;
 }
 .circularContig_Gap {
-    fill: gray;
+    stroke: black;
+    fill: none;
     opacity: 0.5;
+}
+
+.circularContig_Gap.linearplot {
+    fill: lightgrey;
 }
 
 .circularAlignment.aligned {
