@@ -171,6 +171,7 @@ def circularplotjs(request, aid):
     json_objs = {'Contig_Gap': [],
                  'Alignments': [],
                  'Islandpick': [],
+                 'Integrated': [],
                  'Sigi': [],
                  'Dimob': [ ]
                  }
@@ -185,14 +186,17 @@ def circularplotjs(request, aid):
             json_objs['Alignments'].append(rec)
         elif gi.prediction_method == 'Islandpick':
             json_objs['Islandpick'].append(rec)
+            json_objs['Integrated'].append(rec)
         elif gi.prediction_method == 'Sigi':
             json_objs['Sigi'].append(rec)
+            json_objs['Integrated'].append(rec)
         elif gi.prediction_method == 'Dimob':
             json_objs['Dimob'].append(rec)
+            json_objs['Integrated'].append(rec)
             
     context['Contig_Gap'] = json.dumps(json_objs['Contig_Gap'])
     context['Alignments'] = json.dumps(json_objs['Alignments'])
-    context['Integrated'] = json.dumps(json_objs['Islandpick'] + json_objs['Sigi'] + json_objs['Dimob'])
+    context['Integrated'] = json.dumps(json_objs['Integrated'])
     context['Islandpick'] = json.dumps(json_objs['Islandpick'])
     context['Sigi'] = json.dumps(json_objs['Sigi'])
     context['Dimob'] = json.dumps(json_objs['Dimob'])
