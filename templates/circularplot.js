@@ -8,6 +8,7 @@ var {{ varName|default:"circular" }}data = [
 	  visible: false,
 	  showLabels: true,
 	  showTooltip: true,
+//skipLinear: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
@@ -148,7 +149,7 @@ var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot(
 
 $('#loadingimg').remove();
 
-var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: 600, height: 135, bottom_margin:0};
+var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: 600, height: 135, bottom_margin:0, initStart:0, initEnd: Math.min(1000, {{ genomesize }})};
 //var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
 var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot({{ plotName|default:"circular" }}Linearlayout);
 
