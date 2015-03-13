@@ -20,6 +20,7 @@ import re
 import os
 import pprint
 from collections import OrderedDict
+from webui.models import VIRULENCE_FACTORS, VIRULENCE_FACTOR_CATEGORIES
 
 def index(request):
     return render(request, 'index.html')
@@ -195,7 +196,8 @@ def circularplotjs(request, aid):
     context['Islandpick'] = json.dumps(json_objs['Islandpick'])
     context['Sigi'] = json.dumps(json_objs['Sigi'])
     context['Dimob'] = json.dumps(json_objs['Dimob'])
-
+    json_objs = None
+    
     # Fetch the GC plot info
     try:
         context['gc'] = GC.objects.get(pk=analysis.ext_id)
@@ -204,14 +206,21 @@ def circularplotjs(request, aid):
     
     # Fetch the virulence factors
     params = [analysis.ext_id]
-    context['vir_factors'] = Genes.objects.raw("SELECT Genes.id, Genes.name, Genes.start, virulence.source, virulence.external_id FROM Genes, virulence WHERE ext_id=%s AND Genes.name = virulence.protein_accnum", params)
-
+    vir_factors = Genes.objects.raw("SELECT Genes.id, Genes.name, Genes.start, virulence.source, virulence.external_id FROM Genes, virulence WHERE ext_id=%s AND Genes.name = virulence.protein_accnum", params)
+    vf_obj = []
+    vf_count = 0
+    for vf in vir_factors:
+        vf_obj.append({'id': vf_count, 'bp': vf.start, 'type': VIRULENCE_FACTOR_CATEGORIES[vf.source], 'name': vf.source, 'ext_id': vf.external_id, 'gene': vf.name})
+        vf_count += 1
+    context['vir_factors'] = json.dumps(vf_obj)
+    vf_obj = None
 
     island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
     genes_obj = [] 
     for gene in island_genes:
         genes_obj.append({'id': gene.id, 'start': gene.start, 'end': gene.end, 'strand': gene.strand, 'accnum': gene.name, 'name': (gene.gene if gene.gene else gene.locus if gene.locus else 'Unknown')})
     context['genes'] = json.dumps(genes_obj)
+    genes_obj = None
 #    context['genes'] = island_genes
  #   vir_dict = dict(Virulence.objects.using('microbedb').filter(protein_accnum__in=
  #                                                                  list(island_genes.values_list('name', flat=True))).values_list('protein_accnum', 'source'))
