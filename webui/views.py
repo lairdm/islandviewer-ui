@@ -183,6 +183,7 @@ def circularplotjs(request, aid):
             json_objs['Contig_Gap'].append(rec)
         elif gi.prediction_method == 'Alignments':
             rec['name'] = ('Aligned Contigs' if gi.details == 'aligned' else 'Unaligned Contigs')
+            rec['extraclass'] = gi.details if gi.details else ''
             json_objs['Alignments'].append(rec)
         elif gi.prediction_method == 'Islandpick':
             json_objs['Islandpick'].append(rec)
