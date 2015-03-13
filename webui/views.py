@@ -167,6 +167,35 @@ def circularplotjs(request, aid):
     # Fill in the GIs
     context['gis'] = GenomicIsland.objects.filter(aid_id=aid).order_by('start').all()
     
+    json_objs = {'Contig_Gap': [],
+                 'Alignments': [],
+                 'Islandpick': [],
+                 'Sigi': [],
+                 'Dimob': [ ]
+                 }
+    gis = GenomicIsland.objects.filter(aid_id=aid).order_by('start').all()
+    for gi in gis:
+        rec = {'id': gi.gi, 'start': gi.start, 'end': gi.end, 'name': gi.gi}
+        if gi.prediction_method == 'Contig_Gap':
+            rec['name'] = 'Contig boundary'
+            json_objs['Contig_Gap'].append(rec)
+        elif gi.prediction_method == 'Alignments':
+            rec['name'] = ('Aligned Contigs' if gi.details == 'aligned' else 'Unaligned Contigs')
+            json_objs['Alignments'].append(rec)
+        elif gi.prediction_method == 'Islandpick':
+            json_objs['Islandpick'].append(rec)
+        elif gi.prediction_method == 'Sigi':
+            json_objs['Sigi'].append(rec)
+        elif gi.prediction_method == 'Dimob':
+            json_objs['Dimob'].append(rec)
+            
+    context['Contig_Gap'] = json.dumps(json_objs['Contig_Gap'])
+    context['Alignments'] = json.dumps(json_objs['Alignments'])
+    context['Integrated'] = json.dumps(json_objs['Islandpick'] + json_objs['Sigi'] + json_objs['Dimob'])
+    context['Islandpick'] = json.dumps(json_objs['Islandpick'])
+    context['Sigi'] = json.dumps(json_objs['Sigi'])
+    context['Dimob'] = json.dumps(json_objs['Dimob'])
+
     # Fetch the GC plot info
     try:
         context['gc'] = GC.objects.get(pk=analysis.ext_id)
@@ -179,7 +208,11 @@ def circularplotjs(request, aid):
 
 
     island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
-    context['genes'] = island_genes
+    genes_obj = [] 
+    for gene in island_genes:
+        genes_obj.append({'id': gene.id, 'start': gene.start, 'end': gene.end, 'strand': gene.strand, 'accnum': gene.name, 'name': (gene.gene if gene.gene else gene.locus if gene.locus else 'Unknown')})
+    context['genes'] = json.dumps(genes_obj)
+#    context['genes'] = island_genes
  #   vir_dict = dict(Virulence.objects.using('microbedb').filter(protein_accnum__in=
  #                                                                  list(island_genes.values_list('name', flat=True))).values_list('protein_accnum', 'source'))
     
