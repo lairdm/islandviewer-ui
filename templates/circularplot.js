@@ -9,6 +9,7 @@ var {{ varName|default:"circular" }}data = [
 	  showLabels: true,
 	  showTooltip: true,
 //skipLinear: true,
+	  linear_skipInit: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
@@ -45,6 +46,7 @@ var {{ varName|default:"circular" }}data = [
 	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
+	  linear_skipInit: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
@@ -59,6 +61,7 @@ var {{ varName|default:"circular" }}data = [
 	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
+	  linear_skipInit: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
@@ -74,6 +77,7 @@ var {{ varName|default:"circular" }}data = [
 	  mouseover_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseout_callback: '{{ varName|default:'' }}islandviewerObj',
 	  mouseclick: '{{ varName|default:'' }}islandviewerObj',
+	  linear_skipInit: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
 	  linear_mouseclick: '{{ varName|default:'' }}islandviewerObj',{% endif %}
 	  linear_mouseover: '{{ varName|default:'' }}islandviewerObj',
