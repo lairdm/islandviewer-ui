@@ -168,6 +168,12 @@ class Analysis(models.Model):
         genome = CustomGenome.objects.get(cid=accnum)
         return genome
 
+    @classmethod
+    def last_modified(cls, request, aid):
+        
+        print "Looking up aid {}".format(aid)
+        return Analysis.objects.get(aid=aid).complete_date
+
     class Meta:
         db_table = "Analysis"
 

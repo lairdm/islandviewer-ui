@@ -5,6 +5,7 @@ from django.conf import settings
 from django import forms
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import last_modified
 import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
 from django.core.urlresolvers import reverse
@@ -131,6 +132,7 @@ def resultsbyrootaccnum(request, accnum):
             print e
         return HttpResponse(status = 403)
        
+@last_modified(Analysis.last_modified)
 def circularplotjs(request, aid):
     context = {}
     context['plotName'] = 'circular'
