@@ -194,6 +194,12 @@ function updateStrand(cb, strand) {
   case "integrated":
     track = "{{ plotName|default:"circular" }}Integrated";
     break;
+  case "contig":
+    track = "{{ plotName|default:"circular" }}Contig_Gap";
+    break;
+  case "alignment":
+    track = "{{ plotName|default:"circular" }}Alignment";
+    break;
   }
 
   if(cb.checked) {
@@ -208,6 +214,10 @@ function updateStrand(cb, strand) {
     }
   }
 }
+
+{% if contig_controls %}
+$('#contigcontrols').show();
+{% endif %}
 
 //var virulenceMappings = { 'VFDB': ['VFDB', 'Victors', 'Patric_VF'],
 var virulenceMappings = { 'VFDB': ['VFDB'],

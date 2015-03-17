@@ -193,6 +193,16 @@ div.outline {
 	font-size:14px;
 	font-weight:bold;
 	}   
+.alignment_label {
+    color: #336600;
+	font-size:14px;
+	font-weight:bold;
+}
+.contig_label {
+	color: #848484;
+	font-size:14px;
+	font-weight:bold;
+}
 
 .pageName {
 	font:20px arial;
