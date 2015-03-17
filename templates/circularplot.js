@@ -215,10 +215,6 @@ function updateStrand(cb, strand) {
   }
 }
 
-{% if contig_controls %}
-$('#contigcontrols').show();
-{% endif %}
-
 //var virulenceMappings = { 'VFDB': ['VFDB', 'Victors', 'Patric_VF'],
 var virulenceMappings = { 'VFDB': ['VFDB'],
 			  'ARDB': ['ARDB', 'CARD'],
@@ -308,6 +304,11 @@ window.onload = function() {
   }
   //  reload();
 //  load_second();
+
+  {% if contig_controls %}
+  $('#contigcontrols').show();
+  {% endif %}
+
 };
 
 function show_gene_search() {
