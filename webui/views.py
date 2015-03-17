@@ -198,7 +198,7 @@ def circularplotjs(request, aid):
             json_objs['Dimob'].append(rec)
             json_objs['Integrated'].append(rec)
             
-    if context['Contig_Gap'] or context['Alignments']:
+    if json_objs['Contig_Gap'] or json_objs['Alignments']:
         context['contig_controls'] = True
             
     context['Contig_Gap'] = json.dumps(json_objs['Contig_Gap'])
