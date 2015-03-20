@@ -14,6 +14,7 @@ import pprint
 
 default_host = settings.ISLANDVIEWER_HOST
 default_port = settings.ISLANDVIEWER_PORT
+timeout = 120
 
 '''
 This is the generic handler, we're passed a structure we'll
@@ -194,7 +195,7 @@ def send_message(s, message):
     #Now receive data
 #    reply = s.recv(4096)
     try:
-        reply = recv_timeout(s,60)
+        reply = recv_timeout(s,timeout)
     except Exception as e:
         if settings.DEBUG:
             print e
