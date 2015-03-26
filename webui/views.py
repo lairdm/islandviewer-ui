@@ -103,6 +103,15 @@ def results(request, aid):
         CHOICES = dict(STATUS_CHOICES)
         context['status'] = CHOICES[analysis.status]
 
+        if analysis.status == STATUS['PENDING'] or analysis.status == STATUS['RUNNING']:
+            try:    
+                context['emails'] = ','.join(Notification.objects.filter(analysis=analysis).values_list('email', flat=True))
+            except Exception as e:
+                if settings.DEBUG:
+                    print e
+            pass    
+
+
     if request.GET.get('load'):
         context['reload'] = request.GET.get('load')
 

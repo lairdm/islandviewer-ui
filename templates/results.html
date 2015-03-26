@@ -131,7 +131,9 @@
 
    <span class="smalltext" id="email_notify">Receive email notification when job completes:<br /><input type="text" name="email" size="25" class="notify_values" id="email_box" placeholder="Enter email"> <input type="submit" value="Submit Email" onclick="return submit_notify()"><br />
    <span id="emailerror" class="errortext"></span>
-   </span>
+   </span><br />
+   {% if emails %}<span class="smalltext">Emails to be notified upon completion: {{ emails }}</span><br />&nbsp;<br />{% endif %}
+   &nbsp;<br />
    <script src="{% url 'graphanalysisjs' aid %}"></script>
 
    <script type="text/javascript">
@@ -175,6 +177,7 @@
 				if('status' in json && json['status'] == 'success') {
 					showError("Email successfully submitted, you should be hearing from us shortly when your analysis is complete.")
 					$("#email_box").val('');
+					location.reload();
 				} else {
 					  showError("There was a problem submitting your email address, please try again later or contact us for further assistance.");
 				}
