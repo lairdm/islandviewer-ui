@@ -141,7 +141,7 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% if not skip_initialize %}
 
 var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
-
+// {{ genomename|pprint }}
 update_legend();
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, dblclick: '{{ varName|default:'' }}islandviewerObj' };

@@ -112,7 +112,6 @@ Islandviewer.prototype.ondblclick = function(plotid, bp) {
 
         this.circularplot.showBrush();
   
-	// Make out d parameter manually
         this.showHoverGenes({start: newStart, end: newEnd}, false);
     }
 }
@@ -268,8 +267,9 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, params) {
 		}
 		html += "</table>";
 		$('#gene_dialog').html(html);
-                $('#gene_dialog').dialog('option', 'title', 'Genes (' + self.genomename + ')');
+		var title = $('<span>').html(self.genomename).text();
 
+                $('#gene_dialog').dialog('option', 'title', 'Genes (' + title + ')');
 		// Highlight the row(s) in the table if we've been asked to
 		if('undefined' !== typeof params && 'undefined' !== typeof params['highlight_sel']) {
 		    highlight_sel = params['highlight_sel'];

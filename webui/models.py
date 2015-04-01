@@ -171,7 +171,6 @@ class Analysis(models.Model):
     @classmethod
     def last_modified(cls, request, aid):
         
-        print "Looking up aid {}".format(aid)
         return Analysis.objects.get(aid=aid).complete_date
 
     class Meta:
