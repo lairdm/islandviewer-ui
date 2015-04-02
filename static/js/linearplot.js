@@ -276,7 +276,10 @@ function genomeTrack(layout,tracks) {
 	    this.itemRects[i] = this.main.append("g")
 		.attr("class", this.tracks[i].trackName)
 		.attr("width", this.layout.width_without_margins)
-		.attr("clip-path", "url(#trackClip_" + this.layout.containerid + ")");
+                // Take the clip path out since we don't actually need it
+                // for glyphs, they vanish automatically and it
+                // seems to screw up the PNG rendering
+                //		.attr("clip-path", "url(#trackClip_" + this.layout.containerid + ")");
 	    this.displayGlyphTrack(this.tracks[i], i);
 	    break;
 	case "plot":
