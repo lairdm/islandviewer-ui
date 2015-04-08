@@ -109,7 +109,7 @@ class Analysis(models.Model):
                     pprint.pprint(a_parameters)
                 
                 # First check we have the right fields...
-                if 'comparison_genomes' not in a_parameters and 'MIN_GI_SIZE' not in a_parameters:
+                if 'comparison_genomes' not in a_parameters or 'MIN_GI_SIZE' not in a_parameters:
                     if settings.DEBUG:
                         print "Either comparison_genomes or min_gi_size aren't in the db for analysis {}, skipping".format(a.aid)
                     continue
