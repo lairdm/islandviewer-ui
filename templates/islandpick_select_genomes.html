@@ -184,6 +184,10 @@
 				if('status' in json && json['status'] == 'success') {
 					var redirect_url = '{% url 'results' '9999' %}'.replace('9999', json['aid']);
 					
+					if(json['token']) {
+						redirect_url += "?token=" + json['token'];
+					}
+					
 					window.location = redirect_url;
 					
 				} else {

@@ -128,7 +128,7 @@ class Analysis(models.Model):
                     continue
                 
                 # We made it this far, we must have a match, return this aid
-                return a.aid
+                return (a.aid, a.token)
             
         # We exited the loop without returning, we must not have
         # a match, return None

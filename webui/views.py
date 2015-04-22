@@ -982,7 +982,9 @@ def islandpick_genomes(request, aid):
             match_aid = Analysis.find_islandpick(analysis.ext_id, accnums, min_gi_size)
             if match_aid:
                 context['status'] = 'success'
-                context['aid'] = match_aid 
+                context['aid'], token = match_aid
+                if token:
+                    context['token'] = token
             
             else:
                 clone_ret = send_clone(aid, **clone_kwargs)
@@ -992,7 +994,14 @@ def islandpick_genomes(request, aid):
                         print "Job submitted, new aid: " + clone_ret['data']
                     
                     context['status'] = 'success'
-                    context['aid'] = clone_ret['data']                
+                    aid = clone_ret['data']
+                    context['aid'] = aid
+                    try:
+                        new_analysis = Analysis.objects.get(pk=aid)
+                        if new_analysis.token:
+                            context['token'] = new_analysis.token
+                    except:
+                        pass               
         
         except Exception as e:
             if settings.DEBUG:
