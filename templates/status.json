@@ -6,6 +6,7 @@
        "aid": {{ a.aid }},
        "atype": {{ a.atype }},
        "ext_id": "{{ a.ext_id }}",
+       {% if a.token %}"token": "{{ a.token }}",{% endif %}
        "default_analysis": "{{ a.default_analysis }}",
        {% for t in a.tasks.all %}
        "{{ t.prediction_method }}": "{{ t.status|get_status }}",

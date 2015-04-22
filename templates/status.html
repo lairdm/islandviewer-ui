@@ -98,7 +98,11 @@ var  oTable = $('#{{ summarytablename|default:"summarytable" }}').dataTable({
  	    				"aTargets": [2],
  	    				"mData": null,
  	    				"mRender": function(data, type, full) {
- 	        				return '<a href="' + '{%url 'results' '9999' %}'.replace(9999, full.aid) + '">' + full.ext_id + '</a>';
+ 							var url = '{%url 'results' '9999' %}'.replace(9999, full.aid);
+ 							if('undefined' !== typeof full.token) {
+ 								url += '?token=' + full.token;
+ 							}
+ 	        				return '<a href="' + url + '">' + full.ext_id + '</a>';
  	    					},
  						},
 					{
