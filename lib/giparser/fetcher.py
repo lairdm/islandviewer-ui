@@ -1,4 +1,5 @@
 from Bio import SeqIO
+from Bio.Alphabet import IUPAC
 from webui.models import Analysis, CustomGenome, GenomicIsland, Replicon, Genomeproject, Genes
 from webui.utils.formatter import methodfullnames
 from django.conf import settings
@@ -43,6 +44,7 @@ class GenbankParser():
                 
         gbhandle = SeqIO.parse(self.fname, "genbank")
         records = next(gbhandle)
+	records.seq.alphabet = IUPAC.ambiguous_dna
         # Stash it for later
         self.records = records
         recs_in_islands = Vividict()
@@ -129,6 +131,7 @@ class GenbankParser():
         self.records.features.insert(offset, feature)
         
     def writeGenbank(self, handle):
+	pprint.pprint(self.records)
         SeqIO.write(self.records, handle, "genbank")
 
     def generateFasta(self, gi = 0, seqtype = 'protein', show_methods = False, methods=['integrated']):
