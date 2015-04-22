@@ -131,7 +131,9 @@ class GenbankParser():
         self.records.features.insert(offset, feature)
         
     def writeGenbank(self, handle):
-	pprint.pprint(self.records)
+        if len(self.records.locus) > 16:
+            self.records.locus = self.records.locus[:16]
+    
         SeqIO.write(self.records, handle, "genbank")
 
     def generateFasta(self, gi = 0, seqtype = 'protein', show_methods = False, methods=['integrated']):
