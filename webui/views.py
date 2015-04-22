@@ -66,6 +66,20 @@ def results(request, aid):
         context['aid'] = aid
         context['default_analysis'] = (True if analysis.default_analysis == 1 else False)
 
+        # Check for a security token 
+        if analysis.token:
+            # We have a security token
+            if request.GET.get('token'):
+                token = request.GET.get('token')
+                if token != analysis.token:
+                    # Uh-oh, the token didn't match!
+                    return HttpResponse(status=403)
+                    
+            else:
+                # There's a token in the analysis but the user didn't supply one...
+                return HttpResponse(status=403)
+
+
         # Fetch the genome name and such
         if(analysis.atype == Analysis.CUSTOM):
             genome = CustomGenome.objects.get(pk=analysis.ext_id)
@@ -346,6 +360,7 @@ def uploadform(request):
                         aid = m.group(1)
                         if settings.DEBUG:
                             print "Found aid: {0}".format(aid)
+                            
                         return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
                     else:
                         context['error'] = "Error parsing results from the server"
@@ -413,6 +428,11 @@ def uploadcustomajax(request):
 
                         context['status'] = 200
                         context['aid'] = aid
+                        if 'data' in ret and 'token' in ret['data']:
+                            if settings.DEBUG:
+                                print "Found token: " + ret['data']['token']
+                            context['token'] = ret['data']['token']
+
 #                        return HttpResponseRedirect(reverse('webui.views.results', kwargs={'aid': aid}))
                     else:
                         context['error'] = "Error parsing results from the server"

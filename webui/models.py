@@ -70,6 +70,7 @@ class Analysis(models.Model):
                                 default=CUSTOM)
     ext_id = models.CharField(max_length=15)
     owner_id = models.IntegerField(default=0)
+    token = models.CharField(max_length=22, blank=True)
     default_analysis = models.BooleanField(default=True)
     status = models.IntegerField(choices=STATUS_CHOICES,
                                  default=STATUS['PENDING'])

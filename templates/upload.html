@@ -147,6 +147,10 @@ $(document).ready( function() {
 					// We have an aid, redirect!
 					url = '{% url 'results' '9999' %}'.replace(9999, data['aid']);
 					
+					if('undefined' !== typeof data['token']) {
+						url += "?token=" + data['token'];			
+					}
+					
 					window.location = url;
 				}
 				$('#error_message').hide();
