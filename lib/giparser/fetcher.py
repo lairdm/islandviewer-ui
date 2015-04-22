@@ -131,8 +131,8 @@ class GenbankParser():
         self.records.features.insert(offset, feature)
         
     def writeGenbank(self, handle):
-        if len(self.records.locus) > 16:
-            self.records.locus = self.records.locus[:16]
+        if len(self.records.name) > 16:
+            self.records.name = self.records.name[:16]
     
         SeqIO.write(self.records, handle, "genbank")
 
