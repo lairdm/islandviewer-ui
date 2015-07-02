@@ -294,7 +294,26 @@ def tablejson(request, aid):
     # Fill in the GIs
 #    context['gis'] = GenomicIsland.objects.filter(aid_id=aid).all()
     params = [aid]
-    context['gis'] = GenomicIsland.objects.raw("SELECT DISTINCT gi.gi, gi.aid_id, gi.start, gi.end, gi.prediction_method,  GROUP_CONCAT( DISTINCT v.type ) AS annotations FROM GenomicIsland AS gi JOIN IslandGenes AS ig ON ig.gi = gi.gi JOIN Genes AS g ON ig.gene_id = g.id LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE gi.aid_id = %s AND (gi.prediction_method = 'Islandpick' or gi.prediction_method = 'Sigi' or gi.prediction_method = 'Dimob') GROUP BY gi.gi", params)
+    sql = """
+    SELECT DISTINCT gi.gi, gi.aid_id, gi.start, gi.end, gi.prediction_method, GROUP_CONCAT( DISTINCT v.type ) AS annotations
+    FROM (
+      SELECT gi.gi, gi.aid_id, gi.start, gi.end, gi.prediction_method
+      FROM GenomicIsland AS gi
+      WHERE gi.aid_id = %s
+      AND (
+        gi.prediction_method =  'Islandpick'
+        OR gi.prediction_method =  'Sigi'
+        OR gi.prediction_method =  'Dimob'
+      )
+    )gi
+    LEFT JOIN IslandGenes AS ig ON ig.gi = gi.gi
+    LEFT JOIN Genes AS g ON ig.gene_id = g.id
+    LEFT JOIN virulence AS v ON g.name = v.protein_accnum
+    GROUP BY gi.gi
+    """
+
+    context['gis'] = GenomicIsland.objects.raw(sql, params)
+#    context['gis'] = GenomicIsland.objects.raw("SELECT DISTINCT gi.gi, gi.aid_id, gi.start, gi.end, gi.prediction_method,  GROUP_CONCAT( DISTINCT v.type ) AS annotations FROM GenomicIsland AS gi JOIN IslandGenes AS ig ON ig.gi = gi.gi JOIN Genes AS g ON ig.gene_id = g.id LEFT JOIN virulence AS v ON g.name = v.protein_accnum WHERE gi.aid_id = %s AND (gi.prediction_method = 'Islandpick' or gi.prediction_method = 'Sigi' or gi.prediction_method = 'Dimob') GROUP BY gi.gi", params)
     
     context['gislength'] = sum(1 for result in context['gis'])
     

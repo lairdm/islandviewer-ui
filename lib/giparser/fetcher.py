@@ -44,7 +44,7 @@ class GenbankParser():
                 
         gbhandle = SeqIO.parse(self.fname, "genbank")
         records = next(gbhandle)
-	records.seq.alphabet = IUPAC.ambiguous_dna
+        records.seq.alphabet = IUPAC.ambiguous_dna
         # Stash it for later
         self.records = records
         recs_in_islands = Vividict()
