@@ -214,11 +214,16 @@
 		prevRuns['{{item.complete_date|date:"d M Y"}}'] = '{{item.aid}}';
 		{% endfor %}
 		
-		console.log(prevRuns);
-
 		for(runDate in prevRuns) {
-			$('#previousRunsSelect').append("<option value=\"" + prevRuns[runDate] + "\">Analysis " + prevRuns[runDate] + " (" + runDate + ")</option>")	
-			console.log(runDate)
+			var str = "<option value=\"" + prevRuns[runDate] + "\">Analysis " + prevRuns[runDate] + " (" + runDate + ")";
+			
+			if(prevRuns[runDate] == {{ aid }}) {
+				str += " (this analysis)";
+			}
+			
+			str += "</option>";
+			
+			$('#previousRunsSelect').append(str);	
 		}
 	}
 	

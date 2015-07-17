@@ -854,7 +854,7 @@ def islandpick_select_genomes(request, aid):
         elif(analysis.atype == Analysis.MICROBEDB):
             context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
 
-        context['related_analysis'] = Analysis.objects.filter(ext_id=analysis.ext_id, owner_id=0, default_analysis=0).all()
+        context['related_analysis'] = Analysis.objects.filter(ext_id=analysis.ext_id, owner_id=0).all()
         
 
     except:
