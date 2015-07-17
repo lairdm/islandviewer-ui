@@ -342,7 +342,8 @@ def search_genes(request, ext_id):
             results.append(gene_json)
         data = json.dumps(results)
     else:
-        print "failed?"
+        if settings.DEBUG:
+            print "failed?" 
         data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
@@ -852,6 +853,9 @@ def islandpick_select_genomes(request, aid):
             context['genomename'] = genome.name
         elif(analysis.atype == Analysis.MICROBEDB):
             context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
+
+        context['related_analysis'] = Analysis.objects.filter(ext_id=analysis.ext_id, owner_id=0, default_analysis=0).all()
+        
 
     except:
         pass

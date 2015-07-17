@@ -14,6 +14,7 @@
 		console.log("loaded");
 		
 		updatePickerList();
+		showPreviousRuns();
 		
 		$.ajaxSetup({ 
 		     beforeSend: function(xhr, settings) {
@@ -207,6 +208,30 @@
 			});
 	}
 	
+	function showPreviousRuns() {
+		var prevRuns = {};
+		{% for item in related_analysis %}
+		prevRuns['{{item.complete_date|date:"d M Y"}}'] = '{{item.aid}}';
+		{% endfor %}
+		
+		console.log(prevRuns);
+
+		for(runDate in prevRuns) {
+			$('#previousRunsSelect').append("<option value=\"" + prevRuns[runDate] + "\">Analysis " + prevRuns[runDate] + " (" + runDate + ")</option>")	
+			console.log(runDate)
+		}
+	}
+	
+    function goto_analysis()
+    {
+    	if(!($("#previousRunsSelect").val())) {
+    		return;
+    	}
+ 
+    	var url = "{% url "results" '9999' %}".replace('9999', $("#previousRunsSelect").val());
+    	window.location = url;
+    	
+    }
 	</script>
 
 {% endblock %}
@@ -296,6 +321,13 @@
 		</select> Minimum Genomic Island Size</p>
 		<p><input type="button" onclick="runIslandpick()" id="runislandpick" value="Run IslandPick"></p>
 
+        {% if related_analysis %}
+        &nbsp;<br />
+        <p class="subHeader">Previous runs of this genome:</p>
+        <div id="previousRuns"><select id="previousRunsSelect"></select></div>
+        &nbsp;<br />
+        <input type="button" value="Show Analysis" onclick="goto_analysis()">
+        {% endif %}
 	</td>
 	</tr>
 	</table>
