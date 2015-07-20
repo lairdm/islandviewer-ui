@@ -646,6 +646,13 @@ class RepliconDistanceTmp(models.Model):
         managed = False
         db_table = 'replicon_distance_tmp'
 
+class SiteStatus(models.Model):
+    status = models.IntegerField(default=0, primary_key=True)
+    message = models.CharField(max_length=500)
+    class Meta:
+        managed = False
+        db_table = 'SiteStatus'
+
 class Taxonomy(models.Model):
     taxon_id = models.IntegerField(primary_key=True)
     superkingdom = models.TextField(blank=True)

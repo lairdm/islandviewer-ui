@@ -324,7 +324,9 @@
 		<option value="16000">16000</option>
 		<option value="20000">20000</option>
 		</select> Minimum Genomic Island Size</p>
+        {% if nouploads %}<p class="smalltext">We're sorry, custom analysis are currently disabled due to maintenance, please check back later.{% if message %}</p><p class="smalltext">{{ message }}{% endif %}</p>{% else %}
 		<p><input type="button" onclick="runIslandpick()" id="runislandpick" value="Run IslandPick"></p>
+        {% endif %}
 
         {% if related_analysis %}
         &nbsp;<br />

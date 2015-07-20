@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import last_modified
 import json
-from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
+from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, SiteStatus, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES
 from django.core.urlresolvers import reverse
 from islandplot import plot
 from giparser import fetcher
@@ -350,6 +350,18 @@ def search_genes(request, ext_id):
 
 def uploadform(request):
     context = {}
+    
+    try:
+        uploadstatus = SiteStatus.objects.all()[0]
+        
+        if uploadstatus.status != 0:
+            context['message'] = uploadstatus.message
+
+            return render(request, 'noupload.html', context)
+        
+    except Exception as e:
+        if settings.DEBUG:
+            print "Error getting SiteStatus: {}".format(str(e))
     
     if request.method == 'GET':
         form = UploadGenomeForm()
@@ -842,6 +854,17 @@ def genesbybpjson(request):
 
 def islandpick_select_genomes(request, aid):
     context = {}
+
+    try:
+        uploadstatus = SiteStatus.objects.all()[0]
+        
+        if uploadstatus.status != 0:
+            context['message'] = uploadstatus.message
+            context['nouploads'] = True
+        
+    except Exception as e:
+        if settings.DEBUG:
+            print "Error getting SiteStatus: {}".format(str(e))
     
     try:
         analysis = Analysis.objects.get(pk=aid)
