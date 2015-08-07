@@ -54,6 +54,7 @@ class NameCache(models.Model):
     name = models.CharField(max_length=60)
     cds_num = models.IntegerField(default=0)
     rep_size = models.IntegerField(default=0)
+    isvalid = models.IntegerField(default=1)
 
     class Meta:
         db_table = "NameCache"

@@ -46,7 +46,7 @@ def showgenomesjson(request):
 
 def fetchgenomesjson(request):
         
-    genomes = list(NameCache.objects.values('cid', 'name').all())
+    genomes = list(NameCache.objects.filter(isvalid=1).values('cid', 'name').all())
     
     data = json.dumps(genomes, indent=4, sort_keys=False)
     
