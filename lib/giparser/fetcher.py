@@ -92,6 +92,7 @@ class GenbankParser():
                         loc = str(feature.location.start) + ".." + str(feature.location.end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
+                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
 
                         if not hasattr(feature, 'qualifiers'):
                             continue 
@@ -105,6 +106,7 @@ class GenbankParser():
                         loc = str(feature.location.start) + ".." + str(feature.location.end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
                         recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
+                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
 
                         if not hasattr(feature, 'qualifiers'):
                             continue 

@@ -14,6 +14,7 @@
 		console.log("loaded");
 		
 		updatePickerList();
+		showPreviousRuns();
 		
 		$.ajaxSetup({ 
 		     beforeSend: function(xhr, settings) {
@@ -207,6 +208,35 @@
 			});
 	}
 	
+	function showPreviousRuns() {
+		var prevRuns = {};
+		{% for item in related_analysis %}
+		prevRuns['{{item.complete_date|date:"d M Y"}}'] = '{{item.aid}}';
+		{% endfor %}
+		
+		for(runDate in prevRuns) {
+			var str = "<option value=\"" + prevRuns[runDate] + "\">Analysis " + prevRuns[runDate] + " (" + runDate + ")";
+			
+			if(prevRuns[runDate] == {{ aid }}) {
+				str += " (this analysis)";
+			}
+			
+			str += "</option>";
+			
+			$('#previousRunsSelect').append(str);	
+		}
+	}
+	
+    function goto_analysis()
+    {
+    	if(!($("#previousRunsSelect").val())) {
+    		return;
+    	}
+ 
+    	var url = "{% url "results" '9999' %}".replace('9999', $("#previousRunsSelect").val());
+    	window.location = url;
+    	
+    }
 	</script>
 
 {% endblock %}
@@ -294,8 +324,17 @@
 		<option value="16000">16000</option>
 		<option value="20000">20000</option>
 		</select> Minimum Genomic Island Size</p>
+        {% if nouploads %}<p class="smalltext">We're sorry, custom analysis are currently disabled due to maintenance, please check back later.{% if message %}</p><p class="smalltext">{{ message }}{% endif %}</p>{% else %}
 		<p><input type="button" onclick="runIslandpick()" id="runislandpick" value="Run IslandPick"></p>
+        {% endif %}
 
+        {% if related_analysis %}
+        &nbsp;<br />
+        <p class="subHeader">Previous runs of this genome:</p>
+        <div id="previousRuns"><select id="previousRunsSelect"></select></div>
+        &nbsp;<br />
+        <input type="button" value="Show Analysis" onclick="goto_analysis()">
+        {% endif %}
 	</td>
 	</tr>
 	</table>

@@ -54,6 +54,7 @@ class NameCache(models.Model):
     name = models.CharField(max_length=60)
     cds_num = models.IntegerField(default=0)
     rep_size = models.IntegerField(default=0)
+    isvalid = models.IntegerField(default=1)
 
     class Meta:
         db_table = "NameCache"
@@ -645,6 +646,13 @@ class RepliconDistanceTmp(models.Model):
     class Meta:
         managed = False
         db_table = 'replicon_distance_tmp'
+
+class SiteStatus(models.Model):
+    status = models.IntegerField(default=0, primary_key=True)
+    message = models.CharField(max_length=500)
+    class Meta:
+        managed = False
+        db_table = 'SiteStatus'
 
 class Taxonomy(models.Model):
     taxon_id = models.IntegerField(primary_key=True)
