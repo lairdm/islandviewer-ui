@@ -147,7 +147,8 @@ Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
       } else if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
 	$('.islandset_' + d.id).addClass("highlight_row");
       } else if(trackname == 'circularVirulence') {
-        $('.gene_' + d.gene.replace('.', '')).addClass("highlight_row");
+//        $('.gene_' + d.gene.replace('.', '')).addClass("highlight_row");
+        $('#gene_overlay_' + d.id).addClass("highlight_row");
       }
 
     } else if (plotid == 'circularchart') {
@@ -172,7 +173,8 @@ Islandviewer.prototype.mouseout = function(trackname, d, plotid) {
       } else if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
 	$('.islandset_' + d.id).removeClass("highlight_row");
       } else if(trackname == 'circularVirulence') {
-        $('.gene_' + d.gene.replace('.', '')).removeClass("highlight_row");
+//        $('.gene_' + d.gene.replace('.', '')).removeClass("highlight_row");
+        $('#gene_overlay_' + d.id).removeClass("highlight_row");
       }
 
     } else if (plotid == 'circularchart') {
