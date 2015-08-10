@@ -242,7 +242,7 @@ def circularplotjs(request, aid):
     
     # Fetch the virulence factors
     params = [analysis.ext_id]
-    cursor.execute("SELECT @row:=@row+1 AS No, Genes.id, Genes.name, Genes.start, virulence.source, virulence.external_id FROM Genes, virulence, (SELECT @row := 0) r WHERE ext_id=%s AND Genes.name = virulence.protein_accnum", params)
+    cursor.execute("SELECT @row:=@row+1 AS No, Genes.id, Genes.name, Genes.start, virulence.source, virulence.external_id FROM Genes, virulence_mapped AS virulence, (SELECT @row := 0) r WHERE Genes.ext_id=%s AND Genes.id = virulence.gene_id", params)
 #    pprint.pprint(cursor.fetchall())
 #    vir_factors = Genes.objects.raw("SELECT Genes.id, Genes.name, Genes.start, virulence.source, virulence.external_id FROM Genes, virulence WHERE ext_id=%s AND Genes.name = virulence.protein_accnum", params)
     context['vir_factors'] = json.dumps([{'id': vf[0], 'bp': vf[3], 'type': VIRULENCE_FACTOR_CATEGORIES[vf[4]], 'name': vf[4], 'ext_id': vf[5], 'gene': vf[2]} for vf in cursor.fetchall()])
