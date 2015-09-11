@@ -380,7 +380,7 @@ class SiteStatus(models.Model):
     message = models.CharField(max_length=500)
     class Meta:
         managed = False
-        db_table = 'SiteStatus
+        db_table = 'SiteStatus'
         
 class Virulence(models.Model):
     protein_accnum = models.CharField(max_length=18,primary_key=True)
@@ -494,6 +494,3 @@ class Version(models.Model):
         managed = False
         db_table = 'version'
  
-
-
-
