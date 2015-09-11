@@ -274,7 +274,8 @@ class GenbankParser():
         # We'll have to go out to microbedb here and
         # get the filename
         try:
-            replicon = Replicon.objects.using('microbedb').filter(rep_accnum=ext_id)[0]
+            rep_accnum, rep_version = ext_id.split('.')
+            replicon = Replicon.objects.using('microbedb').filter(rep_accnum=rep_accnum, rep_version=rep_version)[0]
         except Replicon.DoesNotExist:
             pass
         
