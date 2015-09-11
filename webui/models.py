@@ -375,6 +375,22 @@ class Notification(models.Model):
     class Meta:
         db_table = "Notification"
 
+class SiteStatus(models.Model):
+    status = models.IntegerField(default=0, primary_key=True)
+    message = models.CharField(max_length=500)
+    class Meta:
+        managed = False
+        db_table = 'SiteStatus
+        
+class Virulence(models.Model):
+    protein_accnum = models.CharField(max_length=18,primary_key=True)
+    external_id = models.CharField(max_length=18)
+    source = models.CharField(max_length=4, blank=True)
+    type = models.CharField(max_length=20, blank=False)
+    class Meta:
+        managed = False
+        db_table = 'virulence'
+
 '''
 MicrobeDB models
 '''
@@ -477,15 +493,6 @@ class Version(models.Model):
     class Meta:
         managed = False
         db_table = 'version'
-
-class Virulence(models.Model):
-    protein_accnum = models.CharField(max_length=18,primary_key=True)
-    external_id = models.CharField(max_length=18)
-    source = models.CharField(max_length=4, blank=True)
-    type = models.CharField(max_length=20, blank=False)
-    class Meta:
-        managed = False
-        db_table = 'virulence'
  
 
 
