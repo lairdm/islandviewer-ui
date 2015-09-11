@@ -15,7 +15,7 @@ DATABASES = {
     },
     'microbedb': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'microbedb',
+        'NAME': 'microbedbv2',
         'USER': 'ivuser',
         'PASSWORD': 'ivuser34%',
         'HOST': secrets.DATABASE_HOST,
