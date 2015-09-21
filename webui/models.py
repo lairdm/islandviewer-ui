@@ -421,7 +421,7 @@ class Genomeproject_Checksum(models.Model):
     version_id = models.IntegerField(primary_key=True)
     filename = models.CharField(max_length=64)
     checksum = models.CharField(max_length=32)
-    gpv_id = models.ImageField()
+    gpv_id = models.IntegerField()
     class Meta:
         managed = False
         db_table = 'genomeproject_checksum'

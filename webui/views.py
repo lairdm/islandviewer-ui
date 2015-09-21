@@ -154,6 +154,18 @@ def resultsbyrootaccnum(request, accnum):
         if settings.DEBUG:
             print e
         return HttpResponse(status = 403)
+
+def resultsbyname(request, name):
+
+    try:
+        custom_genome = get_object_or_404(CustomGenome, name=name)
+        analysis = get_object_or_404(Analysis, ext_id=custom_genome.cid, owner_id=0)
+        return results(request, analysis.aid)
+        
+    except Exception as e:
+        if settings.DEBUG:
+            print e
+        return HttpResponse(status = 403)
        
 @last_modified(Analysis.last_modified)
 def circularplotjs(request, aid):
