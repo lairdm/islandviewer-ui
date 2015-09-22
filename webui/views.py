@@ -158,7 +158,7 @@ def resultsbyrootaccnum(request, accnum):
 def resultsbyname(request, name):
 
     try:
-        custom_genome = get_object_or_404(CustomGenome, name=name)
+        custom_genome = get_object_or_404(CustomGenome, name=name, owner_id=0)
         analysis = get_object_or_404(Analysis, ext_id=custom_genome.cid, owner_id=0)
         return results(request, analysis.aid)
         
