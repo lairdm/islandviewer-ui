@@ -67,7 +67,7 @@ def results(request, aid):
         context['default_analysis'] = (True if analysis.default_analysis == 1 else False)
 
         # Check for a security token 
-        if analysis.token:
+        if analysis.token and analysis.owner_id != 0:
             # We have a security token
             if request.GET.get('token'):
                 token = request.GET.get('token')
