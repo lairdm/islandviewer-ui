@@ -51,14 +51,16 @@ class GenbankParser():
         
         for feature in records.features:
                 if feature.type == 'gene':
-                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+                    start = int(feature.location.start)
+                    end = int(feature.location.end)
+                    gis = self.checkIslandRange(start, end)
 #                    if gi:
                     for gi in gis:
-                        loc = str(feature.location.start) + ".." + str(feature.location.end)
+                        loc = str(start) + ".." + str(end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
-                        recs_in_islands[gi][loc]['dna'] = records.seq[feature.location.start:feature.location.end]
-                        recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
-                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
+                        recs_in_islands[gi][loc]['dna'] = records.seq[start:end]
+                        recs_in_islands[gi][loc]['start'] =  str(start)
+                        recs_in_islands[gi][loc]['end'] =  str(end)
                                                     
                         if not hasattr(feature, 'qualifiers'):
                             continue 
@@ -68,13 +70,15 @@ class GenbankParser():
                         if 'locus_tag' in qualifiers:
                             recs_in_islands[gi][loc]['locus'] = qualifiers['locus_tag'][0]
                 if feature.type == 'CDS':
-                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+                    start = int(feature.location.start)
+                    end = int(feature.location.end)
+                    gis = self.checkIslandRange(start, end)
 #                    if gi:
                     for gi in gis:
-                        loc = str(feature.location.start) + ".." + str(feature.location.end)
+                        loc = str(start) + ".." + str(end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
-                        recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
-                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
+                        recs_in_islands[gi][loc]['start'] =  str(start)
+                        recs_in_islands[gi][loc]['end'] =  str(end)
 
                         if not hasattr(feature, 'qualifiers'):
                             continue 
@@ -86,13 +90,15 @@ class GenbankParser():
                         if 'product' in qualifiers:
                             recs_in_islands[gi][loc]['product'] = qualifiers['product'][0]
                 if feature.type == 'tRNA':
-                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+                    start = int(feature.location.start)
+                    end = int(feature.location.end)
+                    gis = self.checkIslandRange(start, end)
 #                    if gi:
                     for gi in gis:
-                        loc = str(feature.location.start) + ".." + str(feature.location.end)
+                        loc = str(start) + ".." + str(end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
-                        recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
-                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
+                        recs_in_islands[gi][loc]['start'] =  str(start)
+                        recs_in_islands[gi][loc]['end'] =  str(end)
 
                         if not hasattr(feature, 'qualifiers'):
                             continue 
@@ -100,13 +106,15 @@ class GenbankParser():
                         if 'product' in qualifiers:
                             recs_in_islands[gi][loc]['product'] = qualifiers['product'][0]
                 if feature.type == 'ncRNA':
-                    gis = self.checkIslandRange(feature.location.start, feature.location.end)
+                    start = int(feature.location.start)
+                    end = int(feature.location.end)
+                    gis = self.checkIslandRange(start, end)
 #                    if gi:
                     for gi in gis:
-                        loc = str(feature.location.start) + ".." + str(feature.location.end)
+                        loc = str(start) + ".." + str(end)
                         recs_in_islands[gi][loc]['strand'] = feature.location.strand
-                        recs_in_islands[gi][loc]['start'] =  str(feature.location.start)
-                        recs_in_islands[gi][loc]['end'] =  str(feature.location.end)
+                        recs_in_islands[gi][loc]['start'] =  str(start)
+                        recs_in_islands[gi][loc]['end'] =  str(end)
 
                         if not hasattr(feature, 'qualifiers'):
                             continue 
