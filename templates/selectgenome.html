@@ -11,10 +11,6 @@
 {% endblock %}
 
 {% block sidebar %}
-<span style="color:red">
-Due to unusual damage to power systems at SFU from a storm yesterday, BC Hydro will need to arrange a scheduled shutdown of all power across campus from 7am to noon, Pacific time on Tues Dec 8th, to make repairs. This degree of power outage will need to temporarily disrupt this service. We apologize for the inconvenience.
-</span>
-&nbsp;<br />
 <span class="smalltext">
 Please select a genome from the list. 
 Use the search box to bring matching genomes to the top of the list.
@@ -39,6 +35,8 @@ Use the search box to bring matching genomes to the top of the list.
 &nbsp;<br />
 &nbsp;<br />
 <p>News:</p>
+<p>2015/12/08 - Service was disrupted to IslandViewer and the SFU emergency power supply on Tuesday, December 8 while planned repairs took place. We apologize for the inconvenience. </p>
+
 <p>2015/04/20 - Islandviewer 3 is now out of beta, however if you still need to access older analysis using IslandViewer 2 we will keep it <a href="http://www.pathogenomics.sfu.ca/islandviewer2/query.php">available here</a> for the next few months.</p>
 
 <p>2015/03/03 - IslandViewer 3 has officially been released and is <a href="{% url 'browse' %}">available here</a>. IslandViewer 3 includes a new interactive genome visualization tool, IslandPlot, and expanded virulence factor, antimicrobial resistance gene, and pathogen-associated gene annotations, as well as homologs of these genes in closely related genomes. Notably, incomplete genomes are accepted as input in IslandViewer 3, though we strongly urge users to use complete genomes whenever possible. The old IslandViewer website will still be available for users to download results for any previously analyized custom genomes, but will eventually be replaced by IslandViewer 3. If you have any questions, comments, or issues with IslandViewer 3, please <a href="{% url 'contactus' %}">contact us.</a> </p>
