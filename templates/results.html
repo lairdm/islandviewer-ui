@@ -30,7 +30,7 @@
 
   {% else %}
   &nbsp;<br />
-  <span class="smalltext">
+  <span class="bodyText">
   The analysis is not yet complete, please check back to this page
   in a while, or you will be notified by email when the analysis is complete if you elected
   to enter an email address.<br />
@@ -39,7 +39,7 @@
   &nbsp;<br />
   </span>
   <span class="headertext">Legend:</span><br />
-  <span class="smalltext">&nbsp;<br />
+  <span class="bodyText">&nbsp;<br />
     &nbsp;&nbsp;<span class="legend Pending">&nbsp;</span>&nbsp;&nbsp;Pending<br />
     &nbsp;&nbsp;<span class="legend Running">&nbsp;</span>&nbsp;&nbsp;Running<br />
     &nbsp;&nbsp;<span class="legend Complete">&nbsp;</span>&nbsp;&nbsp;Complete<br />
@@ -129,10 +129,10 @@
    <g transform="translate(20, 20)"/>
    </svg><br />
 
-   <span class="smalltext" id="email_notify">Receive email notification when job completes:<br /><input type="text" name="email" size="25" class="notify_values" id="email_box" placeholder="Enter email"> <input type="submit" value="Submit Email" onclick="return submit_notify()"><br />
+   <span class="bodyText" id="email_notify">Receive email notification when job completes:<br /><input type="text" name="email" size="25" class="notify_values" id="email_box" placeholder="Enter email"> <input type="submit" value="Submit Email" onclick="return submit_notify()"><br />
    <span id="emailerror" class="errortext"></span>
    </span><br />
-   {% if emails %}<span class="smalltext">Emails to be notified upon completion: {{ emails }}</span><br />&nbsp;<br />{% endif %}
+   {% if emails %}<span class="bodyText">Emails to be notified upon completion: {{ emails }}</span><br />&nbsp;<br />{% endif %}
    &nbsp;<br />
    <script src="{% url 'graphanalysisjs' aid %}"></script>
 
