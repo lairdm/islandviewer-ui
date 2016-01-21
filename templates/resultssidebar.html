@@ -11,7 +11,8 @@
 <span class="subHeader">Legend</span><strong> </strong><span id="legend_help" class="subHeader">(<a href="{% url 'about' %}">Help</a>)</span><br />
 &nbsp;<br />
 <span class="sectionHeader">Prediction Methods</span><br />
-  <span class="red"><input id="showcircularIntegrated" class="methodcheckbox islandmethod showcircularIntegrated" type="checkbox" name="showIntegrated" onchange="updateStrand(this, 'integrated'); return false;" checked>Integrated</span><br />
+<span class="smalltext">
+	<span class="red"><input id="showcircularIntegrated" class="methodcheckbox islandmethod showcircularIntegrated" type="checkbox" name="showIntegrated" onchange="updateStrand(this, 'integrated'); return false;" checked>Integrated</span><br />
   <span class="green"><input id="showcircularIslandpick" class="methodcheckbox islandmethod showcircularIslandpick" type="checkbox" name="showIslandpick" onchange="updateStrand(this, 'islandpick'); return false;" checked>IslandPick</span><span id="nocircularIslandpick" class="nomethodtext nocircularIslandpick"> (No results found)</span><br />
   <span class="orange"><input id="showcircularSigi" class="methodcheckbox islandmethod showcircularSigi" type="checkbox" name="showSigi" onchange="updateStrand(this, 'sigi'); return false;" checked>SIGI-HMM</span><span id="nocircularSigi" class="nomethodtext nocircularSigi"> (No results found)</span><br />
   <span class="blue"><input id="showcircularDimob" class="methodcheckbox islandmethod showcircularDimob" type="checkbox" name="showDimob" onchange="updateStrand(this, 'dimob'); return false;" checked>IslandPath-DIMOB</span><span id="nocircularDimob" class="nomethodtext nocircularDimob"> (No results found)</span><br />
@@ -26,15 +27,18 @@
   <span class="{{ plotName|default:"circular" }}Virulence_ARDB"><input type="checkbox" class="methodcheckbox virulencemethod showARDB showCARD" id="showARDB" name="showARDB" onchange="updateVirulence(this, 'ARDB'); return false;" checked>Curated resistance genes</span><span id="noARDB" class="nomethodtext noCARD noARDB"> (No results found)</span><br />
   <span class="{{ plotName|default:"circular" }}Virulence_RGI"><input type="checkbox" class="methodcheckbox virulencemethod showRGI" id="showRGI" name="showRGI" onchange="updateVirulence(this, 'RGI'); return false;" checked>Homologs of resistance genes</span><span id="noRGI" class="nomethodtext noRGI"> (No results found)</span><br />
   <span class="{{ plotName|default:"circular" }}Virulence_PAG"><input type="checkbox" class="methodcheckbox virulencemethod showPAG" id="showPAG" name="showPAG" onchange="updateVirulence(this, 'PAG'); return false;" checked>Pathogen-associated genes</span><span id="noPAG" class="nomethodtext noPAG"> (No results found)</span><br />
+</span>
 </div>
 <p>&nbsp;</p>
 <div id="toolbox" class="outline">
 <span class="subHeader">Toolbox</span>
+<span class="smalltext">
 <div class="toolbox_item"><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a></div>
 <div class="toolbox_item"><a href="javascript:show_islandpick_genomes();" id="show_islandpick_genomes" >Show Islandpick Comparison Genomes</a></div>
 <div class="toolbox_item"><a href="javascript:show_gene_search();" id="show_gene_search" >Search Genes</a></div>
 <div class="toolbox_item"><a href="javascript:show_download();" id="show_download_link" >Download</a></div>
 <div class="toolbox_item"><a href="javascript:serialize();" id="save_view" >Save view</a></div>
+</span>
 </div>
 <p>&nbsp;</p>
 <p><span class="subHeader">Additional Tools (<a href="{% url 'about' %}#analysis">Help</a>)  </span></p>
@@ -43,7 +47,7 @@
   <li><a href="http://www.sanger.ac.uk/Software/Artemis/">Artemis</a> (with  <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to conduct further analysis of GIs. Artemis can be easily run using the <a href="http://www.sanger.ac.uk/Software/Artemis/v11/u5.5/Artemis.jnlp">web start version</a>.</li>
   <li><a href="http://asap.ahabs.wisc.edu/mauve/">Mauve  </a> (using <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to produce whole genome alignments and view conserved regions surronding GIs. </li>	
 </span>
-
+<p>&nbsp;</p>
 <div id="cite" class="outline"> <span class="bodyText"> If you use IslandViewer for your research, please cite the most recent publication. Thank you! <br /> Dhillon, B.K. et al. 2015. <br /> "IslandViewer 3: more flexible, interactive genomic island discovery, visualization and analysis" <br /> <i>Nucleic Acids Research</i>, 43 (W1): W104-W108. <br /> <a href="http://nar.oxfordjournals.org/content/43/W1/W104.full" target="_blank">doi: 10.1093/nar/gkv401</a> </span> </div>
 
 <script>
