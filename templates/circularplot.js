@@ -615,7 +615,7 @@ function load_second(aidParam, reloadParams) {
     window.secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout);    
     $('#rightplot').draggable({ handle: ".move_rightplot" });
 
-    var secondLinearlayout = {genomesize: second_genomesize, container: "#secondchartlinear", width: 600, height: 135, bottom_margin:0, plotid: 'circularchartlinear'};
+    var secondLinearlayout = {genomesize: second_genomesize, container: "#secondchartlinear", width: linearcontainerwidth, height: 135, bottom_margin:0, plotid: 'circularchartlinear'};
 //    var secondLinearTrack = new genomeTrack(secondLinearlayout, seconddata);
     window.secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout);
 
