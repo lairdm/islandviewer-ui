@@ -141,7 +141,6 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% if not skip_initialize %}
 
 var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
-// {{ genomename|pprint }}
 update_legend();
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, dblclick: '{{ varName|default:'' }}islandviewerObj' };
@@ -174,12 +173,6 @@ $('#gene_dialog').dialog( { position: { my: "left top", at: "right top", of: "{{
 	    $('.circularcontainer').removeClass('outline_plot');
 	}
 	    } );
-
-//$('#genome_selector_dialog').dialog( { position: { my: "center", at: "center", of: window },
-//                                       height: 300, width: 600,
-//                                       title: "Select a genome",
-//                                       autoOpen: true
-//                                      } );
 
 function updateStrand(cb, strand) {
   var track = '';
@@ -218,7 +211,6 @@ function updateStrand(cb, strand) {
   }
 }
 
-//var virulenceMappings = { 'VFDB': ['VFDB', 'Victors', 'Patric_VF'],
 var virulenceMappings = { 'VFDB': ['VFDB'],
 			  'ARDB': ['ARDB', 'CARD'],
 			  'BLAST': ['BLAST'],
@@ -229,13 +221,8 @@ var virulenceMappings = { 'VFDB': ['VFDB'],
 function updateVirulence(cb, vir) {
 
     var vir_factor = vir;
-    //  var vir_factors =  virulenceMappings[vir];
-    //  for(var x = 0; x < vir_factors.length; x++) {
-    //      vir_factor = vir_factors[x];
-//      console.log(vir_factor);
 
       if(cb.checked) {
-	  //	  console.log("showing: " + vir_factor);
 	  {{ plotName|default:"circular" }}TrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
 	  if('undefined' !== typeof window.secondTrackObj) {
 	      window.secondTrackObj.showGlyphTrackType("{{ plotName|default:"circular" }}Virulence", vir_factor);
@@ -285,7 +272,6 @@ window.onload = function() {
 
       var half_range = (item.end - item.start)/2;
       {{ plotName|default:"circular" }}LinearTrack.update(Math.max(0,(item.start-half_range)), Math.min({{ genomesize }}, (item.end+half_range)));
-//      {{ plotName|default:"circular" }}LinearTrack.update(2840000,2905000);
 
       {{ plotName|default:"circular" }}TrackObj.moveBrushbyBP(Math.max(0,(item.start-half_range)), 
                                                        Math.min({{ genomesize }}, (item.end+half_range)));
@@ -302,11 +288,8 @@ window.onload = function() {
   initialize_gene_search();
 
   if('undefined' !== typeof reloadStr) {
-      //      console.log(reloadStr);
       reload(reloadStr);
   }
-  //  reload();
-//  load_second();
 
   {% if contig_controls %}
   $('#contigcontrols').show();
@@ -424,7 +407,6 @@ function serialize() {
 
     if('undefined' !== typeof window.secondislandviewerObj) {
 	params['s'] = window.secondislandviewerObj.serialize();
-	//	params['s']['id'] = window.secondislandviewerObj.aid;
     }
 
     if($('#gene_dialog').dialog( "isOpen" ) === false) {
@@ -433,7 +415,6 @@ function serialize() {
 	params['d'] = {v: true};
 
 	var o = $('#gene_dialog').dialog( "open" ).offset();
-	//	params['d']['p'] = $('#gene_dialog').dialog('option', 'position');
 	params['d']['t'] = o.top;
 	params['d']['l'] = o.left;
 
@@ -442,10 +423,6 @@ function serialize() {
     console.log(params);
 
     uri = encodeURIComponent(JSON.stringify(params));
-
-    //    decoded = decodeURIComponent(uri);
-
-    //    console.log(decoded);
 
     url = insertParam('load', uri);
 
@@ -480,7 +457,6 @@ function insertParam(key, value)
     if(i<0) {kvp[kvp.length] = [key,value].join('=');}
 
     //this will reload the page, it's likely better to store this until finished
-    //    document.location.search = kvp.join('&'); 
     return document.location.href + '?' + kvp.join('&'); 
 }
 
@@ -492,7 +468,6 @@ function reload(paramsStr) {
     } catch(err) {
 	alert("Error decoding url.");
     }
-    //    console.log(params);
 
     if('undefined' !== typeof params['m']) {
 	islandviewerObj.reload(params['m']);
@@ -724,7 +699,6 @@ function update_legend() {
     methods = secondmethods;
   }
 
-//console.log(methods);
   // Now update the legend
   var allmethods = ['circularIntegrated', 'circularIslandpick', 'circularSigi', 'circularDimob', 'PAG', 'VFDB', 'ARDB', 'CARD', 'RGI', 'Victors', 'PATRIC_VF', 'BLAST'];
   // First disable all checkboxes and say nothing is run
