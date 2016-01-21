@@ -153,7 +153,10 @@ var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot(
 
 $('#loadingimg').remove();
 
-var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: 600, height: 135, bottom_margin:0, initStart:0, initEnd: Math.min(1000, {{ genomesize }})};
+var linearcontainerwidth = d3.select(".linearchart").node().getBoundingClientRect().width;
+console.log(linearcontainerwidth)
+
+var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: linearcontainerwidth, height: 135, bottom_margin:0, initStart:0, initEnd: Math.min(1000, {{ genomesize }})};
 //var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
 var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot({{ plotName|default:"circular" }}Linearlayout);
 
@@ -318,7 +321,7 @@ function show_gene_search() {
 	return;
     }
 
-    $('#show_gene_search').html("Hide search");
+    $('#show_gene_search').html("Hide Search");
     $('#gene_search_dialog').slideToggle('fast');
     $("#gene_search_input").focus();
 

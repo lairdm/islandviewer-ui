@@ -636,4 +636,8 @@ input[type=file] {
     transform: rotate(360deg);
   }
 }
+
+.linearchart {
+    width: 100%;
+}
 /* END Spinner for loading ranking page*/

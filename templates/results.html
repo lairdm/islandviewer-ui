@@ -93,14 +93,21 @@
       </div>
     </div>
     </div>
-	<div id="circularchartlinearwrapper" class="visible">
-	  <span id="linearname" class="linearLabel"></span>
-	  <div id="circularchartlinear" style="width:600px;"></div>  
-	</div>
-	<div id="secondlinearwrapper" class="visible">
-	  <span id="secondlinearname" class="linearLabel"></span>
-	  <div id="secondchartlinear" style="width:600px;"></div>
-	</div>
+      <div id="linearcharts">
+        <div id="circularchartlinearwrapper" class="visible linearchart">
+          <span id="linearname" class="linearLabel"></span>
+          <div id="circularchartlinear" style="width:600px;"></div>
+        </div>
+
+        <div id="linearchartcomparisons" class="linearchart">
+
+        </div>
+
+        <div id="secondlinearwrapper" class="visible linearchart">
+          <span id="secondlinearname" class="linearLabel"></span>
+          <div id="secondchartlinear" style="width:600px;"></div>
+        </div>
+      </div>
     <script type="text/javascript">
 
    {% if reload %}
