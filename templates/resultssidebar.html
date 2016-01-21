@@ -2,6 +2,7 @@
 <span class="bodyText">
 <p>Predicted genomic islands and virulence/resistance gene annotations (when available) are coloured within the images based on the legend.  Individual items for display can be selected below.</p>
 {% if ref_genome %}Use caution when interpreting GI predictions for incomplete genomes. Gaps are indicated as grey bars in the circular plot, and any unaligned contigs are displayed at the end of the genome plot (indicated in grey on the circular alignment plot) and should be evaluated accordingly.{% endif %}
+</span>
 <div id"tourbox" class="outline">
 <span class="largetext"><center><a href="javascript:feature_tour();">Take a tour</a></center></span>
 </div>
@@ -37,7 +38,8 @@
 </div>
 <p>&nbsp;</p>
 <p><span class="subHeader">Additional Tools (<a href="{% url 'about' %}#analysis">Help</a>)  </span></p>
-  <!--<li><a href="reference_input.php?query_input=117174">IslandPick</a> can be run using manually selected comparison genomes instead of default genomes.</li>-->
+<span class="bodyText">
+	<!--<li><a href="reference_input.php?query_input=117174">IslandPick</a> can be run using manually selected comparison genomes instead of default genomes.</li>-->
   <li><a href="http://www.sanger.ac.uk/Software/Artemis/">Artemis</a> (with  <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to conduct further analysis of GIs. Artemis can be easily run using the <a href="http://www.sanger.ac.uk/Software/Artemis/v11/u5.5/Artemis.jnlp">web start version</a>.</li>
   <li><a href="http://asap.ahabs.wisc.edu/mauve/">Mauve  </a> (using <a href="download_table.php?query_input=NC_002516.2&view=0&type=gbk">GenBank </a>file) can be used to produce whole genome alignments and view conserved regions surronding GIs. </li>	
 </span>
