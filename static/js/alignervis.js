@@ -1,13 +1,18 @@
 //Notes: seems appropriate to move Multivis.sequences to Backbone
 
 function MultiVis(targetNode){
+    var self = this;
     const SEQUENCEHEIGHT = 150;
     const CONTAINERWIDTH = 917.5;
     // const NUMBERAXISTICKS = 5; BROKEN FOR CURRENT IMPLEMENTATION
 
     this.container = d3.select(targetNode);
     this.backbone = new Backbone();
-    this.sequences = this.backbone.sequences;
+    this.sequences = this.backbone.getSequences();
+
+    this.getSequence = function(index){
+        return self.sequences[index];
+    };
 
     this.getLargestSequenceSize = function(){
         var largestSize=0;
@@ -33,8 +38,8 @@ function MultiVis(targetNode){
     };
 
     this.updateSequenceVisualization= function(sequenceIndex, newstart, newend){
-        this.sequences[sequenceIndex].updateScale(newstart,newend,CONTAINERWIDTH);
-        this.transition();
+        self.getSequence(sequenceIndex).updateScale(newstart,newend,CONTAINERWIDTH);
+        self.transition();
     };
 
     //Readjusts the graph for updated sequence domains, (improve later, currently just re-renders graph)
@@ -44,6 +49,7 @@ function MultiVis(targetNode){
     };
 
     this.render = function (){
+        this.container.select("svg").remove();
         var scale = d3.scale.linear().domain([0,this.getLargestSequenceSize()]).range([0,this.containerWidth()]);
 
         //Add the SVG
@@ -128,6 +134,7 @@ function MultiVis(targetNode){
 }
 
 function Backbone(){
+    var self = this;
     this.sequences = [];
     this.backbone = [[]];
 
@@ -135,6 +142,10 @@ function Backbone(){
         seq = new Sequence(sequenceId, sequenceSize);
         this.sequences.push(seq);
         return seq
+    };
+
+    this.getSequences = function(){
+        return self.sequences;
     };
 
     this.addHomologousRegion = function(seqId1,seqId2,start1,end1,start2,end2){
@@ -174,7 +185,6 @@ function Backbone(){
 
     //Parses and then renders a backbone file in the target multivis object
     this.parseAndRenderBackbone= function(backboneFile,multiVis){
-
         var backbonereference = this;
         d3.tsv(backboneFile, function(data){
             var numberSequences = (Object.keys(data[0]).length)/2;

@@ -15,6 +15,7 @@ function genomeTrack(layout,tracks) {
     this.tracks = tracks;
     this.layout = layout;
     this.numTracks = this.countTracks();
+	this.comparisonContainerCallback = null;
 
     if('undefined' !== typeof layout) {
 		// Copy over any defaults not passed in
@@ -992,7 +993,7 @@ genomeTrack.prototype.displayAxis = function() {
 }
 
     genomeTrack.prototype.update = function(startbp, endbp, params) {
-    //    console.log(startbp, endbp);
+        //console.log(startbp, endbp);
 
     this.visStart = startbp;
     this.visEnd = endbp;
@@ -1003,7 +1004,7 @@ genomeTrack.prototype.displayAxis = function() {
 }
 
 genomeTrack.prototype.update_finished = function(startbp, endbp, params) {
-    //    console.log("Thank you, got: " + startbp, endbp);
+        //console.log("Thank you, got: " + startbp, endbp);
 
 }
 
@@ -1046,6 +1047,7 @@ genomeTrack.prototype.dragresize = function(d) {
 }
 
 genomeTrack.prototype.redraw = function() {
+	this.comparisonRedrawer();
 
     for(var i = 0; i < this.tracks.length; i++) {
 
@@ -1076,8 +1078,18 @@ genomeTrack.prototype.redraw = function() {
     }
     
     this.axisContainer.select(".xaxislinear").call(this.xAxis);
+};
 
-}
+genomeTrack.prototype.setComparisonContainer = function(comparisoncontainerfunction){
+	this.comparisonContainerCallback = comparisoncontainerfunction;
+};
+
+genomeTrack.prototype.comparisonRedrawer = function(){
+	var sequenceid = this.layout.id;
+	if (this.comparisonContainerCallback != undefined){
+		this.comparisonContainerCallback(sequenceid, this.visStart, this.visEnd);
+	}
+};
 
 genomeTrack.prototype.rescale = function() {
     var cfg = this.layout;

@@ -140,7 +140,11 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
 
+window.container = new MultiVis("#linearchartcomparisons");
+container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone",container);
+
 var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
+islandviewerObj.addComparison(window.container.updateSequenceVisualization);
 update_legend();
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, dblclick: '{{ varName|default:'' }}islandviewerObj' };
@@ -155,7 +159,7 @@ $('#loadingimg').remove();
 var linearcontainerwidth = d3.select(".linearchart").node().getBoundingClientRect().width;
 console.log(linearcontainerwidth)
 
-var {{ plotName|default:"circular" }}Linearlayout = {genomesize: {{ genomesize }}, container: "{{ container }}linear", width: linearcontainerwidth, height: 135, bottom_margin:0, initStart:0, initEnd: Math.min(1000, {{ genomesize }})};
+var {{ plotName|default:"circular" }}Linearlayout = {id: 0,genomesize: {{ genomesize }}, container: "{{ container }}linear", width: linearcontainerwidth, height: 135, bottom_margin:0, initStart:0, initEnd: Math.min(1000, {{ genomesize }})};
 //var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
 var {{ plotName|default:"circular" }}LinearTrack = islandviewerObj.addLinearPlot({{ plotName|default:"circular" }}Linearlayout);
 
@@ -494,8 +498,8 @@ function reload(paramsStr) {
     }
 
     if('undefined' !== typeof params['s'] && 'undefined' !== typeof params['s']['id']) {
-	obj = load_second(params['s']['id'], params['s']);
-	//	obj.reload(params['s']);
+		obj = load_second(params['s']['id'], params['s']);
+	//	islandviewerObj.addComparison(window.container.updateSequenceVisualization);
     }
 
 }
@@ -545,6 +549,9 @@ function show_genome_dialog() {
 
   });
 }
+function load_second_helper(aidParam, reloadParams){
+	var secondplot = load_second(aidParam,reloadParams);
+}
 
 function load_second(aidParam, reloadParams) {
   aid = $("#second_genome_select").val();
@@ -552,8 +559,6 @@ function load_second(aidParam, reloadParams) {
   if('undefined' !== typeof aidParam) {
       aid = aidParam;
   }
-
-//  console.log("loading " + aid);
 
   if($('#genome_selector_dialog').is(":visible")) {
       $('#genome_selector_dialog').slideToggle();
@@ -569,11 +574,15 @@ function load_second(aidParam, reloadParams) {
 
   $("#loadingspinner").show("fast");
 
-  $.getScript( url, function() {
 
+	$.ajax({url:url,
+		type: "GET",
+		async: false,
+		cahce: false,});
+  //$.getScript( url, function() {
     window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
-    $('#second_genome_title').html(second_genomename);
 
+    $('#second_genome_title').html(second_genomename);
     // We can update the legend here because it only depends on the dataset
     update_legend();
 
@@ -585,8 +594,10 @@ function load_second(aidParam, reloadParams) {
     window.secondTrackObj = secondislandviewerObj.addCircularPlot(secondlayout);    
     $('#rightplot').draggable({ handle: ".move_rightplot" });
 
-    var secondLinearlayout = {genomesize: second_genomesize, container: "#secondchartlinear", width: linearcontainerwidth, height: 135, bottom_margin:0, plotid: 'circularchartlinear'};
+    var secondLinearlayout = {id:1,genomesize: second_genomesize, container: "#secondchartlinear", width: linearcontainerwidth, height: 135, bottom_margin:0, plotid: 'circularchartlinear'};
 //    var secondLinearTrack = new genomeTrack(secondLinearlayout, seconddata);
+
+	secondislandviewerObj.addComparison(window.container.updateSequenceVisualization);
     window.secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout);
 
     secondTrackObj.attachBrush(secondLinearTrack);
@@ -639,18 +650,17 @@ function load_second(aidParam, reloadParams) {
     });
     
 
-
+/*
       }).done(function() {
 	      if('undefined' !== typeof reloadParams) {
 		  window.secondislandviewerObj.reload(reloadParams);
 	      }//    console.log("loaded");
 //    console.log(second_genomesize);
 
-
+*/
 	      $("#loadingspinner").hide("fast");
 
-      }); // end getScript()
-
+//      }); // end getScript()*/
   return window.secondislandviewerObj;
 }
 

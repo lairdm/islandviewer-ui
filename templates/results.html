@@ -79,7 +79,7 @@
        <img id="close_select_genome" class="closeimg" src="{% static 'img/close.svg' %}" height="22px"><div style="display: inline-block;"><select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
       		<option></option>
       </select><br />
-      <span ><a href="javascript:load_second();">Display genome</a></span></div><br />
+      <span ><a href="javascript:load_second_helper();">Display genome</a></span></div><br />
       &nbsp;<br />
    	</div>
    	  {% if default_analysis == False %}<span class="errortext">Note: This analysis was run using non-default parameters.  <a href="javascript:show_islandpick_genomes();">See here</a> for more details.</span><br />{% endif %}
@@ -102,10 +102,6 @@
         <div id="linearchartcomparisons" class="linearchart">
 
         </div>
-          <script>
-              var container = new MultiVis("#linearchartcomparisons");
-              container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone",container);
-          </script>
 
         <div id="secondlinearwrapper" class="visible linearchart">
           <span id="secondlinearname" class="linearLabel"></span>
