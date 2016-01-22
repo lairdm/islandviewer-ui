@@ -8,6 +8,7 @@ var {{ varName|default:"circular" }}data = [
 	  visible: false,
 	  showLabels: true,
 	  showTooltip: true,
+	  showTooltip: true,
 //skipLinear: true,
 	  linear_skipInit: true,
 	  {% if ext_id %}ext_id: '{{ext_id}}',
@@ -140,6 +141,7 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
 
+$("#linearchartcomparisons").toggle();
 window.container = new MultiVis("#linearchartcomparisons");
 container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve",container);
 
@@ -550,6 +552,7 @@ function show_genome_dialog() {
   });
 }
 function load_second_helper(aidParam, reloadParams){
+	$("#linearchartcomparisons").toggle();
 	var secondplot = load_second(aidParam,reloadParams);
 }
 
