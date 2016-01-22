@@ -141,7 +141,7 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% if not skip_initialize %}
 
 window.container = new MultiVis("#linearchartcomparisons");
-container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone",container);
+container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve",container);
 
 var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
 islandviewerObj.addComparison(window.container.updateSequenceVisualization);

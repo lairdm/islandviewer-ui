@@ -26,7 +26,6 @@ from django.db import connection
 
 def index(request):
     return render(request, 'index.html')
-#    return HttpResponse("Hello, world. You're at the poll index.")
 
 def showgenomes(request):
     context = {}
@@ -92,10 +91,10 @@ def results(request, aid):
                 context['ref_genome'] = ref_genome.name
                 
         elif(analysis.atype == Analysis.MICROBEDB):
-#            gpv_id = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].gpv_id
-#            context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
+#           gpv_id = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].gpv_id
+#           context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
             context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
-#            context['genomename'] = 'Something from Microbedb'
+#           context['genomename'] = 'Something from Microbedb'
 
         # Fetch the virulence factors
 #        island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
@@ -1241,7 +1240,10 @@ def fetchislandsfasta(request):
     response['Content-Disposition'] = "attachment; filename=\"gi_{0}.txt\"".format(filename)
     response.write(fasta)
     return response
-    
+
+def getMauveFile(request):
+    return HttpResponseRedirect("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone")
+
 def about(request):
     
     return render(request, "about.html")
