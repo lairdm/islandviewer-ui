@@ -10,23 +10,24 @@ var linearTrackDefaults = {
 };
 
 function genomeTrack(layout,tracks) {
+	console.log(layout);
 
     this.tracks = tracks;
     this.layout = layout;
     this.numTracks = this.countTracks();
 
     if('undefined' !== typeof layout) {
-	// Copy over any defaults not passed in
-	// by the user
-	for(var i in linearTrackDefaults) {
-	    if('undefined' == typeof layout[i]) {
-		this.layout[i] = linearTrackDefaults[i];
-	    }
-	}
+		// Copy over any defaults not passed in
+		// by the user
+		for(var i in linearTrackDefaults) {
+			if('undefined' == typeof layout[i]) {
+				this.layout[i] = linearTrackDefaults[i];
+			}
+		}
     }
 
     if('undefined' == typeof layout.plotid) {
-	this.layout.plotid = layout.container.slice(1);
+		this.layout.plotid = layout.container.slice(1);
     }
 
     this.layout.containerid = layout.container.slice(1);
@@ -41,14 +42,14 @@ function genomeTrack(layout,tracks) {
     this.itemRects = [];
 
     this.x = d3.scale.linear()
-	.domain([0, layout.genomesize])
-	.range([0,this.layout.width_without_margins]);
+		.domain([0, layout.genomesize])
+		.range([0,this.layout.width_without_margins]);
     this.x1 = d3.scale.linear()
-	.range([0,this.layout.width_without_margins])
+		.range([0,this.layout.width_without_margins])
        	.domain([0, layout.genomesize]);
     this.y1 = d3.scale.linear()
-	.domain([0,this.numTracks])
-	.range([0,(this.layout.height_without_axis-this.layout.bottom_margin)]);
+		.domain([0,this.numTracks])
+		.range([0,(this.layout.height_without_axis-this.layout.bottom_margin)]);
     // We need x1 and y1 in the initialization's scope too
     // to deal with passing it in to make the lollipops
 
@@ -77,10 +78,8 @@ function genomeTrack(layout,tracks) {
 	.attr("id", "trackClip_" + this.layout.containerid)
 	.append("rect")
 	.attr("width", this.layout.width_without_margins)
-	//	.attr("width", this.layout.width_without_margins + this.layout.right_margin)
 	.attr("height", this.layout.height)
 	.attr("transform", "translate(0,0)");
-    //	.attr("transform", "translate(" + this.layout.left_margin + ",0)");
     
     this.drawFeatures();
 

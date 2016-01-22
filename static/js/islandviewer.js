@@ -26,10 +26,6 @@ Islandviewer.prototype.addLinearPlot = function(layout) {
 }
 
 Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range) {
-//    console.log("Got a callback " + d);
-//    console.log(trackname);
-//    console.log(d);
-//    console.log(plotid);
 
     if(plotid == 'circularchartlinear' || plotid == 'secondchartlinear') {
 

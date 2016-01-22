@@ -566,20 +566,15 @@ function load_second(aidParam, reloadParams) {
 
   var url = "{% url 'circularplotjs' '9999' %}".replace("9999", aid);
   url += "?skipinit=true&varname=second";
-//  var url = "/islandviewer/plot/553?skipinit=true&varname=second";
-
-//  console.log(url);
 
   $("#loadingspinner").show("fast");
 
   $.getScript( url, function() {
-//    console.log("loaded");
-//    console.log(second_genomesize);
 
     window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
     $('#second_genome_title').html(second_genomename);
 
-    // We can update hte legend here because it only depends on the dataset
+    // We can update the legend here because it only depends on the dataset
     update_legend();
 
     // Update the tracks if any are turned off
@@ -604,7 +599,9 @@ function load_second(aidParam, reloadParams) {
     for(var i=0; i < seconddata.length; i++) {
       if(seconddata[i].trackName == "{{ plotName|default:"circular" }}Integrated") {
         if(seconddata[i].items.length > 0) {
-          item = seconddata[i].items[0];
+          item = seconddata[i].items[0];//    console.log("loaded");
+//    console.log(second_genomesize);
+
         }
 
         var half_range = (item.end - item.start)/2;
@@ -646,7 +643,9 @@ function load_second(aidParam, reloadParams) {
       }).done(function() {
 	      if('undefined' !== typeof reloadParams) {
 		  window.secondislandviewerObj.reload(reloadParams);
-	      }
+	      }//    console.log("loaded");
+//    console.log(second_genomesize);
+
 
 	      $("#loadingspinner").hide("fast");
 

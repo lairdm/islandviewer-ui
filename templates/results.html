@@ -54,7 +54,7 @@
     {% include "noanalysis.html" %}
 {% else %}
   {% if status == "Complete" %}
-
+      <script src="{% static 'js/alignervis.js' %}"></script>
     <script src="{% static 'js/islandviewer.js' %}"></script>
     <script src="{% static 'js/circularplot.js' %}"></script>
     <script src="{% static 'js/linearplot.js' %}"></script>
@@ -102,6 +102,10 @@
         <div id="linearchartcomparisons" class="linearchart">
 
         </div>
+          <script>
+              var container = new MultiVis("#linearchartcomparisons");
+              container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone",container);
+          </script>
 
         <div id="secondlinearwrapper" class="visible linearchart">
           <span id="secondlinearname" class="linearLabel"></span>
