@@ -10,13 +10,22 @@ MAUVE_SCRIPT_BASH_PATH = "/vagrant/islandviewer-ui/scripts/mauve-wrapper.sh"
 #Parameters = path to 2 genebank files
 #Returns None
 #Creates an output file at path outputfile and backbone file at path backbonefile
-def runMauve(outputfile,outputbackbonefile,gbk1,gbk2):
-    subprocess.Popen(["/bin/bash",MAUVE_SCRIPT_BASH_PATH,MAUVE_OUTPUT_PATH+"/"+outputfile,
-                      MAUVE_OUTPUT_PATH+"/"+outputbackbonefile,gbk1,gbk2], cwd=MAUVE_PATH)
+def runMauve(gbk1,gbk2,outputfile=None,outputbackbonefile=None, async=False):
+    if outputfile is None:
+        outputfile = MAUVE_OUTPUT_PATH+"/"+os.path.splitext(os.path.basename(gbk1))[0]+"-"+os.path.splitext(os.path.basename(gbk2))[0]
+    if outputbackbonefile is None:
+        outputbackbonefile = MAUVE_OUTPUT_PATH+"/"+os.path.splitext(os.path.basename(gbk1))[0]+"-"+os.path.splitext(os.path.basename(gbk2))[0]
+
+    sp = subprocess.Popen(["/bin/bash",MAUVE_SCRIPT_BASH_PATH,outputfile,
+                      outputbackbonefile,gbk1,gbk2], cwd=MAUVE_PATH)
+
+    #waits for subprocess to finish if async = False
+    if not async:
+        sp.wait()
 
 #Given the paths of 2 genebank files, returns path of backbone file if it exists or None if it doesnt
 def retrieveBackboneFile(gbk1,gbk2):
-    backbonepath = MAUVE_OUTPUT_PATH+"/"+os.path.basename(gbk1)+"-"+os.path.basename(gbk2)+".backbone"
+    backbonepath = MAUVE_OUTPUT_PATH+"/"+os.path.splitext(os.path.basename(gbk1))[0]+"-"+os.path.splitext(os.path.basename(gbk2))[0]+".backbone"
     if os.path.isfile(backbonepath):
         return backbonepath
     else:
@@ -29,13 +38,17 @@ def getMauveResults(gbk1,gbk2):
     return retrieveBackboneFile(gbk1,gbk2)
 
 
-
 # TESTS
 
 def testRunMauve():
-    runMauve("testRunMauve","testRunMauve","/vagrant/islandviewer-ui/scripts/testFiles/AE009952.gbk","/vagrant/islandviewer-ui/scripts/testFiles/BX936398.gbk")
+    runMauve("/vagrant/islandviewer-ui/scripts/testFiles/AE009952.gbk","/vagrant/islandviewer-ui/scripts/testFiles/BX936398.gbk")
+
+def testRetrieveBackboneFiles():
+    print(retrieveBackboneFile("/vagrant/islandviewer-ui/scripts/testFiles/AE009952.gbk","/vagrant/islandviewer-ui/scripts/testFiles/BX936398.gbk"))
 
 def testList():
-    testRunMauve()
+    #testRunMauve()
+    #testRetrieveBackboneFiles()
+    print getMauveResults("/vagrant/islandviewer-ui/scripts/testFiles/AE009952.gbk","/vagrant/islandviewer-ui/scripts/testFiles/BX936398.gbk")
 
-#testList()
+testList()
