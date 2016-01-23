@@ -51,4 +51,4 @@ def testList():
     #testRetrieveBackboneFiles()
     print getMauveResults("/vagrant/islandviewer-ui/scripts/testFiles/AE009952.gbk","/vagrant/islandviewer-ui/scripts/testFiles/BX936398.gbk")
 
-testList()
+#testList()
