@@ -3,9 +3,9 @@ import os
 
 #This can file can be moved to lib after testing
 #These paths can be moved to the settings file after testing
-MAUVE_PATH = "/home/vagrant/project/chef/cookbooks/baseconfig/files/data/Modules/iv-backend/islandviewer_dev/utils/mauve_2.4.0/linux-x64/"
-MAUVE_OUTPUT_PATH = "/vagrant/temp"
-MAUVE_SCRIPT_BASH_PATH = "/vagrant/islandviewer-ui/scripts/mauve-wrapper.sh"
+MAUVE_PATH = "/data/Modules/iv-backend/islandviewer_dev/utils/mauve_2.4.0/linux-x64/"
+MAUVE_OUTPUT_PATH = "/home/alim/temp"
+MAUVE_SCRIPT_BASH_PATH = "/data/Modules/islandviewer5/islandviewer-ui/scripts/mauve-wrapper.sh"
 
 #Parameters = path to 2 genebank files
 #Returns None
@@ -16,8 +16,7 @@ def runMauve(gbk1,gbk2,outputfile=None,outputbackbonefile=None, async=False):
     if outputbackbonefile is None:
         outputbackbonefile = MAUVE_OUTPUT_PATH+"/"+os.path.splitext(os.path.basename(gbk1))[0]+"-"+os.path.splitext(os.path.basename(gbk2))[0]
 
-    sp = subprocess.Popen(["/bin/bash",MAUVE_SCRIPT_BASH_PATH,outputfile,
-                      outputbackbonefile,gbk1,gbk2], cwd=MAUVE_PATH)
+    sp = subprocess.Popen(["/bin/bash",MAUVE_SCRIPT_BASH_PATH,outputfile,outputbackbonefile,gbk1,gbk2], cwd=MAUVE_PATH)
 
     #waits for subprocess to finish if async = False
     if not async:
