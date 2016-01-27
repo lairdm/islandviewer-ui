@@ -141,13 +141,12 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
 
-$("#linearchartcomparisons").toggle();
-window.container = new MultiVis("#linearchartcomparisons");
-container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve",container);
 
 var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
 islandviewerObj.addComparison(window.container.updateSequenceVisualization);
 update_legend();
+
+
 
 var {{ plotName|default:"circular" }}layout = {genomesize: {{ genomesize }}, container: "{{ container }}", h: 500, w: 500, ExtraWidthX: 55, TranslateX: 25, ExtraWidthY: 40, TranslateY: 20, movecursor: true, dblclick: '{{ varName|default:'' }}islandviewerObj' };
 
@@ -584,6 +583,10 @@ function load_second(aidParam, reloadParams) {
 		cahce: false,});
   //$.getScript( url, function() {
     window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
+
+	$("#linearchartcomparisons").toggle();
+	window.container = new MultiVis("#linearchartcomparisons");
+	container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve/?firstgenomeaid="+islandviewerObj.aid+"&secondgenomeaid="+window.secondislandviewerObj.aid,container);
 
     $('#second_genome_title').html(second_genomename);
     // We can update the legend here because it only depends on the dataset
