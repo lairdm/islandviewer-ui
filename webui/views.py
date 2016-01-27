@@ -1263,12 +1263,12 @@ def getMauveFile(request):
     firstGbk = glob.glob(firstGenomeProject+"*"+".gbk")[0]
     secondGbk = glob.glob(secondGenomeProject+"*"+".gbk")[0]
 
-    print firstGbk
-    print secondGbk
+    mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
 
-    scripts.getMauveResults(firstGbk,secondGbk)
+    with open(mauveOutputPath,'r') as f:
+        data = f.read()
 
-    return HttpResponseRedirect("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone")
+    return HttpResponseRedirect(data)
 
 def about(request):
     
