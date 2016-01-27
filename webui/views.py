@@ -25,6 +25,7 @@ from webui.models import VIRULENCE_FACTORS, VIRULENCE_FACTOR_CATEGORIES
 from django.db import connection
 import scripts
 import glob
+from os import listdir
 
 def index(request):
     return render(request, 'index.html')
@@ -1250,14 +1251,19 @@ def getMauveFile(request):
     firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
     secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
 
-    firstReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=firstAnalysis.ext_id)
-    secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondAnalysis.ext_id)
+    firstReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=firstAnalysis.ext_id.split('.')[0])
+    secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondAnalysis.ext_id.split('.')[0])
 
     firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
     secondGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=secondReplicon.gpv_id)
 
-    firstGbk = glob.glob(firstGenomeProject+"*"+".gbk")[0]
-    secondGbk = glob.glob(secondGenomeProject+"*"+".gbk")[0]
+    def getGbkFile(directoryPath):
+        for f in listdir(directoryPath):
+            if ".gbk" in f:
+                return f
+
+    firstGbk = firstGenomeProject.gpv_directory+"/"+getGbkFile(firstGenomeProject.gpv_directory)
+    secondGbk = secondGenomeProject.gpv_directory+"/"+getGbkFile(secondGenomeProject.gpv_directory)
 
     mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
 
