@@ -1241,12 +1241,8 @@ def fetchislandsfasta(request):
     return response
 
 def getMauveFile(request):
-    #firstgenomeaid = request.GET.get('firstgenomeaid')
-    #secondgenomeaid = request.GET.get('secondgenomeaid')
-
-    #TESTING
-    firstgenomeaid = 1
-    secondgenomeaid = 2
+    firstgenomeaid = request.GET.get('firstgenomeaid')
+    secondgenomeaid = request.GET.get('secondgenomeaid')
 
     firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
     secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
