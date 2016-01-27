@@ -23,7 +23,7 @@ import pprint
 from collections import OrderedDict
 from webui.models import VIRULENCE_FACTORS, VIRULENCE_FACTOR_CATEGORIES
 from django.db import connection
-import scripts
+from scripts import mauvewrap
 import glob
 from os import listdir
 
@@ -1265,7 +1265,7 @@ def getMauveFile(request):
     firstGbk = firstGenomeProject.gpv_directory+"/"+getGbkFile(firstGenomeProject.gpv_directory)
     secondGbk = secondGenomeProject.gpv_directory+"/"+getGbkFile(secondGenomeProject.gpv_directory)
 
-    mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
+    mauveOutputPath = mauvewrap.getMauveResults(firstGbk,secondGbk)
 
     with open(mauveOutputPath,'r') as f:
         data = f.read()
