@@ -1195,7 +1195,7 @@ def downloadSequences(request):
         
     response = downloadformats[format](islandset, p, methods, filename + "." + extension)
 
-    return response
+    ret/data/Modules/islandviewer5/islandviewer-ui/Islandviewer/settingsurn response
 
     
     
@@ -1254,11 +1254,11 @@ def getMauveFile(request):
     firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
     secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
 
-    firstReplicon = Replicon.using('microbedb').objects.get(rep_accnum__exact=firstAnalysis.ext_id)
-    secondReplicon = Replicon.using('microbedb').objects.get(rep_accnum__exact=secondAnalysis.ext_id)
+    firstReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=firstAnalysis.ext_id)
+    secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondAnalysis.ext_id)
 
-    firstGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=firstReplicon.gpv_id)
-    secondGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=secondReplicon.gpv_id)
+    firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
+    secondGenomeProject = Genomeproject.objects..using('microbedb')get(gpv_id__exact=secondReplicon.gpv_id)
 
     firstGbk = glob.glob(firstGenomeProject+"*"+".gbk")[0]
     secondGbk = glob.glob(secondGenomeProject+"*"+".gbk")[0]
