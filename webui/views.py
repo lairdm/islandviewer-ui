@@ -1254,7 +1254,7 @@ def getMauveFile(request):
     secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondAnalysis.ext_id)
 
     firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
-    secondGenomeProject = Genomeproject.objects..using('microbedb')get(gpv_id__exact=secondReplicon.gpv_id)
+    secondGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=secondReplicon.gpv_id)
 
     firstGbk = glob.glob(firstGenomeProject+"*"+".gbk")[0]
     secondGbk = glob.glob(secondGenomeProject+"*"+".gbk")[0]
