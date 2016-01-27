@@ -1242,6 +1242,25 @@ def fetchislandsfasta(request):
     return response
 
 def getMauveFile(request):
+    #firstgenomeaid = request.GET.get('firstgenomeaid')
+    #secondgenomeaid = request.GET.get('secondgenomeaid')
+
+    #TESTING
+    firstgenomeaid = 1
+    secondgenomeaid = 2
+
+    firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
+    secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
+
+    firstReplicon = Replicon.using('microbedb').objects.get(rep_accnum__exact=firstAnalysis.ext_id)
+    secondReplicon = Replicon.using('microbedb').objects.get(rep_accnum__exact=secondAnalysis.ext_id)
+
+    firstGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=firstReplicon.gpv_id)
+    secondGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=secondReplicon.gpv_id)
+
+    print firstGenomeProject.gpv_directory
+    print secondGenomeProject.gpv_directory
+
     return HttpResponseRedirect("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone")
 
 def about(request):
