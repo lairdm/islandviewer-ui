@@ -23,6 +23,8 @@ import pprint
 from collections import OrderedDict
 from webui.models import VIRULENCE_FACTORS, VIRULENCE_FACTOR_CATEGORIES
 from django.db import connection
+import scripts
+import glob
 
 def index(request):
     return render(request, 'index.html')
@@ -1258,8 +1260,13 @@ def getMauveFile(request):
     firstGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=firstReplicon.gpv_id)
     secondGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=secondReplicon.gpv_id)
 
-    print firstGenomeProject.gpv_directory
-    print secondGenomeProject.gpv_directory
+    firstGbk = glob.glob(firstGenomeProject+"*"+".gbk")[0]
+    secondGbk = glob.glob(secondGenomeProject+"*"+".gbk")[0]
+
+    print firstGbk
+    print secondGbk
+
+    scripts.getMauveResults(firstGbk,secondGbk)
 
     return HttpResponseRedirect("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone")
 
