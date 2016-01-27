@@ -23,10 +23,11 @@ import pprint
 from collections import OrderedDict
 from webui.models import VIRULENCE_FACTORS, VIRULENCE_FACTOR_CATEGORIES
 from django.db import connection
+import scripts
+import glob
 
 def index(request):
     return render(request, 'index.html')
-#    return HttpResponse("Hello, world. You're at the poll index.")
 
 def showgenomes(request):
     context = {}
@@ -92,10 +93,10 @@ def results(request, aid):
                 context['ref_genome'] = ref_genome.name
                 
         elif(analysis.atype == Analysis.MICROBEDB):
-#            gpv_id = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].gpv_id
-#            context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
+#           gpv_id = Replicon.objects.using('microbedb').filter(rep_accnum=analysis.ext_id)[0].gpv_id
+#           context['genomename'] = Genomeproject.objects.using('microbedb').get(pk=gpv_id).org_name
             context['genomename'] = NameCache.objects.get(cid=analysis.ext_id).name
-#            context['genomename'] = 'Something from Microbedb'
+#           context['genomename'] = 'Something from Microbedb'
 
         # Fetch the virulence factors
 #        island_genes = Genes.objects.filter(ext_id=analysis.ext_id).order_by('start').all() 
@@ -1241,7 +1242,34 @@ def fetchislandsfasta(request):
     response['Content-Disposition'] = "attachment; filename=\"gi_{0}.txt\"".format(filename)
     response.write(fasta)
     return response
-    
+
+def getMauveFile(request):
+    #firstgenomeaid = request.GET.get('firstgenomeaid')
+    #secondgenomeaid = request.GET.get('secondgenomeaid')
+
+    #TESTING
+    firstgenomeaid = 1
+    secondgenomeaid = 2
+
+    firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
+    secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
+
+    firstReplicon = Replicon.using('microbedb').objects.get(rep_accnum__exact=firstAnalysis.ext_id)
+    secondReplicon = Replicon.using('microbedb').objects.get(rep_accnum__exact=secondAnalysis.ext_id)
+
+    firstGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=firstReplicon.gpv_id)
+    secondGenomeProject = Genomeproject.using('microbedb').objects.get(gpv_id__exact=secondReplicon.gpv_id)
+
+    firstGbk = glob.glob(firstGenomeProject+"*"+".gbk")[0]
+    secondGbk = glob.glob(secondGenomeProject+"*"+".gbk")[0]
+
+    mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
+
+    with open(mauveOutputPath,'r') as f:
+        data = f.read()
+
+    return HttpResponseRedirect(data)
+
 def about(request):
     
     return render(request, "about.html")

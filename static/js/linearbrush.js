@@ -3,7 +3,7 @@ contextWidth = 440 - contextMargin.left - contextMargin.right,
 contextHeight = 100 - contextMargin.top - contextMargin.bottom;
 
 function linearBrush(layout, callbackObj) {
-    this.layout;
+    this.layout = layout;
     this.callbackObj = callbackObj;
 
     this.brushContainer = d3.select(layout.container)
@@ -50,7 +50,7 @@ function linearBrush(layout, callbackObj) {
     function brushUpdate(b) {
 	var minExtent = brush.extent()[0];
 	var maxExtent = brush.extent()[1];
-	//	console.log(minExtent, maxExtent);
+	//console.log(minExtent, maxExtent);
 	callbackObj.update(minExtent, maxExtent);
     }
 
