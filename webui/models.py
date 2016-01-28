@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
 import pprint
-from Bio.Phylo.TreeConstruction import _DistanceMatrix, DistanceTreeConstructor
+#from Bio.Phylo.TreeConstruction import _DistanceMatrix, DistanceTreeConstructor
 from Bio import Phylo
 import StringIO
 import json

@@ -9,14 +9,7 @@ function Islandviewer(aid, ext_id, genomesize, genomename, trackdata) {
     this.startBP = 0;
     this.endBP = genomesize;
 
-	this.linearplot = null;
-	this.comparisoncontainer = null;
 }
-
-Islandviewer.prototype.addComparison  = function(comparisonfunction){
-	this.comparisoncontainer = comparisonfunction;
-
-};
 
 Islandviewer.prototype.addCircularPlot = function(layout) {
     this.circularplot = new circularTrack(layout, this.trackdata);
@@ -24,29 +17,19 @@ Islandviewer.prototype.addCircularPlot = function(layout) {
     $(layout.container).addClass('plot_' + this.ext_id.replace('.', ''));
 
     return this.circularplot;
-};
+}
 
 Islandviewer.prototype.addLinearPlot = function(layout) {
     this.linearplot = new genomeTrack(layout, this.trackdata);
 
-	try {
-		if (this.comparisoncontainer != undefined) {
-			this.linearplot.setComparisonContainer(this.comparisoncontainer);
-		}
-	} catch (e){
-
-	}
-
-	console.log(this.linearplot);
     return this.linearplot;
-};
-
-Islandviewer.prototype.setComparisonContainer = function(comparisonfunction){
-	this.comparisoncontainer = comparisonfunction;
-	this.linearplot.setComparisonContainer(this.comparisoncontainer)
 }
 
 Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range) {
+//    console.log("Got a callback " + d);
+//    console.log(trackname);
+//    console.log(d);
+//    console.log(plotid);
 
     if(plotid == 'circularchartlinear' || plotid == 'secondchartlinear') {
 
