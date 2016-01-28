@@ -3,7 +3,7 @@ import os
 
 #This can file can be moved to lib after testing
 #These paths can be moved to the settings file after testing
-MAUVE_PATH = "/data/Modules/iv-backend/islandviewer_dev/utils/mauve_2.4.0/linux-x64/"
+MAUVE_PATH = "/home/alim/mauve/mauve_snapshot_2015-02-13/linux-x64"
 MAUVE_OUTPUT_PATH = "/home/alim/temp"
 MAUVE_SCRIPT_BASH_PATH = "/data/Modules/islandviewer5/islandviewer-ui/scripts/mauve-wrapper.sh"
 
@@ -37,7 +37,7 @@ def getMauveResults(gbk1,gbk2):
     return retrieveBackboneFile(gbk1,gbk2)
 
 
-# TESTS
+##################### TESTS
 
 def testRunMauve():
     runMauve("/vagrant/islandviewer-ui/scripts/testFiles/AE009952.gbk","/vagrant/islandviewer-ui/scripts/testFiles/BX936398.gbk")

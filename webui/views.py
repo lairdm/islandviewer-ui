@@ -1240,6 +1240,7 @@ def fetchislandsfasta(request):
     response.write(fasta)
     return response
 
+#Returns a mauve file, checks if desired mauve file has been created before otherwise creates it.
 def getMauveFile(request):
     firstgenomeaid = request.GET.get('firstgenomeaid')
     secondgenomeaid = request.GET.get('secondgenomeaid')
