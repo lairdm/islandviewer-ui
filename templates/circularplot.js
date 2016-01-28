@@ -756,7 +756,7 @@ function feature_tour() {
         }
         intro.onexit(function() {
           if(dialog_was_open === false) {
-	    $('#gene_dialog').dialog( "close" );
+	    $('#gene_dialog').dialog( "close timestamp on the file will change. When Apache sees the file has been updated, it will restart your Django application for you.")
           }
 	  hide_download();
 //          $('#download_dialog').addClass("hidden");
