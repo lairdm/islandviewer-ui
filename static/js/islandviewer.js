@@ -9,7 +9,14 @@ function Islandviewer(aid, ext_id, genomesize, genomename, trackdata) {
     this.startBP = 0;
     this.endBP = genomesize;
 
+	this.linearplot = null;
+	this.comparisoncontainer = null;
 }
+
+Islandviewer.prototype.addComparison  = function(comparisonfunction){
+	this.comparisoncontainer = comparisonfunction;
+
+};
 
 Islandviewer.prototype.addCircularPlot = function(layout) {
     this.circularplot = new circularTrack(layout, this.trackdata);
@@ -17,19 +24,29 @@ Islandviewer.prototype.addCircularPlot = function(layout) {
     $(layout.container).addClass('plot_' + this.ext_id.replace('.', ''));
 
     return this.circularplot;
-}
+};
 
 Islandviewer.prototype.addLinearPlot = function(layout) {
     this.linearplot = new genomeTrack(layout, this.trackdata);
 
+	try {
+		if (this.comparisoncontainer != undefined) {
+			this.linearplot.setComparisonContainer(this.comparisoncontainer);
+		}
+	} catch (e){
+
+	}
+
+	console.log(this.linearplot);
     return this.linearplot;
+};
+
+Islandviewer.prototype.setComparisonContainer = function(comparisonfunction){
+	this.comparisoncontainer = comparisonfunction;
+	this.linearplot.setComparisonContainer(this.comparisoncontainer)
 }
 
 Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range) {
-//    console.log("Got a callback " + d);
-//    console.log(trackname);
-//    console.log(d);
-//    console.log(plotid);
 
     if(plotid == 'circularchartlinear' || plotid == 'secondchartlinear') {
 
@@ -58,13 +75,17 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range)
 
         window.open(url);
       } else if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi')) {
-		  
+
+//        var view_start = Math.max(0, (d.start-500));
+//	var view_end = Math.min((d.end+500), this.genomesize);
 	$('.method_row').each(function() {
 	    $(this).removeClass('highlightrow')
 	});
 	$('html, body').animate({ scrollTop: $('#table_' + d.id).offset().top }, 'slow');
 	$("#table_" + d.id).addClass('highlightrow');
 
+//	var url = 'http://www.ncbi.nlm.nih.gov/projects/sviewer/?id=' + this.ext_id + '&v=' + view_start + '..' + view_end + '&m=' + d.start + ',' + d.end;
+//	window.open(url);
       }
     } else if(plotid == 'circularchart') {
 
@@ -79,6 +100,7 @@ Islandviewer.prototype.onclick = function(trackname, d, plotid, skip_half_range)
 	  var do_half_range = true;
 	}
 
+        //var half_range = (d.end - d.start)/2;
         this.linearplot.update(Math.max(0,(d.start-half_range)), Math.min(this.genomesize, (d.end+half_range)));
 
         this.circularplot.moveBrushbyBP(Math.max(0,(d.start-half_range)), 
@@ -131,6 +153,10 @@ Islandviewer.prototype.focus = function(startbp, endbp, params) {
 }
 
 Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
+//    console.log("Got a callback " + d);
+//    console.log(trackname);
+//    console.log(d);
+//    console.log(plotid);
 
     if(plotid == 'circularchartlinear' || plotid == 'secondchartlinear' ) {
       if(trackname == 'circularGenes') {
@@ -146,12 +172,17 @@ Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
       if((trackname == 'circularIslandpick') || (trackname == 'circularDimob') || (trackname == 'circularSigi') || (trackname == 'circularIntegrated')) {
 
         this.popup_d = d;
+//        this.popup_timer = setTimeout(function() {this.showHoverGenes(popup_d);}, 1000, [d, this]);
         this.popup_timer = setTimeout(this.showHoverGenes.bind(this), 1000, this.popup_d, false);
       }
     }
 }
 
 Islandviewer.prototype.mouseout = function(trackname, d, plotid) {
+//    console.log("mouseout callback " + d);
+//    console.log(trackname);
+//    console.log(d);
+//    console.log(plotid);
 
     if(plotid == 'circularchartlinear' || plotid == 'secondchartlinear') {
       if(trackname == 'circularGenes') {
@@ -184,6 +215,7 @@ Islandviewer.prototype.update_finished = function(startBP, endBP, params) {
 
     this.startBP = startBP;
     this.endBP = endBP;
+//        console.log(url);
 
     $.ajax({
 	    url: url,
@@ -294,6 +326,7 @@ Islandviewer.prototype.serialize = function() {
 
     if('undefined' !== typeof this.circularplot) {
 	features['c'] = Math.max(this.circularplot.layout.h, this.circularplot.layout.w);
+	//	console.log(this.circularplot.layout.radius);
 
 	var container = $(this.circularplot.layout.container);
 
@@ -325,6 +358,7 @@ Islandviewer.prototype.reload = function(features) {
 	var container = $(this.circularplot.layout.container);
 	container.height(this.circularplot.layout.h + this.circularplot.layout.ExtraWidthY + 5);
 	container.width(this.circularplot.layout.w + this.circularplot.layout.ExtraWidthX);
+//	container.css({width: this.circularplot.layout.w, height: this.circularplot.layout.h});
 
 	if('undefined' !== typeof features['x']) {
 	    container.css({left: features['x']});
