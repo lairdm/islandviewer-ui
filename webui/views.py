@@ -1268,7 +1268,9 @@ def getMauveFile(request):
     with open(mauveOutputPath,'r') as f:
         data = f.read()
 
-    return HttpResponseRedirect(data)
+    #Static page to test front end library, remove in production
+    return HttpResponseRedirect("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/static/examples/pseudomonas.backbone")
+    #return HttpResponseRedirect(data)
 
 def about(request):
     
