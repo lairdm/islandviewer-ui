@@ -1270,7 +1270,8 @@ def getMauveFile(request):
         data = f.read()
     """
     #Static page to test front end library, remove in production
-    return HttpResponseRedirect("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/static/examples/pseudomonas.backbone")
+    return HttpResponseRedirect("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone")
+    #return HttpResponseRedirect("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/static/examples/pseudomonas.backbone")
     #return HttpResponseRedirect(data)
 
 def about(request):

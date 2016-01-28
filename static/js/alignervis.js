@@ -38,8 +38,12 @@ function MultiVis(targetNode){
     };
 
     this.updateSequenceVisualization= function(sequenceIndex, newstart, newend){
-        self.getSequence(sequenceIndex).updateScale(newstart,newend,CONTAINERWIDTH);
-        self.transition();
+        try {
+            self.getSequence(sequenceIndex).updateScale(newstart, newend, CONTAINERWIDTH);
+            self.transition();
+        }catch(e){
+            //Chart may not have been initialized yet (call parseandrender?)
+        }
     };
 
     //Readjusts the graph for updated sequence domains, (improve later, currently just re-renders graph)
@@ -187,6 +191,7 @@ function Backbone(){
     this.parseAndRenderBackbone= function(backboneFile,multiVis){
         var backbonereference = this;
         d3.tsv(backboneFile, function(data){
+            console.log(data);
             var numberSequences = (Object.keys(data[0]).length)/2;
 
             var choicelist = [];
@@ -225,7 +230,6 @@ function Backbone(){
                 var currentseq = backbonereference.addSequence(i,largestBase[i]);
                 currentseq.updateScale(0,largestBase[i],multiVis.containerWidth());
             }
-
             multiVis.render();
         });
     }
