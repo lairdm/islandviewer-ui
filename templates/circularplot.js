@@ -143,7 +143,7 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 
 
 var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
-islandviewerObj.addComparison(window.container.updateSequenceVisualization);
+
 update_legend();
 
 
@@ -587,6 +587,8 @@ function load_second(aidParam, reloadParams) {
 	$("#linearchartcomparisons").toggle();
 	window.container = new MultiVis("#linearchartcomparisons");
 	container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve/?firstgenomeaid="+islandviewerObj.aid+"&secondgenomeaid="+window.secondislandviewerObj.aid,container);
+
+	islandviewerObj.addComparison(window.container.updateSequenceVisualization);
 
     $('#second_genome_title').html(second_genomename);
     // We can update the legend here because it only depends on the dataset
