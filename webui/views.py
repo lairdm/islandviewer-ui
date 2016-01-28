@@ -1195,7 +1195,7 @@ def downloadSequences(request):
         
     response = downloadformats[format](islandset, p, methods, filename + "." + extension)
 
-    ret/data/Modules/islandviewer5/islandviewer-ui/Islandviewer/settingsurn response
+    return response
 
     
     
