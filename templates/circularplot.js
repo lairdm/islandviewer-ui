@@ -586,7 +586,7 @@ function load_second(aidParam, reloadParams) {
 
 	$("#linearchartcomparisons").toggle();
 	window.container = new MultiVis("#linearchartcomparisons");
-	container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve/?firstgenomeaid="+islandviewerObj.aid+"&secondgenomeaid="+window.secondislandviewerObj.aid,container);
+	container.backbone.parseAndRenderBackbone("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/getMauve/?firstgenomeaid="+islandviewerObj.aid+"&secondgenomeaid="+window.secondislandviewerObj.aid,container);
 
 	islandviewerObj.addComparison(window.container.updateSequenceVisualization);
 
