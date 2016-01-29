@@ -1244,13 +1244,8 @@ def fetchislandsfasta(request):
     return response
 
 def getMauveFile(request):
-
-    #firstgenomeaid = request.GET.get('firstgenomeaid')
-    #secondgenomeaid = request.GET.get('secondgenomeaid')
-
-    #TESTING
-    firstgenomeaid = 6280
-    secondgenomeaid = 6281
+    firstgenomeaid = request.GET.get('firstgenomeaid')
+    secondgenomeaid = request.GET.get('secondgenomeaid')
 
     firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
     secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
@@ -1269,9 +1264,6 @@ def getMauveFile(request):
     with open(mauveOutputPath,'r') as f:
         data = f.read()
 
-    #Static page to test front end library, remove in production
-    #return HttpResponseRedirect("http://localhost:8000/islandviewer/static/examples/pseudomonas.backbone")
-    #return HttpResponseRedirect("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/static/examples/pseudomonas.backbone")
     return HttpResponseRedirect(data)
 
 def about(request):
