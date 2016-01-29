@@ -44,7 +44,9 @@ def getMauveResults(gbk1,gbk2):
         runMauve(gbk1,gbk2)
     return retrieveBackboneFile(gbk1,gbk2)
 
-# TESTS
+
+##################### TESTS
+
 def testRunMauve():
     runMauve("/vagrant/islandviewer-ui/scripts/testFiles/AE009952.gbk","/vagrant/islandviewer-ui/scripts/testFiles/BX936398.gbk")
 

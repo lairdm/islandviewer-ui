@@ -1259,7 +1259,7 @@ def getMauveFile(request):
     firstGbk = glob.glob(firstGenomeProject+"/*"+".gbk")[0]
     secondGbk = glob.glob(secondGenomeProject+"/*"+".gbk")[0]
 
-    mauveOutputPath = mauvewrap.getMauveResults(firstGbk,secondGbk)
+    mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
 
     with open(mauveOutputPath,'r') as f:
         data = f.read()
