@@ -1256,8 +1256,8 @@ def getMauveFile(request):
     firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
     secondGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=secondReplicon.gpv_id)
 
-    firstGbk = glob.glob(firstGenomeProject+"/*"+".gbk")[0]
-    secondGbk = glob.glob(secondGenomeProject+"/*"+".gbk")[0]
+    firstGbk = glob.glob(firstGenomeProject.gpv_directory+"/*"+".gbk")[0]
+    secondGbk = glob.glob(secondGenomeProject.gpv_directory+"/*"+".gbk")[0]
 
     mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
 
