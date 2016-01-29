@@ -17,8 +17,8 @@ def runMauve(gbk1,gbk2,outputfile=None,outputbackbonefile=None, async=False):
     if outputbackbonefile is None:
         outputbackbonefile = MAUVE_OUTPUT_PATH+"/"+os.path.splitext(os.path.basename(gbk1))[0]+"-"+os.path.splitext(os.path.basename(gbk2))[0]
 
-    gbk1temppath = MAUVE_OUTPUT_PATH+"/"+os.path.splitext(os.path.basename(gbk1))[0]
-    gbk2temppath = MAUVE_OUTPUT_PATH+"/"+os.path.splitext(os.path.basename(gbk2))[0]
+    gbk1temppath = MAUVE_OUTPUT_PATH+"/"+os.path.basename(gbk1)
+    gbk2temppath = MAUVE_OUTPUT_PATH+"/"+os.path.basename(gbk2)
 
     shutil.copyfile(gbk1,gbk1temppath)
     shutil.copyfile(gbk2,gbk2temppath)
