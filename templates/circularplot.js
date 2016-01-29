@@ -141,8 +141,9 @@ var {{ varName|default:"circular" }}_aid = "{{ aid }}";
 {% comment %}Skip the entire code section if we're just pulling in another plot's data{% endcomment %}
 {% if not skip_initialize %}
 
-
-var islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
+window.container = new MultiVis("#linearchartcomparisons");
+window.islandviewerObj = new Islandviewer('{{ aid }}', '{{ext_id}}', {{ genomesize|default:"0" }}, "{{ genomename }}", {{ plotName|default:"circular" }}data);
+window.islandviewerObj.addComparison(window.container.updateSequenceVisualization);
 
 update_legend();
 
@@ -584,11 +585,8 @@ function load_second(aidParam, reloadParams) {
   //$.getScript( url, function() {
     window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
 
+	container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve",container);
 	$("#linearchartcomparisons").toggle();
-	window.container = new MultiVis("#linearchartcomparisons");
-	container.backbone.parseAndRenderBackbone("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/getMauve/?firstgenomeaid="+islandviewerObj.aid+"&secondgenomeaid="+window.secondislandviewerObj.aid,container);
-
-	islandviewerObj.addComparison(window.container.updateSequenceVisualization);
 
     $('#second_genome_title').html(second_genomename);
     // We can update the legend here because it only depends on the dataset
@@ -606,6 +604,7 @@ function load_second(aidParam, reloadParams) {
 //    var secondLinearTrack = new genomeTrack(secondLinearlayout, seconddata);
 
 	secondislandviewerObj.addComparison(window.container.updateSequenceVisualization);
+
     window.secondLinearTrack = secondislandviewerObj.addLinearPlot(secondLinearlayout);
 
     secondTrackObj.attachBrush(secondLinearTrack);
@@ -656,7 +655,7 @@ function load_second(aidParam, reloadParams) {
       $('#linearname').html({{ varName|default:"circular" }}_genomename);
       $('#secondlinearname').html(second_genomename);
     });
-    
+
 
 /*
       }).done(function() {

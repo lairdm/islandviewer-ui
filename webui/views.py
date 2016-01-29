@@ -1244,13 +1244,8 @@ def fetchislandsfasta(request):
     return response
 
 def getMauveFile(request):
-    """
-    #firstgenomeaid = request.GET.get('firstgenomeaid')
-    #secondgenomeaid = request.GET.get('secondgenomeaid')
-
-    #TESTING
-    firstgenomeaid = 1
-    secondgenomeaid = 2
+    firstgenomeaid = request.GET.get('firstgenomeaid')
+    secondgenomeaid = request.GET.get('secondgenomeaid')
 
     firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
     secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
@@ -1259,19 +1254,17 @@ def getMauveFile(request):
     secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondAnalysis.ext_id)
 
     firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
-    secondGenomeProject = Genomeproject.objects..using('microbedb')get(gpv_id__exact=secondReplicon.gpv_id)
+    secondGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=secondReplicon.gpv_id)
 
-    firstGbk = glob.glob(firstGenomeProject+"*"+".gbk")[0]
-    secondGbk = glob.glob(secondGenomeProject+"*"+".gbk")[0]
+    firstGbk = glob.glob(firstGenomeProject+"/*"+".gbk")[0]
+    secondGbk = glob.glob(secondGenomeProject+"/*"+".gbk")[0]
 
-    mauveOutputPath = mauvewrap.getMauveResults(firstGbk,secondGbk)
+    mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
 
     with open(mauveOutputPath,'r') as f:
         data = f.read()
-    """
-    #Static page to test front end library, remove in production
-    return HttpResponseRedirect("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/static/examples/pseudomonas.backbone")
-    #return HttpResponseRedirect(data)
+
+    return HttpResponseRedirect(data)
 
 def about(request):
     
