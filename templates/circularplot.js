@@ -585,7 +585,7 @@ function load_second(aidParam, reloadParams) {
   //$.getScript( url, function() {
     window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
 
-	container.backbone.parseAndRenderBackbone("http://localhost:8000/islandviewer/getMauve",container);
+	container.backbone.parseAndRenderBackbone("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/getMauve/?firstgenomeaid="+islandviewerObj.aid+"&secondgenomeaid="+window.secondislandviewerObj.aid,container);
 	$("#linearchartcomparisons").toggle();
 
     $('#second_genome_title').html(second_genomename);
