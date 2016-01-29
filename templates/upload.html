@@ -331,7 +331,13 @@ $(document).ready( function() {
 		document.getElementById('submitted').style.display = '';
 	}
 </script>
-
+		
+		<p id="noteIncomplete"><b>Note for incomplete genomes</b></p>
+		<div id="noteIncomplete1">
+		<p>Incomplete genomes are now accepted as input due to popular demand. However, whole genome analysis is still preferred to reduce false predictions and missing GIs. Please use at your own risk. We suggest to minimize the number of contigs before performing GI analysis and carefully evaluate all results from such custom jobs. Contigs will be ordered against a user-selected reference genome using the Mauve contig orderer (<a href="http://bioinformatics.oxfordjournals.org/content/25/16/2071.full">Rissman et al., 2009</a>). Please note that annotation of the contigs is still required.</p>
+		</div>
+		&nbsp;<br />
+		
 		<p id="hideHint"><b>Hints for a successful analysis</b></p>
 		<div id="hint2">
 		  <p>Check and see if your genome file contains protein sequences for all CDSs <u>AND</u> the complete nucleotide sequence. A valid genome file should have full protein sequence data (under "\translation" tag within "CDS" primary tag) and nucleotide sequence data under ORIGIN or blank header in GENBANK or EMBL format, respectively. For example:</p>
@@ -367,6 +373,7 @@ $(document).ready( function() {
 		      </p>
 		    </span>
 		</div>
+		
 		  <p>&nbsp;</p>
 		  <p>&nbsp;</p>
 		  <p>&nbsp;</p>

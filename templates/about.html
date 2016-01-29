@@ -4,14 +4,17 @@
 {% block sidebar %}
 <p><span class="pageName">Definitions</span></p>
 
-<p class="smalltext"><span class="subHeader">Genomic Islands</span> - large genomic regions (typically &gt; 8kb), that are thought to have horizontal origins. These regions can often contain genes that are related to antibiotic resistance or virulence.</p>
+<p class="bodyText"><span class="subHeader">Genomic Islands</span> - large genomic regions (typically &gt; 8kb), that are thought to have horizontal origins. These regions can often contain genes that are related to antibiotic resistance or virulence.</p>
 
-<p class="smalltext"><span class="subHeader">Sequence Composition GI Prediction Methods</span> - bacterial genomes tend to naturally have differences in sequence composition such as GC% and codon bias. Therefore, a region within a genome that has abnormal sequence composition could indicate that it originated from another genome. Various tools (incl. SIGI-HMM and IslandPath-DIMOB) look for regions with abnormal sequence composition.  </p>
+<p class="bodyText"><span class="subHeader">Sequence Composition GI Prediction Methods</span> - bacterial genomes tend to naturally have differences in sequence composition such as GC% and codon bias. Therefore, a region within a genome that has abnormal sequence composition could indicate that it originated from another genome. Various tools (incl. SIGI-HMM and IslandPath-DIMOB) look for regions with abnormal sequence composition.  </p>
 		  
-<p class="smalltext"><span class="subHeader">Comparative Genomic GI Prediction Methods</span> - genomic regions that are not present within related strains suggest that the region was horizontally transferred. IslandPick is a method that automatically selects comparison genomes that are within a proper evolutionary distance and identifies regions that are unique to only a single genome. </p>
+<p class="bodyText"><span class="subHeader">Comparative Genomic GI Prediction Methods</span> - genomic regions that are not present within related strains suggest that the region was horizontally transferred. IslandPick is a method that automatically selects comparison genomes that are within a proper evolutionary distance and identifies regions that are unique to only a single genome. </p>
 		  
-<p class="smalltext"> <span class="subHeader">Mobility Genes </span>- are genes related to the movement of mobile genetic elements (incl. genomic islands), such as transposases and integrases. </p>
-		  
+<p class="bodyText"> <span class="subHeader">Mobility Genes </span>- are genes related to the movement of mobile genetic elements (incl. genomic islands), such as transposases and integrases. </p>
+
+&nbsp;<br />
+<div id="cite" class="outline"><span class="bodyText"> If you use IslandViewer for your research, please cite the most recent publication: <br /> Dhillon, B.K. et al. 2015. <br /> "IslandViewer 3: more flexible, interactive genomic island discovery, visualization and analysis" <br /> <i>Nucleic Acids Research</i>, 43 (W1): W104-W108. <br /> <a href="http://nar.oxfordjournals.org/content/43/W1/W104.full" target="_blank">doi: 10.1093/nar/gkv401</a> </span> </div>
+
 {% endblock sidebar %}
 
 {% block content %}
@@ -32,7 +35,7 @@ $(document).ready(function() {
 
 <p class="bodyText"><span class="subHeader">IslandViewer</span></p>
 
-<p class="bodyText">This web site was developed so that researchers could easily  <a href="{% url 'browse' %}">view and download <em>genomic islands</em></a> for all published sequenced bacterial and archaeal genomes that have been predicted using the the currently most accurate GI prediction methods. Users can also <a href="{% url 'uploadform' %}">upload</a> their own unpublished genomes for analysis. The source code and entire GI data sets are available for <a href="{% url 'download' %}">download</a> and <a href="{% url 'acknowledgements' %}">acknowledgment</a> information is available for those who use our resources . Please <a href="{% url 'contactus' %}">contact us</a> with any questions or comments. Note, this is IslandViewer 3, the older IslandViewer 2 is still available for any old analysis needs.</p>
+<p class="bodyText">This web site was developed so that researchers could easily  <a href="{% url 'browse' %}">view and download <em>genomic islands</em></a> for all published sequenced bacterial and archaeal genomes that have been predicted using the the currently most accurate GI prediction methods. Users can also <a href="{% url 'uploadform' %}">upload</a> their own unpublished genomes for analysis. The source code and entire GI data sets are available for <a href="{% url 'download' %}">download</a> and <a href="{% url 'acknowledgements' %}">acknowledgment</a> information is available for those who use our resources.  This software and website is developed and maintained by the <a href="http://www.brinkman.mbb.sfu.ca/" target="_blank">Brinkman lab</a> at Simon Fraser University, Canada. Please <a href="{% url 'contactus' %}">contact us</a> with any questions or comments. Note, this is IslandViewer 3, the older IslandViewer 2 is still available for any old analysis needs.</p>
 
 <p class="subHeader">IslandPick<a name="islandpick" id="islandpick"></a></p>
 

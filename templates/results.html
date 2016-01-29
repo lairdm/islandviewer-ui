@@ -30,7 +30,7 @@
 
   {% else %}
   &nbsp;<br />
-  <span class="smalltext">
+  <span class="bodyText">
   The analysis is not yet complete, please check back to this page
   in a while, or you will be notified by email when the analysis is complete if you elected
   to enter an email address.<br />
@@ -39,7 +39,7 @@
   &nbsp;<br />
   </span>
   <span class="headertext">Legend:</span><br />
-  <span class="smalltext">&nbsp;<br />
+  <span class="bodyText">&nbsp;<br />
     &nbsp;&nbsp;<span class="legend Pending">&nbsp;</span>&nbsp;&nbsp;Pending<br />
     &nbsp;&nbsp;<span class="legend Running">&nbsp;</span>&nbsp;&nbsp;Running<br />
     &nbsp;&nbsp;<span class="legend Complete">&nbsp;</span>&nbsp;&nbsp;Complete<br />
@@ -54,7 +54,7 @@
     {% include "noanalysis.html" %}
 {% else %}
   {% if status == "Complete" %}
-
+      <script src="{% static 'js/alignervis.js' %}"></script>
     <script src="{% static 'js/islandviewer.js' %}"></script>
     <script src="{% static 'js/circularplot.js' %}"></script>
     <script src="{% static 'js/linearplot.js' %}"></script>
@@ -66,7 +66,7 @@
     <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
 	<div id="gene_dialog"></div>
     <div id="outer_circular" style="white-space: nowrap;">
-    <div id="circularcontainer" style="width:555px; display:inline-block; ">
+    <div id="circularcontainer" style="display:inline-block; ">
       <span class="pageName">{{ genomename }}</span><br />
       {% if ref_genome %}<span>Aligned against reference genome {{ ref_genome }}</span><br />{% endif %}
       <div id="url_dialog" style="display:none">Copy this link to save the view:<br />
@@ -79,7 +79,7 @@
        <img id="close_select_genome" class="closeimg" src="{% static 'img/close.svg' %}" height="22px"><div style="display: inline-block;"><select id="second_genome_select" class="extraclass" style="width:550px;" data-placeholder="Select a genome...">
       		<option></option>
       </select><br />
-      <span ><a href="javascript:load_second();">Display genome</a></span></div><br />
+      <span ><a href="javascript:load_second_helper();">Display genome</a></span></div><br />
       &nbsp;<br />
    	</div>
    	  {% if default_analysis == False %}<span class="errortext">Note: This analysis was run using non-default parameters.  <a href="javascript:show_islandpick_genomes();">See here</a> for more details.</span><br />{% endif %}
@@ -93,14 +93,21 @@
       </div>
     </div>
     </div>
-	<div id="circularchartlinearwrapper" class="visible">
-	  <span id="linearname" class="linearLabel"></span>
-	  <div id="circularchartlinear" style="width:600px;"></div>  
-	</div>
-	<div id="secondlinearwrapper" class="visible">
-	  <span id="secondlinearname" class="linearLabel"></span>
-	  <div id="secondchartlinear" style="width:600px;"></div>
-	</div>
+      <div id="linearcharts">
+        <div id="circularchartlinearwrapper" class="visible linearchart">
+          <span id="linearname" class="linearLabel"></span>
+          <div id="circularchartlinear" style="width:600px;"></div>
+        </div>
+
+        <div id="linearchartcomparisons" class="linearchart">
+
+        </div>
+
+        <div id="secondlinearwrapper" class="visible linearchart">
+          <span id="secondlinearname" class="linearLabel"></span>
+          <div id="secondchartlinear" style="width:600px;"></div>
+        </div>
+      </div>
     <script type="text/javascript">
 
    {% if reload %}
@@ -129,10 +136,10 @@
    <g transform="translate(20, 20)"/>
    </svg><br />
 
-   <span class="smalltext" id="email_notify">Receive email notification when job completes:<br /><input type="text" name="email" size="25" class="notify_values" id="email_box" placeholder="Enter email"> <input type="submit" value="Submit Email" onclick="return submit_notify()"><br />
+   <span class="bodyText" id="email_notify">Receive email notification when job completes:<br /><input type="text" name="email" size="25" class="notify_values" id="email_box" placeholder="Enter email"> <input type="submit" value="Submit Email" onclick="return submit_notify()"><br />
    <span id="emailerror" class="errortext"></span>
    </span><br />
-   {% if emails %}<span class="smalltext">Emails to be notified upon completion: {{ emails }}</span><br />&nbsp;<br />{% endif %}
+   {% if emails %}<span class="bodyText">Emails to be notified upon completion: {{ emails }}</span><br />&nbsp;<br />{% endif %}
    &nbsp;<br />
    <script src="{% url 'graphanalysisjs' aid %}"></script>
 

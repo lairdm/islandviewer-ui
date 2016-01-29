@@ -242,13 +242,13 @@
 {% endblock %}
 
 {% block sidebar %}
-<p class="smalltext">Depending on the genomes selected for comparison, IslandPick will predict genomic islands of varying insertion ages.</p>
+<p class="bodyText">Depending on the genomes selected for comparison, IslandPick will predict genomic islands of varying insertion ages.</p>
 
-<p class="smalltext">If you don't see a genome, try changing the genome distance range.</p>
+<p class="bodyText">If you don't see a genome, try changing the genome distance range.</p>
 
 <p><span class="subHeader">IslandPick Selection Parameters</span></p>
 
-<p class="smalltext">Changing the IslandPick paremeters will change the genomes that are picked for comparison.</p> 
+<p class="bodyText">Changing the IslandPick paremeters will change the genomes that are picked for comparison.</p> 
 
 <p class="bodyText"><select name="min_cutoff" id="min_cutoff" class="selection_parameters">
 	<option value="0.01">0.01</option>
@@ -314,8 +314,8 @@
 	</td>
 	<td width="360" valign="top"  class="islandpickTable">
 		<p><span class="subHeader">Start IslandPick </span></p>
-		<p class="smalltext">Once you are satisfied with the genome selection please select your minimum island size and click "Run IslandPick".</p>
-		<p class="smalltext"><select name="min_gi_size" id="min_gi_size" class="selection_parameters">
+		<p class="bodyText">Once you are satisfied with the genome selection please select your minimum island size and click "Run IslandPick".</p>
+		<p class="bodyText"><select name="min_gi_size" id="min_gi_size" class="selection_parameters">
 		<option value="4000">4000</option>
 		<option value="6000">6000</option>
 		<option value="8000" selected="selected">8000</option>
@@ -324,7 +324,7 @@
 		<option value="16000">16000</option>
 		<option value="20000">20000</option>
 		</select> Minimum Genomic Island Size</p>
-        {% if nouploads %}<p class="smalltext">We're sorry, custom analysis are currently disabled due to maintenance, please check back later.{% if message %}</p><p class="smalltext">{{ message }}{% endif %}</p>{% else %}
+        {% if nouploads %}<p class="bodyText">We're sorry, custom analysis are currently disabled due to maintenance, please check back later.{% if message %}</p><p class="smalltext">{{ message }}{% endif %}</p>{% else %}
 		<p><input type="button" onclick="runIslandpick()" id="runislandpick" value="Run IslandPick"></p>
         {% endif %}
 
