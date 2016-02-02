@@ -1264,7 +1264,7 @@ def getMauveFile(request):
     with open(mauveOutputPath,'r') as f:
         data = f.read()
 
-    return HttpResponseRedirect(data)
+    return HttpResponse(data)
 
 def about(request):
     
