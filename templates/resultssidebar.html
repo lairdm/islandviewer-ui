@@ -29,7 +29,20 @@
 <p>&nbsp;</p>
 <div id="toolbox" class="outline">
 <span class="subHeader">Toolbox</span>
-<div class="toolbox_item"><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a></div>
+    <div class="toolbox_item">
+        <div id="gene_search_dialog">Search for gene:<br />
+            <input id="gene_search_input" placeholder="Type a gene name, refseq accession, locus tag or product name...">
+        </div>
+    </div>
+   <div class="toolbox_item" style="z-index:100"><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a>
+    <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
+        <div style="display: inline-block;width:100%">
+            <select id="second_genome_select" class="extraclass" style="width:100%;" data-placeholder="Select a genome...">
+                <option></option>
+            </select><br />
+            <span ><a href="javascript:load_second_helper();">Display genome</a></span></div><br />
+    </div>
+   </div>
 <div class="toolbox_item"><a href="javascript:show_islandpick_genomes();" id="show_islandpick_genomes" >Show Islandpick Comparison Genomes</a></div>
 <div class="toolbox_item"><a href="javascript:show_gene_search();" id="show_gene_search" >Search Genes</a></div>
 <div class="toolbox_item"><a href="javascript:show_download();" id="show_download_link" >Download</a></div>
@@ -45,7 +58,4 @@
 <div id="cite" class="outline"> <span class="bodyText"> If you use IslandViewer for your research, please cite the most recent publication: <br /> Dhillon, B.K. et al. 2015. <br /> "IslandViewer 3: more flexible, interactive genomic island discovery, visualization and analysis" <br /> <i>Nucleic Acids Research</i>, 43 (W1): W104-W108. <br /> <a href="http://nar.oxfordjournals.org/content/43/W1/W104.full" target="_blank">doi: 10.1093/nar/gkv401</a> </span> </div>
 
 <script>
-    $(document).ready(function(){
-        show_gene_search();
-    });
 </script>

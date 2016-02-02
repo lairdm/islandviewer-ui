@@ -289,7 +289,7 @@ window.onload = function() {
     }
   }
 
-  $("#second_genome_select").chosen({width: "525px"});
+  $("#second_genome_select").chosen({width: "100%"});
 
   initialize_gene_search();
 
@@ -582,10 +582,10 @@ function load_second(aidParam, reloadParams) {
 		type: "GET",
 		async: false,
 		cahce: false,});
-  //$.getScript( url, function() {
+
     window.secondislandviewerObj = new Islandviewer(aid, second_extid, second_genomesize, second_genomename, seconddata);
 
-	container.backbone.parseAndRenderBackbone("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/getMauve/?firstgenomeaid="+islandviewerObj.aid+"&secondgenomeaid="+window.secondislandviewerObj.aid,container);
+	container.backbone.parseAndRenderBackbone("http://www.brinkman.mbb.sfu.ca/islandviewer_dev/getMauve/?firstgenomeextid="+islandviewerObj.ext_id+"&secondgenomeextid="+window.secondislandviewerObj.ext_id,container);
 	$("#linearchartcomparisons").toggle();
 
     $('#second_genome_title').html(second_genomename);
