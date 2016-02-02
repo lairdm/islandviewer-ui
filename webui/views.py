@@ -1244,14 +1244,14 @@ def fetchislandsfasta(request):
     return response
 
 def getMauveFile(request):
-    firstgenomeaid = request.GET.get('firstgenomeaid')
-    secondgenomeaid = request.GET.get('secondgenomeaid')
+    firstgenomeextid = request.GET.get('firstgenomeextid')
+    secondgenomeextid = request.GET.get('secondgenomeextid')
 
-    firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
-    secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
+    firstgenomeextid = firstgenomeextid.split('.')[0]
+    secondgenomeextid = secondgenomeextid.split(',')[0]
 
-    firstReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=firstAnalysis.ext_id)
-    secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondAnalysis.ext_id)
+    firstReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__exact=firstgenomeextid)[0]
+    secondReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__exact=secondgenomeextid)[0]
 
     firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
     secondGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=secondReplicon.gpv_id)
@@ -1259,7 +1259,7 @@ def getMauveFile(request):
     firstGbk = glob.glob(firstGenomeProject.gpv_directory+"/*"+".gbk")[0]
     secondGbk = glob.glob(secondGenomeProject.gpv_directory+"/*"+".gbk")[0]
 
-    mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
+    mauveOutputPath = mauvewrap.getMauveResults(firstGbk,secondGbk)
 
     with open(mauveOutputPath,'r') as f:
         data = f.read()
