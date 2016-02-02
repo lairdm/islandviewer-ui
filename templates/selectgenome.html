@@ -11,17 +11,14 @@
 {% endblock %}
 
 {% block sidebar %}
-<span class="smalltext">
-Please select a genome from the list. 
-Use the search box to bring matching genomes to the top of the list.
-</span>
+<div id="cite" class="outline"><span class="bodyText">If you use IslandViewer for your research, please cite the most recent publication: <br /> Dhillon, B.K. et al. 2015. <br /> "IslandViewer 3: more flexible, interactive genomic island discovery, visualization and analysis" <br /> <i>Nucleic Acids Research</i>, 43 (W1): W104-W108. <br /> <a href="http://nar.oxfordjournals.org/content/43/W1/W104.full" target="_blank">doi: 10.1093/nar/gkv401</a></span></div>
 {% endblock %}
 
 {% block content %}
 <div style=" width: 500px;">
 <span class="pageName">IslandViewer</span><br />
 &nbsp;<br />
-<p class="bodyText">IslandViewer is a computational tool that integrates three different genomic island prediction methods: IslandPick, IslandPath-DIMOB, and SIGI-HMM. <a href="{% url 'about' %}">More Information. See our FAQs</a></p>
+<p class="bodyText">IslandViewer is a computational tool that integrates three different genomic island prediction methods: IslandPick, IslandPath-DIMOB, and SIGI-HMM. <a href="{% url 'about' %}">More Information</a>. See our <a href="{% url 'faq' %}">FAQs</a></p>
 <select id="genomelist" class="chosen-select extraclass" style="width:550px;" data-placeholder="Select or start typing a species name, strain name or genome accession...">
 <option></option>
 {% for genome in analysis %}
@@ -29,12 +26,12 @@ Use the search box to bring matching genomes to the top of the list.
 {% endfor %}
 </select><br /> 
 &nbsp;<br />
-<input id="gotoresults" type="button" value="Go to Genome" onclick="return goto_results()" />&nbsp;&nbsp; <a href="{% url "demo" %}">Example</a>, <a href="{% url "results" '2879' %}">Example (incomplete genome)</a>
+<input id="gotoresults" type="button" value="Go to Genome" onclick="return goto_results()" />&nbsp;&nbsp; <a href="{% url "demo" %}">Example</a>, <a href="{% url "results" '8952' %}">Example (incomplete genome)</a>
 <span class="bodyText">
 
 &nbsp;<br />
 &nbsp;<br />
-<p>News:</p>
+<span class="pageName">News</span><br />
 <p>2015/12/08 - Service was disrupted to IslandViewer and the SFU emergency power supply on Tuesday, December 8 while planned repairs took place. We apologize for the inconvenience. </p>
 
 <p>2015/04/20 - Islandviewer 3 is now out of beta, however if you still need to access older analysis using IslandViewer 2 we will keep it <a href="http://www.pathogenomics.sfu.ca/islandviewer2/query.php">available here</a> for the next few months.</p>

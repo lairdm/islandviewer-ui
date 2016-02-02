@@ -2,9 +2,9 @@
 {% load static %} 
 
 {% block sidebar %}
-<p class="smalltext">Please note that we have listed only those computational tools that refer to genomic island predictions as opposed to methods associated with horizontal gene transfer. In addition, we only list resources with websites or freely available software. </p>
+<p class="bodyText">Please note that we have listed only those computational tools that refer to genomic island predictions as opposed to methods associated with horizontal gene transfer. In addition, we only list resources with websites or freely available software. </p>
 
-<p class="smalltext">If you think a resource should be included in this list please <a href="{% url 'contactus' %}">contact us</a>. <br /></p>
+<p class="bodyText">If you think a resource should be included in this list please <a href="{% url 'contactus' %}">contact us</a>. <br /></p>
 {% endblock sidebar %}
 
 {% block content %}
@@ -25,8 +25,8 @@ function scrolltoelem(elem) {
 
 <p class="subHeader">Downloadable Software <span class="bodyText">- tools that once installed locally, can be used to make predictions of genomic islands </span></p>
  <ul class="bodyText">
-  <li><a href="http://www.tcs.informatik.uni-goettingen.de/colombo-sigihmm" target="_blank">SIGI-HMM</a> - measures codon usage to identify possible GIs and is one of the methods integrated into <a href="./">IslandViewer</a>. (<a href="{% url 'about' %}#sigi">More Information</a>)</li>
-  <li><a href="{% url 'download' %}#source">IslandPath-DIMOB</a> - measures dinucleotide bias to to identify possible GIs and is one of the methods integrated into <a href="./">IslandViewer</a>. (<a href="{% url 'about' %}#dimob">More Information</a>)</li>
+  <li><a href="http://www.uni-goettingen.de/en/research/185810.html" target="_blank">SIGI-HMM</a> - measures codon usage to identify possible GIs and is one of the methods integrated into <a href="./">IslandViewer</a>. (<a href="{% url 'about' %}#sigi">More Information</a>)</li>
+  <li><a href="{% url 'download' %}#source">IslandPath-DIMOB</a> - measures dinucleotide bias to identify possible GIs and is one of the methods integrated into <a href="./">IslandViewer</a>. (<a href="{% url 'about' %}#dimob">More Information</a>)</li>
   <li><a href="http://www.sanger.ac.uk/Software/analysis/alien_hunter/" target="_blank">Alien Hunter/IVOM </a>- uses variable order motifs to measure sequence bias and predict GIs. </li>
   <li><a href="http://compbio.sibsnet.org/projects/pai-ida/" target="_blank">PAI IDA</a> - uses a combination of  G+C content, dinucleotide frequency and codon usage to predict the location of GIs. </li>
 </ul>

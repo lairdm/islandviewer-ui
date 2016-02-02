@@ -1,4 +1,4 @@
 islandviewer-ui
 ===============
 
-Web UI for Islandviewer
+Web UI for Islandviewer.
