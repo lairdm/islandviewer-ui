@@ -158,7 +158,7 @@ var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot(
 
 $('#loadingimg').remove();
 
-var linearcontainerwidth = d3.select(".linearchart").node().getBoundingClientRect().width;
+var linearcontainerwidth = 1115;
 console.log(linearcontainerwidth)
 
 var {{ plotName|default:"circular" }}Linearlayout = {id: 0,genomesize: {{ genomesize }}, container: "{{ container }}linear", width: linearcontainerwidth, height: 135, bottom_margin:0, initStart:0, initEnd: Math.min(1000, {{ genomesize }})};

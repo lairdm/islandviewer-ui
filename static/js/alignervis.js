@@ -3,7 +3,7 @@
 function MultiVis(targetNode){
     var self = this;
     const SEQUENCEHEIGHT = 150;
-    const CONTAINERWIDTH = 917.5;
+    const CONTAINERWIDTH = 1115;
     // const NUMBERAXISTICKS = 5; BROKEN FOR CURRENT IMPLEMENTATION
 
     this.container = d3.select(targetNode);
