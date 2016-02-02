@@ -1250,8 +1250,8 @@ def getMauveFile(request):
     firstgenomeextid = firstgenomeextid.split('.')[0]
     secondgenomeextid = secondgenomeextid.split('.')[0]
 
-    firstReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__exact=firstgenomeextid)[0]
-    secondReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__exact=secondgenomeextid)[0]
+    firstReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__contains=firstgenomeextid)[0]
+    secondReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__contains=secondgenomeextid)[0]
 
     firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
     secondGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=secondReplicon.gpv_id)
