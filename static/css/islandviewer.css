@@ -93,6 +93,10 @@ body {
 	padding: 10px;
 }
 
+input#gene_search_input{
+    width:100%;
+}
+
 .chkLabel input { float: left; margin-top:0.5em;}
 .chkLabel span { display: block; margin-left: 1.5em;}
 
@@ -209,6 +213,13 @@ div.outline {
 	color: #1F1A80;
 	letter-spacing:0.1em;
 	line-height:26px;
+    display: inline-block;
+    width: 500px;
+    overflow:hidden;
+}
+
+.pageName:hover{
+    overflow: visible;
 }
 
 .linearLabel {
