@@ -1156,6 +1156,9 @@ def getMauveFile(request):
     firstgenomeextid = request.GET.get('firstgenomeextid')
     secondgenomeextid = request.GET.get('secondgenomeextid')
 
+    firstgenomeextid = firstgenomeextid.split('.')[0]
+    secondgenomeextid = secondgenomeextid.split('.')[0]
+
     firstReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=firstgenomeextid)
     secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondgenomeextid)
 
@@ -1165,7 +1168,7 @@ def getMauveFile(request):
     firstGbk = glob.glob(firstGenomeProject.gpv_directory+"/*"+".gbk")[0]
     secondGbk = glob.glob(secondGenomeProject.gpv_directory+"/*"+".gbk")[0]
 
-    mauveOutputPath = scripts.getMauveResults(firstGbk,secondGbk)
+    mauveOutputPath = mauvewrap.getMauveResults(firstGbk,secondGbk)
 
     with open(mauveOutputPath,'r') as f:
         data = f.read()
