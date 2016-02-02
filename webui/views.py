@@ -1248,7 +1248,7 @@ def getMauveFile(request):
     secondgenomeextid = request.GET.get('secondgenomeextid')
 
     firstgenomeextid = firstgenomeextid.split('.')[0]
-    secondgenomeextid = secondgenomeextid.split(',')[0]
+    secondgenomeextid = secondgenomeextid.split('.')[0]
 
     firstReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__exact=firstgenomeextid)[0]
     secondReplicon = Replicon.objects.using('microbedb').filter(rep_accnum__exact=secondgenomeextid)[0]
