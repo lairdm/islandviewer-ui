@@ -153,10 +153,6 @@ Islandviewer.prototype.focus = function(startbp, endbp, params) {
 }
 
 Islandviewer.prototype.mouseover = function(trackname, d, plotid) {
-//    console.log("Got a callback " + d);
-//    console.log(trackname);
-//    console.log(d);
-//    console.log(plotid);
 
     if(plotid == 'circularchartlinear' || plotid == 'secondchartlinear' ) {
       if(trackname == 'circularGenes') {

@@ -34,7 +34,15 @@
             <input id="gene_search_input" placeholder="Type a gene name, refseq accession, locus tag or product name...">
         </div>
     </div>
-<div class="toolbox_item"><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a></div>
+   <div class="toolbox_item" style="z-index:100"><a href="javascript:show_genome_dialog();" id="show_second_link">Visualize two genomes</a>
+    <div id="genome_selector_dialog" style="display:none">Select a second genome to display:<br />
+        <div style="display: inline-block;width:100%">
+            <select id="second_genome_select" class="extraclass" style="width:100%;" data-placeholder="Select a genome...">
+                <option></option>
+            </select><br />
+            <span ><a href="javascript:load_second_helper();">Display genome</a></span></div><br />
+    </div>
+   </div>
 <div class="toolbox_item"><a href="javascript:show_islandpick_genomes();" id="show_islandpick_genomes" >Show Islandpick Comparison Genomes</a></div>
 <div class="toolbox_item"><a href="javascript:show_gene_search();" id="show_gene_search" >Search Genes</a></div>
 <div class="toolbox_item"><a href="javascript:show_download();" id="show_download_link" >Download</a></div>

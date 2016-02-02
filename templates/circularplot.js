@@ -289,7 +289,7 @@ window.onload = function() {
     }
   }
 
-  $("#second_genome_select").chosen({width: "525px"});
+  $("#second_genome_select").chosen({width: "100%"});
 
   initialize_gene_search();
 
