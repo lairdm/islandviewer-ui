@@ -1244,14 +1244,11 @@ def fetchislandsfasta(request):
     return response
 
 def getMauveFile(request):
-    firstgenomeaid = request.GET.get('firstgenomeaid')
-    secondgenomeaid = request.GET.get('secondgenomeaid')
+    firstgenomeextid = request.GET.get('firstgenomeextid')
+    secondgenomeextid = request.GET.get('secondgenomeextid')
 
-    firstAnalysis = Analysis.objects.get(aid__exact=firstgenomeaid)
-    secondAnalysis = Analysis.objects.get(aid__exact=secondgenomeaid)
-
-    firstReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=firstAnalysis.ext_id)
-    secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondAnalysis.ext_id)
+    firstReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=firstgenomeextid)
+    secondReplicon = Replicon.objects.using('microbedb').get(rep_accnum__exact=secondgenomeextid)
 
     firstGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=firstReplicon.gpv_id)
     secondGenomeProject = Genomeproject.objects.using('microbedb').get(gpv_id__exact=secondReplicon.gpv_id)
