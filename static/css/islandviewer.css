@@ -214,12 +214,6 @@ div.outline {
 	letter-spacing:0.1em;
 	line-height:26px;
     display: inline-block;
-    width: 500px;
-    overflow:hidden;
-}
-
-.pageName:hover{
-    overflow: visible;
 }
 
 .linearLabel {

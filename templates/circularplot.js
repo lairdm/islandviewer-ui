@@ -159,7 +159,6 @@ var {{ plotName|default:"circular" }}TrackObj = islandviewerObj.addCircularPlot(
 $('#loadingimg').remove();
 
 var linearcontainerwidth = 1115;
-console.log(linearcontainerwidth)
 
 var {{ plotName|default:"circular" }}Linearlayout = {id: 0,genomesize: {{ genomesize }}, container: "{{ container }}linear", width: linearcontainerwidth, height: 135, bottom_margin:0, initStart:0, initEnd: Math.min(1000, {{ genomesize }})};
 //var {{ plotName|default:"circular" }}LinearTrack = new genomeTrack({{ plotName|default:"circular" }}Linearlayout, {{ plotName|default:"circular" }}data);
