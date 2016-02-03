@@ -214,6 +214,8 @@ div.outline {
 	letter-spacing:0.1em;
 	line-height:26px;
     display: inline-block;
+    white-space: normal;
+    width: 500px;
 }
 
 .linearLabel {
@@ -350,6 +352,10 @@ input[type=file] {
 
 .outline_plot {
     border: 1px solid #808080;
+}
+
+#outer_circular{
+    white-space: nowrap;
 }
 
 /* Section for GI tables */
