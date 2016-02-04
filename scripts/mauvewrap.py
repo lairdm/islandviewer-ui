@@ -50,7 +50,7 @@ def runMauve(gbk1,gbk2,outputfile=None,outputbackbonefile=None, async=False):
                             completeFlag = True
                             print "Error has occured to submitted job (cluster)"
             if not completeFlag:
-                time.sleep(6000)
+                time.sleep(60)
 
 #Given the paths of 2 genebank files, returns path of backbone file if it exists or None if it doesnt
 def retrieveBackboneFile(gbk1,gbk2):
