@@ -4,17 +4,17 @@
 {% block sidebar %}
 <p><span class="pageName">Definitions</span></p>
 
-<p class="bodyText"><span class="subHeader">Genomic Islands</span> - large genomic regions (typically &gt; 8kb), that are thought to have horizontal origins. These regions can often contain genes that are related to antibiotic resistance or virulence.</p>
+	<p class="bodyText"><span class="subHeader">Genomic Islands</span> - large genomic regions (typically &gt; 8kb), that are thought to have horizontal origins. These regions can often contain genes that are related to antibiotic resistance or virulence.</p>
+	
+	<p class="bodyText"><span class="subHeader">Sequence Composition GI Prediction Methods</span> - bacterial genomes tend to naturally have differences in sequence composition such as GC% and codon bias. Therefore, a region within a genome that has abnormal sequence composition could indicate that it originated from another genome. Various tools (incl. SIGI-HMM and IslandPath-DIMOB) look for regions with abnormal sequence composition.  </p>
+				
+	<p class="bodyText"><span class="subHeader">Comparative Genomic GI Prediction Methods</span> - genomic regions that are not present within related strains suggest that the region was horizontally transferred. IslandPick is a method that automatically selects comparison genomes that are within a proper evolutionary distance and identifies regions that are unique to only a single genome. </p>
+				
+	<p class="bodyText"> <span class="subHeader">Mobility Genes </span>- are genes related to the movement of mobile genetic elements (incl. genomic islands), such as transposases and integrases. </p>
 
-<p class="bodyText"><span class="subHeader">Sequence Composition GI Prediction Methods</span> - bacterial genomes tend to naturally have differences in sequence composition such as GC% and codon bias. Therefore, a region within a genome that has abnormal sequence composition could indicate that it originated from another genome. Various tools (incl. SIGI-HMM and IslandPath-DIMOB) look for regions with abnormal sequence composition.  </p>
-		  
-<p class="bodyText"><span class="subHeader">Comparative Genomic GI Prediction Methods</span> - genomic regions that are not present within related strains suggest that the region was horizontally transferred. IslandPick is a method that automatically selects comparison genomes that are within a proper evolutionary distance and identifies regions that are unique to only a single genome. </p>
-		  
-<p class="bodyText"> <span class="subHeader">Mobility Genes </span>- are genes related to the movement of mobile genetic elements (incl. genomic islands), such as transposases and integrases. </p>
-
-&nbsp;<br />
-<div id="cite" class="outline"><span class="bodyText"> If you use IslandViewer for your research, please cite the most recent publication. Thank You! <br /> Dhillon, B.K. et al. 2015. <br /> "IslandViewer 3: more flexible, interactive genomic island discovery, visualization and analysis" <br /> <i>Nucleic Acids Research</i>, 43 (W1): W104-W108. <br /> <a href="http://nar.oxfordjournals.org/content/43/W1/W104.full" target="_blank">doi: 10.1093/nar/gkv401</a> </span> </div>
-
+	&nbsp;<br />
+  
+	{% include "citation.html" %}
 {% endblock sidebar %}
 
 {% block content %}

@@ -2,9 +2,9 @@
 {% load static %} 
 
 {% block sidebar %}
-<p class="bodyText">If you need further assistance, please feel free to email us at <a href="mailto:islandpick-mail@sfu.ca">islandpick-mail@sfu.ca</a> with your enquiries. Thank you.</p>
-&nbsp;<br />
-<div id="cite" class="outline"><span class="bodyText"> If you use IslandViewer for your research, please cite the most recent publication: <br /> Dhillon, B.K. et al. 2015. <br /> "IslandViewer 3: more flexible, interactive genomic island discovery, visualization and analysis" <br /> <i>Nucleic Acids Research</i>, 43 (W1): W104-W108. <br /> <a href="http://nar.oxfordjournals.org/content/43/W1/W104.full" target="_blank">doi: 10.1093/nar/gkv401</a> </span> </div>
+		<p class="bodyText">If you need further assistance, please feel free to email us at <a href="mailto:islandpick-mail@sfu.ca">islandpick-mail@sfu.ca</a> with your enquiries. Thank you.</p>
+		&nbsp;<br />
+    {% include "citation.html" %}
 {% endblock sidebar %}
 
 {% block content %}
