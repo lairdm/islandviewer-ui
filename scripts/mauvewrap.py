@@ -25,12 +25,13 @@ def runMauve(gbk1,gbk2,outputfile=None,outputbackbonefile=None, async=False):
     shutil.copyfile(gbk1,gbk1temppath)
     shutil.copyfile(gbk2,gbk2temppath)
 
-    pbsFile = open(outputfile+".pbs","w")
+    pbsFile = open(outputfile+".pbs","w+")
     pbsFile.write("#!/bin/bash")
     pbsFile.write("#PBS -S /bin/bash")
     pbsFile.write("/progressiveMauve --output="+outputfile+".xmfa --backbone-output="
                   +outputbackbonefile+".backbone "+gbk1temppath+" "+gbk2temppath)
-    sp = subprocess.Popen("qsub "+outputfile+".pbs", cwd=MAUVE_PATH)
+    pbsFile.close()
+    sp = subprocess.Popen(["qsub", outputfile+".pbs"], cwd=MAUVE_PATH)
 
     # waits for job when using torque if async = False
     if not async:
@@ -39,7 +40,7 @@ def runMauve(gbk1,gbk2,outputfile=None,outputbackbonefile=None, async=False):
             qstatOutput = subprocess.Popen(["qstat", "-x"],stdout=subprocess.PIPE, cwd=MAUVE_PATH)
             output = qstatOutput.communicate()[0]
             tree = ET.fromstring(output)
-            for index in len(tree):
+            for index in range(0,len(tree)):
                 if outputfile+".psb" == tree[index][1].text:
                     status = tree[index][4].text
                     if status == 'C':
