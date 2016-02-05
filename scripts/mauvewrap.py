@@ -8,7 +8,6 @@ import xml.etree.ElementTree as ET
 #These paths can be moved to the settings file after testing
 MAUVE_PATH = "/data/Modules/iv-backend/islandviewer_dev/utils/mauve_2.4.0/linux-x64/progressiveMauve"
 MAUVE_OUTPUT_PATH = "/data/Modules/iv-backend/islandviewer/pairwise_mauve"
-MAUVE_SCRIPT_BASH_PATH = "/data/Modules/islandviewer4/islandviewer-ui/scripts/mauve-wrapper.sh"
 
 #Parameters = path to 2 genebank files
 #Returns None
