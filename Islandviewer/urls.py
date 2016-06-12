@@ -7,7 +7,10 @@ import settings.env
 
 if settings.env.DEV_ENV:
     urlpatterns = patterns('',
-        url(r'^islandviewer/', include('webui.urls'))
+        url(r'^islandviewer/', include('webui.urls')),
+        url('', include('social.apps.django_app.urls', namespace='social')),
+        url(r'', include('social_orcid.urls', namespace='social_orcid')),
+
       
     # Examples:
     # url(r'^$', 'Islandviewer.views.home', name='home'),
@@ -21,6 +24,8 @@ if settings.env.DEV_ENV:
     )
 else:
     urlpatterns = patterns('',
-        url(r'^', include('webui.urls'))
+        url(r'^', include('webui.urls')),
+        url('', include('social.apps.django_app.urls', namespace='social')),
+        url(r'', include('social_orcid.urls', namespace='social_orcid')),
     )
     
