@@ -358,7 +358,7 @@ class DistanceAttempts(models.Model):
 class UploadGenome(models.Model):
     id = models.AutoField(primary_key=True)
     filename = models.CharField(max_length=120)
-    ip_addr = models.IPAddressField()
+    ip_addr = models.GenericIPAddressField()
     genome_name = models.CharField(max_length=40)
     email = models.EmailField()
     cid = models.IntegerField(default=0)
