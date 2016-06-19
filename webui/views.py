@@ -387,11 +387,7 @@ def uploadform(request):
                 ip = request.META.get('REMOTE_ADDR')
             uploadparser = uploader.GenomeParser()
             try:
-                if request.user.is_authenticated():
-                    user_id = request.user.id
-                else:
-                    user_id = None
-                ret = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip, user_id)
+                ret = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip)
             except (ValueError, Exception) as e:
                 context['error'] = "Unknown error"
                 if settings.DEBUG:
@@ -453,7 +449,11 @@ def uploadcustomajax(request):
             uploadparser = uploader.GenomeParser()
             
             try:
-                ret = uploadparser.submitCustom(form.cleaned_data, ip)
+                if request.user.is_authenticated():
+                    user_id = request.user.id
+                else:
+                    user_id = None
+                ret = uploadparser.submitCustom(form.cleaned_data, ip, user_id)
             except (ValueError, Exception) as e:
                 context['error'] = "Unknown error"
                 if settings.DEBUG:

@@ -49,7 +49,7 @@ class GenomeParser():
         
         return ret;
     
-    def submitCustom(self, form_data, uploader_ip):
+    def submitCustom(self, form_data, uploader_ip, user_id = None):
         '''
         We're going to take the form data and determine what we need to send based
         on the fields we've received, is this an initial upload or a continuation
@@ -116,6 +116,6 @@ class GenomeParser():
            
         else:
             # We can relax, this is an initial upload
-            ret = self.submitUpload(form_data['genome_file'], form_data['format_type'], form_data['genome_name'], form_data['email_addr'], uploader_ip)
+            ret = self.submitUpload(form_data['genome_file'], form_data['format_type'], form_data['genome_name'], form_data['email_addr'], uploader_ip, user_id)
            
             return ret
