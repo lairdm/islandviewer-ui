@@ -9,7 +9,7 @@ from uploadparser import submitter
 
 class GenomeParser():
         
-    def submitUpload(self, file, format_type, name, email_addr, uploader_ip):
+    def submitUpload(self, file, format_type, name, email_addr, uploader_ip, user_id = None):
         '''
         We're going to accept an uploaded file and
         put it in the uploads directory with an
@@ -32,7 +32,7 @@ class GenomeParser():
 
         try:
             genome_data = file.read()
-            ret = submitter.send_job(genome_data, genome_format, g_name, email_addr, uploader_ip)
+            ret = submitter.send_job(genome_data, genome_format, g_name, email_addr, uploader_ip, user_id)
         except Exception as e:
             if settings.DEBUG:
                 debug_error = ''

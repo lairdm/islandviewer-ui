@@ -387,7 +387,11 @@ def uploadform(request):
                 ip = request.META.get('REMOTE_ADDR')
             uploadparser = uploader.GenomeParser()
             try:
-                ret = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip)
+                if request.user.is_authenticated():
+                    user_id = request.user.id
+                else:
+                    user_id = None
+                ret = uploadparser.submitUpload(request.FILES['genome_file'], form.cleaned_data['format_type'], form.cleaned_data['genome_name'], form.cleaned_data['email_addr'], ip, user_id)
             except (ValueError, Exception) as e:
                 context['error'] = "Unknown error"
                 if settings.DEBUG:
