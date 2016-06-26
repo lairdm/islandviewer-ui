@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+from datetime import datetime, timedelta
 import pprint
 from Bio.Phylo.TreeConstruction import _DistanceMatrix, DistanceTreeConstructor
 from Bio import Phylo
@@ -494,3 +496,10 @@ class Version(models.Model):
         managed = False
         db_table = 'version'
  
+class UserToken(models.Model):
+    user = models.ForeignKey(User, unique=True)
+    token = models.CharField(max_length=36)
+    expires = models.DateTimeField(default=datetime.now()+timedelta(days=30))
+    
+    class Meta:
+        db_table = 'UserToken'

@@ -45,4 +45,8 @@ urlpatterns = patterns('',
     url(r'^results/graph/(?P<aid>\d+)/$', views.graphanalysis, name='graphanalysis'),
     url(r'^results/graph/js/(?P<aid>\d+)/$', views.graphanalysisjs, name='graphanalysisjs'),
     url(r'^upload/(?P<upload_id>\d+)/$', views.uploadredirect, name='uploadredirect'),
+    url(r'^user/jobs/$', views.user_jobs, name='user_jobs'),
+    url(r'^user/jobs/json/$', views.user_jobs_json, name='user_jobs_json'),
+    url(r'^user/token/$', views.user_token, name='user_rest_token'),
+    url(r'^user/token/reset/$', views.user_reset_token, name='user_rest_token_reset'),
 )
