@@ -9,6 +9,7 @@ from django.views.decorators.http import last_modified
 import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, SiteStatus, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES,\
     UserToken
+from decorators import auth_token
 from usermanager.token import generate_token, reset_token
 from django.core.urlresolvers import reverse
 from islandplot import plot
@@ -624,6 +625,28 @@ def user_jobs_json(request):
 #    data = serializers.serialize('json', context)
 
     return HttpResponse(data, content_type="application/json")
+
+@auth_token
+def user_jobs_rest(request, usertoken, **kwargs):
+    user = usertoken.user
+    analysis = Analysis.objects.filter(owner_id=user.id).order_by('-aid')
+    
+    analysis_set = []
+    for a in analysis:
+        """A big assumption! That it's a custom genome.
+           Fetching genome names (done multiple places) should be
+           abstracted out at some point."""
+        genome = CustomGenome.objects.get(pk=a.ext_id)
+
+        analysis_set.append({'aid': a.aid,
+                            'genome_name': genome.name,
+                            'status': STATUS_CHOICES[a.status][1],
+                            'token': a.token})
+
+    data = json.dumps(analysis_set, indent=4, sort_keys=False)
+
+    return HttpResponse(data, content_type="application/json")
+    
 
 @login_required
 def user_token(request):
