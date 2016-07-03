@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import last_modified
 import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, SiteStatus, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES,\
-    UserToken
+    UserToken, GI_MODULES
 from decorators import auth_token
 from usermanager.token import generate_token, reset_token
 from django.core.urlresolvers import reverse
@@ -626,28 +626,6 @@ def user_jobs_json(request):
 
     return HttpResponse(data, content_type="application/json")
 
-@auth_token
-def user_jobs_rest(request, usertoken, **kwargs):
-    user = usertoken.user
-    analysis = Analysis.objects.filter(owner_id=user.id).order_by('-aid')
-    
-    analysis_set = []
-    for a in analysis:
-        """A big assumption! That it's a custom genome.
-           Fetching genome names (done multiple places) should be
-           abstracted out at some point."""
-        genome = CustomGenome.objects.get(pk=a.ext_id)
-
-        analysis_set.append({'aid': a.aid,
-                            'genome_name': genome.name,
-                            'status': STATUS_CHOICES[a.status][1],
-                            'token': a.token})
-
-    data = json.dumps(analysis_set, indent=4, sort_keys=False)
-
-    return HttpResponse(data, content_type="application/json")
-    
-
 @login_required
 def user_token(request):
     context = {}
@@ -674,6 +652,75 @@ def user_reset_token(request):
     data = json.dumps({'token': str(user_token.token), 'expiry': user_token.expires.strftime('%Y-%m-%d %H:%M')}, indent=4, sort_keys=False)
     
     return HttpResponse(data, content_type="application/json")    
+
+@auth_token
+def user_jobs_rest(request, usertoken, **kwargs):
+    user = usertoken.user
+    analysis = Analysis.objects.filter(owner_id=user.id).order_by('-aid')
+    
+    analysis_set = []
+    for a in analysis:
+        """A big assumption! That it's a custom genome.
+           Fetching genome names (done multiple places) should be
+           abstracted out at some point."""
+        genome = CustomGenome.objects.get(pk=a.ext_id)
+
+        analysis_set.append({'aid': a.aid,
+                             'results': request.build_absolute_uri( reverse('results', kwargs={'aid': a.aid}) ) + ("?token={}".format(a.token) if a.token else ''),
+
+                            'genome_name': genome.name,
+                            'status': STATUS_CHOICES[a.status][1],
+                            })
+
+    data = json.dumps(analysis_set, indent=4, sort_keys=False)
+
+    return HttpResponse(data, content_type="application/json")
+
+@auth_token
+def user_job_rest(request, usertoken, aid, **kwargs):
+    user = usertoken.user
+    analysis = Analysis.objects.select_related().get(pk=aid)
+    CHOICES = dict(STATUS_CHOICES)
+    context = {}
+
+    if user.id != analysis.owner_id:
+        return HttpResponse(status=400)
+    
+    context['aid'] = analysis.aid
+    context['status'] = CHOICES[analysis.status]
+    context['results'] = request.build_absolute_uri( reverse('results', kwargs={'aid': analysis.aid}) ) + ("?token={}".format(analysis.token) if analysis.token else '')
+
+    # Fetch the genome name and such
+    if(analysis.atype == Analysis.CUSTOM):
+        genome = CustomGenome.objects.get(pk=analysis.ext_id)
+        context['genome_name'] = genome.name
+    elif(analysis.atype == Analysis.MICROBEDB):
+        context['genome_name'] = NameCache.objects.get(cid=analysis.ext_id).name
+    
+    context['tasks'] = {}
+    context['taskcount'] = {}
+    for method in analysis.tasks.all():
+        context['tasks'][method.prediction_method] = CHOICES[method.status]
+
+        if method.prediction_method not in GI_MODULES:
+            continue
+        try:
+            context['taskcount'][method.prediction_method] = GenomicIsland.objects.filter(aid=analysis, prediction_method=method.prediction_method).count()
+        except Exception as e:
+            if settings.DEBUG:
+                print str(e)
+            pass
+    
+    try:
+        context['emails'] = ','.join(Notification.objects.filter(analysis=analysis).values_list('email', flat=True))
+    except Exception as e:
+        if settings.DEBUG:
+            print e
+        pass    
+    
+    data = json.dumps(context, indent=4, sort_keys=False)
+    
+    return HttpResponse(data, content_type="application/json")
 
 def runstatusjson(request):
     context = {}

@@ -50,4 +50,5 @@ urlpatterns = patterns('',
     url(r'^user/token/$', views.user_token, name='user_rest_token'),
     url(r'^user/token/reset/$', views.user_reset_token, name='user_rest_token_reset'),
     url(r'^rest/jobs/$', views.user_jobs_rest, name='rest_user_jobs'),
+    url(r'^rest/job/(?P<aid>\d+)/$$', views.user_job_rest, name='rest_user_job'),
 )
