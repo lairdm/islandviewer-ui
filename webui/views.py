@@ -3,13 +3,13 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from django import forms
-from django.db.models import Q
+from django.db.models import Q, F
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import last_modified
 import json
 from webui.models import Analysis, GenomicIsland, GC, CustomGenome, IslandGenes, UploadGenome, Virulence, NameCache, Genes, Replicon, Genomeproject, GIAnalysisTask, Distance, Notification, SiteStatus, STATUS, STATUS_CHOICES, VIRULENCE_FACTORS, MODULES,\
     UserToken, GI_MODULES
-from decorators import auth_token
+from decorators import auth_token, ratelimit_warning
 from usermanager.token import generate_token, reset_token
 from django.core.urlresolvers import reverse
 from islandplot import plot
@@ -28,6 +28,7 @@ from webui.models import VIRULENCE_FACTORS, VIRULENCE_FACTOR_CATEGORIES
 from django.db import connection
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
+from ratelimit.decorators import ratelimit
 
 def index(request):
     return render(request, 'index.html')
@@ -437,15 +438,24 @@ def uploadform(request):
     )
 
 @csrf_exempt
-def uploadcustomajax(request):
+@ratelimit(group='unauthenticated_upload', rate='5/m', key='ip')
+@ratelimit(group='unauthenticated_upload', rate='20/h', key='ip')
+@ratelimit_warning
+def uploadcustomajax(request, **kwargs):
+
+    return _uploadcustomajax(request, **kwargs)
+
+# Helper function so rate limiting only applies to the ajax call and not when
+# we call uploadcustomajax via the REST endpoint
+def _uploadcustomajax(request, **kwargs):
     context = {}
-    
-    pprint.pprint(request.POST)
+
+    if settings.DEBUG:
+        pprint.pprint(request.POST)
     
     if request.method == 'POST':
         form = UploadGenomeForm(request.POST, request.FILES)
         if form.is_valid():
-            print "valid"
             x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
             if x_forwarded_for:
                 ip = x_forwarded_for.split(',')[-1].strip()
@@ -457,7 +467,8 @@ def uploadcustomajax(request):
                 if request.user.is_authenticated():
                     user_id = request.user.id
                 else:
-                    user_id = None
+                    # See if we've been passed a userid from the caller (ie. rest upload view), otherwise, None
+                    user_id = getattr(kwargs, 'userid', None)
                 ret = uploadparser.submitCustom(form.cleaned_data, ip, user_id)
             except (ValueError, Exception) as e:
                 context['error'] = "Unknown error"
@@ -654,7 +665,11 @@ def user_reset_token(request):
     return HttpResponse(data, content_type="application/json")    
 
 @auth_token
+@ratelimit(group='rest', key='user', rate='10/m')
+@ratelimit(group='rest', key='user', rate='120/h')
+@ratelimit_warning
 def user_jobs_rest(request, usertoken, **kwargs):
+
     user = usertoken.user
     analysis = Analysis.objects.filter(owner_id=user.id).order_by('-aid')
     
@@ -677,6 +692,9 @@ def user_jobs_rest(request, usertoken, **kwargs):
     return HttpResponse(data, content_type="application/json")
 
 @auth_token
+@ratelimit(group='rest', key='user', rate='10/m')
+@ratelimit(group='rest', key='user', rate='120/h')
+@ratelimit_warning
 def user_job_rest(request, usertoken, aid, **kwargs):
     user = usertoken.user
     analysis = Analysis.objects.select_related().get(pk=aid)
@@ -721,6 +739,35 @@ def user_job_rest(request, usertoken, aid, **kwargs):
     data = json.dumps(context, indent=4, sort_keys=False)
     
     return HttpResponse(data, content_type="application/json")
+
+@auth_token
+@ratelimit(group='rest', key='user', rate='10/m')
+@ratelimit(group='rest', key='user', rate='120/h')
+@ratelimit_warning
+def ref_genomes_rest(request, **kwargs):
+
+    genomes = list(NameCache.objects.filter(isvalid=1).annotate(ref_accnum=F('cid')).values('ref_accnum', 'name').all())
+
+    data = json.dumps(genomes, indent=4, sort_keys=False)
+
+    return HttpResponse(data, content_type="application/json")
+
+@csrf_exempt
+@auth_token
+@ratelimit(group='rest_submit', key='user', rate='10/h')
+@ratelimit(group='rest_submit', key='user', rate='50/d')
+@ratelimit_warning
+def user_job_submit_rest(request, usertoken, **kwargs):
+
+    if request.method != 'POST':
+        return HttpResponse(status=403)
+
+    # If we were rate limited, return a watning to the user
+    if getattr(request, 'limited', False):
+        return ratelimit_warning(request)
+
+    user = usertoken.user
+    return _uploadcustomajax(request, userid=user.id)
 
 def runstatusjson(request):
     context = {}
@@ -968,7 +1015,8 @@ def fetchislands(request):
     if 'gi' in context:
         islands.update(recs[long(gi)])
     else:
-        print type(recs)
+        if settings.DEBUG:
+            print type(recs)
         for islandid in recs:
             islands.update(recs[islandid])
             
@@ -1156,7 +1204,8 @@ def islandpick_genomes(request, aid):
 #            context['tree'] = Distance.distance_matrix(cluster_list)
                                     
         except Exception as e:
-            print str(e)
+            if settings.DEBUG:
+                print str(e)
             pass
 
         genome_list = OrderedDict()
