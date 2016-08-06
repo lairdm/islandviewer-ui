@@ -1,6 +1,8 @@
-<span class="smalltext">
+<span class="bodyText">
 <p>We only accept user genomes that are formatted in EMBL or GENBANK format.</p> 
-<p><b>Note:</b>Incomplete genomes are now accepted as input due to popular demand. However, whole genome analysis is still preferred to reduce false predictions and missing GIs. Please use at your own risk. We suggest to minimize the number of contigs before performing GI analysis and carefully evaluate all results from such custom jobs. Contigs will be ordered against a user-selected reference genome using the Mauve contig orderer (<a href="http://bioinformatics.oxfordjournals.org/content/25/16/2071.full">Rissman et al., 2009</a>). Please note that annotation of the contigs is still required.</p>
 <p>For published genomes please see <a href="{% url 'browse' %}">pre-computed results</a>. </p>
 <p>Uploaded genomes and GI predictions will not be visible to other users of IslandViewer and will be available for at least 1 month. </p>
 </span>
+<br />
+{% include "citation.html" %}
+                                             
